@@ -1,0 +1,59 @@
+package com.domsplace.DomsCommands.Bases;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
+
+public class DomsThread extends Base implements Runnable {
+    private static final List<DomsThread> THREADS = new ArrayList<DomsThread>();
+    
+    //Static
+    public static void stopAllThreads() {
+        for(DomsThread t : THREADS) {
+            t.stopThread();
+        }
+    }
+    
+    public static void registerThread(DomsThread thread) {
+        debug("Thread: " + thread.getClass().getSimpleName() + " :Registered.");
+        DomsThread.getThreads().add(thread);
+    }
+    
+    public static List<DomsThread> getThreads() {
+        return DomsThread.THREADS;
+    }
+    
+    //Instance
+    private BukkitTask thread;
+    
+    public DomsThread(long delay, long repeat) {
+        this(delay, repeat, false);
+    }
+    
+    public DomsThread(long delay, long repeat, boolean async) {
+        delay = delay * 20L;
+        repeat = repeat * 20L;
+        
+        if(async) {
+            this.thread = Bukkit.getScheduler().runTaskTimerAsynchronously(getPlugin(), this, delay, repeat);
+        } else {
+            this.thread = Bukkit.getScheduler().runTaskTimer(getPlugin(), this, delay, repeat);
+        }
+        
+        DomsThread.registerThread(this);
+    }
+    
+    public BukkitTask getThread() {
+        return this.thread;
+    }
+    
+    public void stopThread() {
+        if(this.thread == null) return;
+        this.getThread().cancel();
+    }
+
+    @Override
+    public void run() {
+    }
+}
