@@ -22,6 +22,7 @@ import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.DomsThread;
 import com.domsplace.DomsCommands.Commands.*;
+import com.domsplace.DomsCommands.Commands.PunishmentCommands.*;
 import com.domsplace.DomsCommands.Listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,6 +51,9 @@ public class DomsCommandsPlugin extends JavaPlugin {
     
     private SetWarpCommand setWarpCommand;
     private WarpCommand warpCommand;
+    private DeleteWarpCommand delwarpCommand;
+    
+    private BanCommand banCommand;
     
     //Listeners
     private PlayerRegisterListener playerRegisterListener;
@@ -86,6 +90,9 @@ public class DomsCommandsPlugin extends JavaPlugin {
         
         this.setWarpCommand = new SetWarpCommand();
         this.warpCommand = new WarpCommand();
+        this.delwarpCommand = new DeleteWarpCommand();
+        
+        this.banCommand = new BanCommand();
         
         //Load Listeners
         this.playerRegisterListener = new PlayerRegisterListener();

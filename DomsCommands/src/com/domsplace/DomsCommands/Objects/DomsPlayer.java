@@ -65,6 +65,7 @@ public class DomsPlayer {
     
     public static DomsPlayer getPlayer(CommandSender p) {return getPlayer(p.getName());}
     public static DomsPlayer getPlayer(Player p) {return getPlayer(p.getName());}
+    public static DomsPlayer getPlayer(OfflinePlayer player) {return getPlayer(player.getName());}
     public static DomsPlayer getPlayer(String player) {
         if(isPlayerRegistered(player)) return REGISTERED_PLAYERS.get(player);
         
@@ -92,11 +93,14 @@ public class DomsPlayer {
     private DomsLocation lastLocation;
     private long lastMoveTime;
     
+    private List<Punishment> punishments;
+    
     private TeleportRequest lastRequest;
     
     private DomsPlayer(String player) {
         this.player = player;
         this.displayName = this.getDisplayName();
+        this.punishments = new ArrayList<Punishment>();
         
         this.registerPlayer();
     }
@@ -115,6 +119,7 @@ public class DomsPlayer {
     public TeleportRequest getLastTeleporRequest() {return this.lastRequest;}
     public DomsLocation getBackLocation() {return this.backLocation;}
     public DomsLocation getLastLocation() {return this.lastLocation;}
+    public List<Punishment> getPunishments() {return new ArrayList<Punishment>(this.punishments);}
     
     public boolean isOnline() {return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {return Base.isVisible(this.getOfflinePlayer());}
@@ -133,8 +138,10 @@ public class DomsPlayer {
     @Override public String toString() {return this.getDisplayName();}
     
     public void addPlayTime(long time) {this.playtime += time;}
+    public void addPunishment(Punishment p) {this.punishments.add(p);}
     
     public void removePlayTime(long time) {this.playtime -= time;}
+    public void removePunishment(Punishment p) {this.punishments.remove(p);}
     
     public boolean canSee(OfflinePlayer t) {return Base.canSee(this.getOfflinePlayer(), t);}
     public boolean canBeSeenBy(OfflinePlayer t) {return Base.canSee(t, this.getOfflinePlayer());}
@@ -164,5 +171,10 @@ public class DomsPlayer {
     public void teleport(DomsLocation to, boolean useSafe) {
         if(!useSafe) this.getOnlinePlayer().teleport(to.toLocation());
         else this.getOnlinePlayer().teleport(to.getSafeLocation().toLocation());
+    }
+    
+    public void kickPlayer(String r) {
+        if(!this.isOnline()) return;
+        this.getOnlinePlayer().kickPlayer(r);
     }
 }

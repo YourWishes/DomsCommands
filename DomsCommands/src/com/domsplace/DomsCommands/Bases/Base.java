@@ -20,8 +20,11 @@ import com.domsplace.DomsCommands.DomsCommandsPlugin;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -303,6 +306,14 @@ public class Base extends RawBase {
         return Bukkit.getOfflinePlayer(player);
     }
     
+    public static OfflinePlayer getOfflinePlayer(CommandSender relative, String player) {
+        OfflinePlayer p = Base.getPlayer(relative, player);
+        if(p == null || !p.isOnline()) {
+            p = Bukkit.getOfflinePlayer(player);
+        }
+        return p;
+    }
+    
     public static boolean isInt(Object o) {
         try {
             Integer.parseInt(o.toString());
@@ -429,6 +440,46 @@ public class Base extends RawBase {
     public static long getNow() {
         return System.currentTimeMillis();
     }
+    public static boolean isValidTime(String input) {
+        String[] names = new String[]{
+            ("year"),
+            ("years"),
+            ("month"),
+            ("months"),
+            ("day"),
+            ("days"),
+            ("hour"),
+            ("hours"),
+            ("minute"),
+            ("minutes"),
+            ("second"),
+            ("seconds")
+        };
+        
+        Pattern timePattern = Pattern.compile(
+        "(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE);
+        
+        Matcher m = timePattern.matcher(input);
+        
+        while(m.find()) {
+            	if (m.group() == null || m.group().isEmpty()) {
+                    continue;
+                }
+                for (int i = 0; i < m.groupCount(); i++) {
+                    if (m.group(i) != null && !m.group(i).isEmpty()) {
+                        return true;
+                    }
+                }
+        }
+        
+        return false;
+    }
     
     public static String getTimeDifference(Date late) {return Base.getTimeDifference(new Date(), late);}
     
@@ -483,6 +534,157 @@ public class Base extends RawBase {
         }
         
         return "Time Error";
+    }
+    
+    public static Date addStringToNow(String input) {
+        boolean found = false;
+        
+        int years = 0;
+        int months = 0;
+        int weeks = 0;
+        int days = 0;
+        int hours = 0;
+        int minutes = 0;
+        int seconds = 0;
+        Date now = new Date();
+        String[] names = new String[]{
+            ("year"),
+            ("years"),
+            ("month"),
+            ("months"),
+            ("day"),
+            ("days"),
+            ("hour"),
+            ("hours"),
+            ("minute"),
+            ("minutes"),
+            ("second"),
+            ("seconds")
+        };
+        
+        Pattern timePattern = Pattern.compile(
+        "(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?"
+        + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE);
+        
+        Matcher m = timePattern.matcher(input);
+        
+        while(m.find()) {
+            	if (m.group() == null || m.group().isEmpty()) {
+                    continue;
+                }
+                for (int i = 0; i < m.groupCount(); i++) {
+                    if (m.group(i) != null && !m.group(i).isEmpty()) {
+                        found = true;
+                    }
+                    if(found) {
+                        if (m.group(1) != null && !m.group(1).isEmpty()) {
+                            years = Integer.parseInt(m.group(1));
+                        }
+                        if (m.group(2) != null && !m.group(2).isEmpty()) {
+                            months = Integer.parseInt(m.group(2));
+                        }
+                        if (m.group(3) != null && !m.group(3).isEmpty()) {
+                            weeks = Integer.parseInt(m.group(3));
+                        }
+                        if (m.group(4) != null && !m.group(4).isEmpty()) {
+                            days = Integer.parseInt(m.group(4));
+                        }
+                        if (m.group(5) != null && !m.group(5).isEmpty()) {
+                            hours = Integer.parseInt(m.group(5));
+                        }
+                        if (m.group(6) != null && !m.group(6).isEmpty()) {
+                            minutes = Integer.parseInt(m.group(6));
+                        }
+                        if (m.group(7) != null && !m.group(7).isEmpty()) {
+                            seconds = Integer.parseInt(m.group(7));
+                        }
+                        break;
+                    }
+                }
+        }
+        
+        Calendar c = Calendar.getInstance();
+        if (years > 0) {
+            c.add(Calendar.YEAR, years);
+        }
+        if (months > 0)  {
+            c.add(Calendar.MONTH, months);
+        }
+        if (weeks > 0) {
+            c.add(Calendar.WEEK_OF_YEAR, weeks);
+        }
+        if (days > 0) {
+            c.add(Calendar.DAY_OF_MONTH, days);
+        }
+        if (hours > 0) {
+            c.add(Calendar.HOUR_OF_DAY, hours);
+        }
+        if (minutes > 0) {
+            c.add(Calendar.MINUTE, minutes);
+        }
+        if (seconds > 0) {
+            c.add(Calendar.SECOND, seconds);
+        }
+        now = c.getTime();
+        return now;
+    }
+
+    public static String getHumanTimeAway(Date unbanDate) {
+        Long NowInMilli = (new Date()).getTime();
+        Long TargetInMilli = unbanDate.getTime();
+        Long diffInSeconds = (TargetInMilli - NowInMilli) / 1000+1;
+
+        long diff[] = new long[] {0,0,0,0,0};
+        /* sec */diff[4] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
+        /* min */diff[3] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
+        /* hours */diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
+        /* days */diff[1] = (diffInSeconds = (diffInSeconds / 24)) >= 31 ? diffInSeconds % 31: diffInSeconds;
+        /* months */diff[0] = (diffInSeconds = (diffInSeconds / 31));
+        
+        String message = "";
+        
+        if(diff[0] > 0) {
+            message += diff[0] + " month";
+            if(diff[0] > 1) {
+                message += "s";
+            }
+            return message;
+        }
+        if(diff[1] > 0) {
+            message += diff[1] + " day";
+            if(diff[1] > 1) {
+                message += "s";
+            }
+            return message;
+        }
+        if(diff[2] > 0) {
+            message += diff[2] + " hour";
+            if(diff[2] > 1) {
+                message += "s";
+            }
+            return message;
+        }
+        if(diff[3] > 0) {
+            message += diff[3] + " minute";
+            if(diff[3] > 1) {
+                message += "s";
+            }
+            return message;
+        }
+        if(diff[4] > 0) {
+            message += diff[4] + " second";
+            if(diff[4] > 1) {
+                message += "s";
+            }
+            return message;
+        }
+        
+        return "Invalid Time Diff!";
     }
     
     //Material Utils

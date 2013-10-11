@@ -82,6 +82,11 @@ commands:
       aliases: [warps, listwarps]
       usage: /<command> (name|page)
       permission: DomsCommands.warp
+   ban:
+      description: Ban a player.
+      aliases: [banish]
+      usage: /<command> [player] (time) (reason)
+      permission: DomsCommands.ban
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -128,3 +133,5 @@ permissions:
      description: Allows access to the deletewarp command.
    DomsCommands.warp:
      description: Allows access to the warp command.
+   DomsCommands.ban:
+     description: Allows access to the ban command.

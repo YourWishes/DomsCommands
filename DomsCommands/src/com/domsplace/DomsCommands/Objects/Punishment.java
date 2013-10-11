@@ -17,6 +17,7 @@ public class Punishment {
     private PunishmentType type;
     private String reason;
     private DomsLocation location;
+    private String sender;
     private long date;
     private long endDate;
     
@@ -49,6 +50,14 @@ public class Punishment {
     public PunishmentType getType() {return this.type;}
     public long getDate() {return this.date;}
     public long getEndDate() {return this.endDate;}
+    public DomsLocation getLocation() {return this.location;}
+    public String getReason() {return this.reason;}
+    public String getBanner() {return this.sender;}
+    
+    public void setBanner(String n) {this.sender = n;}
+    public void setReason(String r) {this.reason = r;}
+    public void setEndDate(long l) {this.endDate = l;}
+    
     
     public boolean isPermanent() {return this.endDate > date;}
 }
