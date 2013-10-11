@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Bases;
+package com.domsplace.DomsCommands.Listeners;
 
 /**
  * @author      Dominic
  * @since       11/10/2013
  */
-public class DomsEnum extends Base {
+public class CustomPlayerListener {
+
 }

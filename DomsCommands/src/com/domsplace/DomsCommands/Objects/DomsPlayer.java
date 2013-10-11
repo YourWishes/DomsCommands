@@ -74,12 +74,7 @@ public class DomsPlayer {
     private String player;
     private String displayName;
     
-    private String banReason;
-    private String muteReason;
-    
     private String lastIP;
-    
-    private boolean muted;
     
     private boolean afk;
     
@@ -87,9 +82,6 @@ public class DomsPlayer {
     private long login;
     private long logout;
     private long playtime;
-    
-    private long banned;
-    private long pardon;
     
     private DomsLocation backLocation;
     
@@ -102,8 +94,6 @@ public class DomsPlayer {
         this.player = player;
         this.displayName = this.getDisplayName();
         
-        this.muted = false;
-        
         this.registerPlayer();
     }
     
@@ -112,8 +102,6 @@ public class DomsPlayer {
     public String getPlayer() {return this.player;}
     public OfflinePlayer getOfflinePlayer() {return Bukkit.getOfflinePlayer(player);}
     public Player getOnlinePlayer() {return this.getOfflinePlayer().getPlayer();}
-    public String getBanReason() {return this.banReason;}
-    public String getMuteReason() {return this.muteReason;}
     public long getJoinTime() {return this.join;}
     public long getLoginTime() {return this.login;}
     public long getLogoutTime() {return this.logout;}
@@ -124,14 +112,10 @@ public class DomsPlayer {
     public DomsLocation getBackLocation() {return this.backLocation;}
     public DomsLocation getLastLocation() {return this.lastLocation;}
     
-    public boolean isMuted() {return this.muted;}
     public boolean isOnline() {return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {return Base.isVisible(this.getOfflinePlayer());}
     public boolean isAFK() {return this.afk;}
     
-    public void setMuted(boolean m) {this.muted = m;}
-    public void setBanReason(String reason) {this.banReason = reason;}
-    public void setMuteReason(String reason) {this.muteReason = reason;}
     public void setJoinTime(long time) {this.join = time;}
     public void setLoginTime(long time) {this.login = time;}
     public void setLogoutTime(long time) {this.logout = time;}
@@ -148,7 +132,6 @@ public class DomsPlayer {
     
     public void removePlayTime(long time) {this.playtime -= time;}
     
-    public void toggleMuted() {this.muted = !this.muted;}
     public boolean canSee(OfflinePlayer t) {return Base.canSee(this.getOfflinePlayer(), t);}
     public boolean canBeSeenBy(OfflinePlayer t) {return Base.canSee(t, this.getOfflinePlayer());}
     public void teleport(DomsLocation to) {this.teleport(to, Base.getConfig().getBoolean("teleport.safe", true));}

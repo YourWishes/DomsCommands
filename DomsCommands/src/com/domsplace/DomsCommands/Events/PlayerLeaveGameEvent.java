@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Bases;
+package com.domsplace.DomsCommands.Events;
+
+import org.bukkit.entity.Player;
 
 /**
  * @author      Dominic
  * @since       11/10/2013
  */
-public class DomsEnum extends Base {
+public class PlayerLeaveGameEvent {
+    private Player player;
+    
+    public PlayerLeaveGameEvent (Player p) {
+        this.player = p;
+    }
+    
+    public Player getPlayer() {return this.player;}
 }
