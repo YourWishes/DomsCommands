@@ -1,0 +1,130 @@
+name: DomsCommands
+description: Offers many commands for everyone to use!
+main: com.domsplace.DomsCommands.DomsCommandsPlugin
+authors: [Dominic, Jordan, Lazy, Kyle]
+website: http://domsplace.com/
+version: '1.00'
+load: POSTWORLD
+softdepend: []
+commands:
+   DomsCommands:
+      description: Provides basic information about the DomsCommands plugin.
+      aliases: [dcommands, domscom, doms]
+      usage: /<command>
+      permission: DomsCommands.domscommands
+   motd:
+      description: Allows a player to change the servers Message of the day.
+      aliases: [setmotd]
+      usage: /<command> [motd]
+      permission: DomsCommands.motd
+   shutdown:
+      description: Allows a player to shutdown the server.
+      aliases: [stop]
+      usage: /<command> [message]
+      permission: DomsCommands.shutdown
+   teleportrequest:
+      description: Sends a teleport request to the supplied player.
+      aliases: [tpa, teleportto, teleportplease, tprequest]
+      usage: /<command> [player]
+      permission: DomsCommands.teleportrequest
+   teleportrequesthere:
+      description: Sends a teleport request to the supplied player.
+      aliases: [tpah, tpahere, teleporthereplease, tphrequest]
+      usage: /<command> [player]
+      permission: DomsCommands.teleportrequesthere
+   tpaccept:
+      description: Accepts a Teleport Request Made by another player.
+      aliases: [tpac, teleportaccept, teleportrequestaccept, tpyes]
+      usage: /<command>
+      permission: DomsCommands.tpaccept
+   tpdeny:
+      description: Denies a Teleport Request Made by another player.
+      aliases: [tpno, tpn, tpd, tpden]
+      usage: /<command>
+      permission: DomsCommands.tpdeny
+   back:
+      description: Go Back to the last location you were at.
+      aliases: [backwards]
+      usage: /<command>
+      permission: DomsCommands.back
+   teleport:
+      description: Teleport to a player.
+      aliases: [tp, tpc, tpto, tpp, tpp2p, tptoplayer, tpplayer]
+      usage: /<command> [player|coordinates] (player|coordinates)
+      permission: DomsCommands.teleport
+   teleporthere:
+      description: Teleport another player to you.
+      aliases: [tph, here]
+      usage: /<command> [player]
+      permission: DomsCommands.teleporthere
+   teleportall:
+      description: Teleport all players to a given player.
+      aliases: [tpall, tpallhere]
+      usage: /<command> (player)
+      permission: DomsCommands.teleportall
+   teleportrequestall:
+      description: Teleport all players to a given player.
+      aliases: [tprall, tprallhere, tpaall]
+      usage: /<command> (player)
+      permission: DomsCommands.teleportrequestall
+   setwarp:
+      description: Sets a warp where you're standing.
+      aliases: [swarp, sw]
+      usage: /<command> [name]
+      permission: DomsCommands.setwarp
+   deletewarp:
+      description: Sets a warp where you're standing.
+      aliases: [dwarp, delwarp, delwar, removewarp, rwarp]
+      usage: /<command> [name]
+      permission: DomsCommands.deletewarp
+   warp:
+      description: Warp to a previously set warp.
+      aliases: [warps, listwarps]
+      usage: /<command> (name|page)
+      permission: DomsCommands.warp
+permissions:
+  # TODO: FINISH ALL THE * PERM NODES.
+   DomsCommands.*:
+     description: Gives access to all DomsCommands permissions.
+     children:
+       DomsChat.reload: true
+   DomsCommands.reload:
+     description: Allows access to reload the Configuration.
+   DomsCommands.domscommands:
+     description: Allows access to the DomsCommands command.
+   DomsCommands.motd:
+     description: Allows access to the motd command.
+   DomsCommands.motd.set:
+     description: Allows access to set the motd.
+   DomsCommands.shutdown:
+     description: Allows access to the shutdown command.
+   DomsCommands.teleportrequest:
+     description: Allows access to the teleportrequest command.
+   DomsCommands.teleportrequesthere:
+     description: Allows access to the teleportrequesthere command.
+   DomsCommands.tpaccept:
+     description: Allows access to the tpaccept command.
+   DomsCommands.tpdeny:
+     description: Allows access to the tpdeny command.
+   DomsCommands.back:
+     description: Allows access to the back command.
+   DomsCommands.teleport:
+     description: Allows access to the teleport command.
+   DomsCommands.teleport.others:
+     description: Allows players to teleport players to other players.
+   DomsCommands.teleport.coordinates:
+     description: Allows players to teleport to coordinates.
+   DomsCommands.teleport.coordinates.others:
+     description: Allows players to teleport other players to coordinates.
+   DomsCommands.teleporthere:
+     description: Allows access to the teleporthere command.
+   DomsCommands.teleportall:
+     description: Allows access to the teleportall command.
+   DomsCommands.teleportrequestall:
+     description: Allows access to the teleportrequestall command.
+   DomsCommands.setwarp:
+     description: Allows access to the setwarp command.
+   DomsCommands.deletewarp:
+     description: Allows access to the deletewarp command.
+   DomsCommands.warp:
+     description: Allows access to the warp command.
