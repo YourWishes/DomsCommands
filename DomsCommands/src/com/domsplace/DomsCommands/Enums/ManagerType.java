@@ -6,6 +6,7 @@ public class ManagerType extends DomsEnum {
     public static final ManagerType CONFIG = new ManagerType("Configuration");
     public static final ManagerType PLUGIN = new ManagerType("Plugin");
     public static final ManagerType WARP = new ManagerType("Warp");
+    public static final ManagerType PLAYER = new ManagerType("PLAYER");
     
     //Instance
     private String type;
