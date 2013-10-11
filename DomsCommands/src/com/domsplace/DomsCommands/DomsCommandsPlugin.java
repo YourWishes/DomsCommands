@@ -35,6 +35,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private boolean enabled = false;
     
     //Commands
+    private DoNothingCommand doNothingCommand;
     private DomsCommandsCommand domsCommands;
     private MOTDCommand motdCommand;
     private ShutdownCommand stopCommand;
@@ -59,6 +60,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private PlayerRegisterListener playerRegisterListener;
     private PlayerNotificationListener playerNotificationListener;
     private CustomEventCommandListener customEventCommandListener;
+    private CustomEventMoveListener customMoveListener;
+    private CustomPlayerListener customPlayerListener;
     private PlayDirtyListener playDirtyListener;
     private EventCommandListener eventCommandListener;
     
@@ -74,6 +77,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         }
         
         //Load Commands
+        this.doNothingCommand = new DoNothingCommand();
         this.domsCommands = new DomsCommandsCommand();
         this.motdCommand = new MOTDCommand();
         this.stopCommand = new ShutdownCommand();
@@ -98,6 +102,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.playerRegisterListener = new PlayerRegisterListener();
         this.playerNotificationListener = new PlayerNotificationListener();
         this.customEventCommandListener = new CustomEventCommandListener();
+        this.customMoveListener = new CustomEventMoveListener();
+        this.customPlayerListener = new CustomPlayerListener();
         this.playDirtyListener = new PlayDirtyListener();
         this.eventCommandListener = new EventCommandListener();
         

@@ -68,7 +68,8 @@ public class CustomEventCommandListener extends DomsListener {
         PreCommandEvent event = new PreCommandEvent(e.getSender(), command, args);
         event.fireEvent();
         if(event.isCancelled()) {
-            e.setCommand("");
+            //TODO: Need a better way to cancel server commands..
+            e.setCommand("donothing");
         }
     }
 }

@@ -12,6 +12,10 @@ commands:
       aliases: [dcommands, domscom, doms]
       usage: /<command>
       permission: DomsCommands.domscommands
+   donothihng:
+      description: Does nothing.
+      usage: /<command>
+      permission: DomsCommands.nothing
    motd:
       description: Allows a player to change the servers Message of the day.
       aliases: [setmotd]
@@ -97,6 +101,8 @@ permissions:
      description: Allows access to reload the Configuration.
    DomsCommands.domscommands:
      description: Allows access to the DomsCommands command.
+   DomsCommands.nothing:
+     description: Allows access to the donothing command.
    DomsCommands.motd:
      description: Allows access to the motd command.
    DomsCommands.motd.set:

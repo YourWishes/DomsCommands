@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Commands.PunishmentCommands;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import static com.domsplace.DomsCommands.Bases.Base.ChatDefault;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
@@ -55,6 +56,7 @@ public class BanCommand extends BukkitCommand {
             if(Base.isValidTime(args[1])) {
                 //args[1] is a time spec.
                 unbandate = Base.addStringToNow(args[1]).getTime();
+                reason = "";
                 tb = " for " + ChatImportant + Base.getHumanTimeAway(new Date(unbandate)) + ChatDefault;
             } else {
                 reason = args[1] + " ";
@@ -75,8 +77,9 @@ public class BanCommand extends BukkitCommand {
         p.setReason(reason);
         p.setEndDate(unbandate);
         p.setBanner(sender.getName());
-        rel.kickPlayer(reason);
-        sendMessage(sender, "Banned " + ChatImportant + rel.getDisplayName() + ChatDefault + " for " + reason + tb + ".");
+        rel.kickPlayer(ChatDefault + "You have been banned for " + ChatImportant + reason + ChatDefault + tb + ".");
+        op.setBanned(true);
+        sendMessage(sender, "Banned " + ChatImportant + rel.getDisplayName() + ChatDefault + " for " + ChatImportant + reason + ChatDefault + tb + ".");
         return false;
     }
 }
