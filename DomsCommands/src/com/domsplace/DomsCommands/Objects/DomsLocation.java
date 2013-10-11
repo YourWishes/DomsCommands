@@ -28,7 +28,8 @@ import org.bukkit.block.Block;
  */
 public class DomsLocation {
     public static DomsLocation guessLocation(String c) {
-        /*Valid Formats:
+        /*
+         * Valid Formats:
          * x,z
          * x,y,z
          * x,z,world
@@ -197,7 +198,7 @@ public class DomsLocation {
     
     @Override
     public String toString() {
-        //TODO: Finish
-        return "";
+        String s = this.x + "," + this.y + "," + this.z + "," + this.world;
+        return s;
     }
 }

@@ -18,6 +18,7 @@ package com.domsplace.DomsCommands.Listeners;
 
 import com.domsplace.DomsCommands.Bases.DomsListener;
 import com.domsplace.DomsCommands.Events.PlayerFirstJoinedEvent;
+import com.domsplace.DomsCommands.Events.PlayerLeaveGameEvent;
 import com.domsplace.DomsCommands.Events.PlayerPostFirstJoinEvent;
 import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
@@ -76,5 +77,16 @@ public class PlayerRegisterListener extends DomsListener {
         DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
         if(player == null) return;
         player.setLastLocation(new DomsLocation(e.getTo()));
+        player.setLastMoveTime(getNow());
+    }
+    
+    @EventHandler
+    public void saveDataBeforeLogout(PlayerLeaveGameEvent e) {
+        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        player.setLastIP(e.getPlayer().getAddress().getAddress().getHostAddress());
+        player.setLogoutTime(getNow());
+        player.setLastLocation(player.getLocation());
+        player.getDisplayName();
+        player.setLastTeleportRequest(null);
     }
 }

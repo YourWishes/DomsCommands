@@ -17,7 +17,9 @@
 package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -58,6 +60,8 @@ public class DomsPlayer {
         
         return p;
     }
+    
+    public static List<DomsPlayer> getRegisteredPlayers() {return new ArrayList<DomsPlayer>(REGISTERED_PLAYERS.values());}
     
     public static DomsPlayer getPlayer(CommandSender p) {return getPlayer(p.getName());}
     public static DomsPlayer getPlayer(Player p) {return getPlayer(p.getName());}

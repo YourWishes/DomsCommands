@@ -16,13 +16,14 @@
 
 package com.domsplace.DomsCommands.Events;
 
+import com.domsplace.DomsCommands.Bases.DomsEvent;
 import org.bukkit.entity.Player;
 
 /**
  * @author      Dominic
  * @since       11/10/2013
  */
-public class PlayerLeaveGameEvent {
+public class PlayerLeaveGameEvent extends DomsEvent {
     private Player player;
     
     public PlayerLeaveGameEvent (Player p) {

@@ -16,10 +16,26 @@
 
 package com.domsplace.DomsCommands.Listeners;
 
+import com.domsplace.DomsCommands.Bases.DomsListener;
+import com.domsplace.DomsCommands.Events.PlayerLeaveGameEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
 /**
  * @author      Dominic
  * @since       11/10/2013
  */
-public class CustomPlayerListener {
-
+public class CustomPlayerListener extends DomsListener {
+    @EventHandler(ignoreCancelled=true)
+    public void handlePlayerLeaveEvent(PlayerQuitEvent e) {
+        PlayerLeaveGameEvent event = new PlayerLeaveGameEvent(e.getPlayer());
+        event.fireEvent();
+    }
+    
+    @EventHandler(ignoreCancelled=true)
+    public void handlePlayerLeaveEventKicked(PlayerKickEvent e) {
+        PlayerLeaveGameEvent event = new PlayerLeaveGameEvent(e.getPlayer());
+        event.fireEvent();
+    }
 }
