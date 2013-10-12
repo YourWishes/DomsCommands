@@ -55,6 +55,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private DeleteWarpCommand delwarpCommand;
     
     private BanCommand banCommand;
+    private PardonCommand pardonCommand;
     
     //Listeners
     private PlayerRegisterListener playerRegisterListener;
@@ -97,6 +98,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.delwarpCommand = new DeleteWarpCommand();
         
         this.banCommand = new BanCommand();
+        this.pardonCommand = new PardonCommand();
         
         //Load Listeners
         this.playerRegisterListener = new PlayerRegisterListener();

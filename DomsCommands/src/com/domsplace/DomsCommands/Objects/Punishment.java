@@ -20,6 +20,7 @@ public class Punishment {
     private String sender;
     private long date;
     private long endDate;
+    private boolean pardoned;
     
     public Punishment(DomsPlayer player, PunishmentType type) {
         this(player, type, null);
@@ -44,6 +45,7 @@ public class Punishment {
         this.location = location;
         this.date = date;
         this.endDate = endDate;
+        this.pardoned = false;
     }
     
     public DomsPlayer getPlayer() {return this.player;}
@@ -58,6 +60,9 @@ public class Punishment {
     public void setReason(String r) {this.reason = r;}
     public void setEndDate(long l) {this.endDate = l;}
     
-    
     public boolean isPermanent() {return this.endDate > date;}
+    public boolean isActive() {return !this.pardoned && (this.isPermanent()) || (this.getEndDate() <= Base.getNow());}
+    public boolean isPardoned() {return this.pardoned;}
+    
+    public void isPardoned(boolean t) {this.pardoned = t;}
 }

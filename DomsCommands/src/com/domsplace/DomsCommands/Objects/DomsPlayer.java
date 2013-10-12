@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import com.domsplace.DomsCommands.Enums.PunishmentType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -158,11 +159,29 @@ public class DomsPlayer {
         if(this.isOnline()) return new DomsLocation(this.getOnlinePlayer().getLocation());
         return this.lastLocation;
     }
+
+    public List<Punishment> getPunishmentsOfType(PunishmentType type) {
+        List<Punishment> puns = new ArrayList<Punishment>();
+        for(Punishment p : this.punishments) {
+            if(!p.getType().equals(type)) continue;
+            puns.add(p);
+        }
+        return puns;
+    }
     
     //Complex is's
     public boolean isOnline(CommandSender sender) {
         if(!isOnline()) return false;
         return Base.canSee(sender, this.getOnlinePlayer());
+    }
+    
+    public boolean isBanned() {
+        if(this.getOfflinePlayer().isBanned()) return true;
+        for(Punishment p : this.getPunishmentsOfType(PunishmentType.BAN)) {
+            if(!p.isActive()) continue;
+            return true;
+        }
+        return false;
     }
     
     //Complex To's

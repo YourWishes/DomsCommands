@@ -12,7 +12,7 @@ commands:
       aliases: [dcommands, domscom, doms]
       usage: /<command>
       permission: DomsCommands.domscommands
-   donothihng:
+   donothing:
       description: Does nothing.
       usage: /<command>
       permission: DomsCommands.nothing
@@ -91,6 +91,11 @@ commands:
       aliases: [banish]
       usage: /<command> [player] (time) (reason)
       permission: DomsCommands.ban
+   pardon:
+      description: Unban a player and allow them back on the server.
+      aliases: [unban, unbanish]
+      usage: /<command> [player]
+      permission: DomsCommands.pardon
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -141,3 +146,5 @@ permissions:
      description: Allows access to the warp command.
    DomsCommands.ban:
      description: Allows access to the ban command.
+   DomsCommands.pardon:
+     description: Allows access to the pardon command.
