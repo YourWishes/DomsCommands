@@ -218,7 +218,7 @@ public class Base extends RawBase {
     
     public static void sendAll(String permission, Object o) {
         for(Player p : Bukkit.getOnlinePlayers()) {
-            if(!hasPermission(p, permission)) continue;
+            if(!hasPermission((CommandSender) p, permission)) continue;
             sendMessage(p, o);
         }
     }
@@ -404,8 +404,15 @@ public class Base extends RawBase {
     
     //Player Utils
     public static boolean hasPermission(CommandSender sender, String permission) {
-        if(permission.equals("Villages.none")) return true;
+        if(permission.equals("DomsCommands.none")) return true;
         return sender.hasPermission(permission);
+    }
+    
+    public static boolean hasPermission(Player player, String permission) {return hasPermission((CommandSender) player, permission);}
+    
+    public static boolean hasPermission(OfflinePlayer player, String permission) {
+        if(!player.isOnline()) return false;
+        return hasPermission((CommandSender) player.getPlayer(), permission);
     }
     
     public static boolean canSee(CommandSender p, OfflinePlayer target) {
@@ -415,7 +422,7 @@ public class Base extends RawBase {
     }
     
     public static boolean canSee(OfflinePlayer player, OfflinePlayer target) {
-        if(!player.isOnline()) return true;
+        if(!player.isOnline()) return player.isOp();
         return canSee((CommandSender) getPlayer(player), target);
     }
     

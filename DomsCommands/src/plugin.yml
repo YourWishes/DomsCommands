@@ -96,6 +96,11 @@ commands:
       aliases: [unban, unbanish]
       usage: /<command> [player]
       permission: DomsCommands.pardon
+   kick:
+      description: Kicks a player from the server with an optional reason.
+      aliases: [boot, kick]
+      usage: /<command> [player] (reason)
+      permission: DomsCommands.kick
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -146,5 +151,15 @@ permissions:
      description: Allows access to the warp command.
    DomsCommands.ban:
      description: Allows access to the ban command.
+   DomsCommands.ban.notify:
+     description: Shows a message when a player is banned.
+   DomsCommands.ban.exempt:
+     description: Makes a player exempt from being banned.
    DomsCommands.pardon:
      description: Allows access to the pardon command.
+   DomsCommands.kick:
+     description: Allows access to the kick command.
+   DomsCommands.kick.exempt:
+     description: Makes a player exempt from being kicked.
+   DomsCommands.kick.notify:
+     description: Shows a message when a player is kicked.

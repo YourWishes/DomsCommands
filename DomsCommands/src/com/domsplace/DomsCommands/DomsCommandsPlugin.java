@@ -18,12 +18,11 @@ package com.domsplace.DomsCommands;
 
 import com.domsplace.DomsCommands.Commands.TeleportCommands.*;
 import com.domsplace.DomsCommands.Commands.WarpCommands.*;
-import com.domsplace.DomsCommands.Bases.Base;
-import com.domsplace.DomsCommands.Bases.DataManager;
-import com.domsplace.DomsCommands.Bases.DomsThread;
+import com.domsplace.DomsCommands.Bases.*;
 import com.domsplace.DomsCommands.Commands.*;
 import com.domsplace.DomsCommands.Commands.PunishmentCommands.*;
 import com.domsplace.DomsCommands.Listeners.*;
+import com.domsplace.DomsCommands.Threads.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -56,6 +55,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     
     private BanCommand banCommand;
     private PardonCommand pardonCommand;
+    private KickCommand kickCommand;
     
     //Listeners
     private PlayerRegisterListener playerRegisterListener;
@@ -65,6 +65,9 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private CustomPlayerListener customPlayerListener;
     private PlayDirtyListener playDirtyListener;
     private EventCommandListener eventCommandListener;
+    
+    //Threads
+    private ConfigSaveThread configSaveThread;
     
     @Override
     public void onEnable() {
@@ -99,6 +102,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         
         this.banCommand = new BanCommand();
         this.pardonCommand = new PardonCommand();
+        this.kickCommand = new KickCommand();
         
         //Load Listeners
         this.playerRegisterListener = new PlayerRegisterListener();
@@ -108,6 +112,9 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.customPlayerListener = new CustomPlayerListener();
         this.playDirtyListener = new PlayDirtyListener();
         this.eventCommandListener = new EventCommandListener();
+        
+        //Load Threads
+        this.configSaveThread = new ConfigSaveThread();
         
         this.enabled = true;
         Base.debug("Enabled \"" + this.getName() + "\" Successsfully!");

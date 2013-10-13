@@ -62,6 +62,14 @@ public class DomsPlayer {
         return p;
     }
     
+    public static List<DomsPlayer> getOnlinePlayers() {
+        List<DomsPlayer> list = new ArrayList<DomsPlayer>();
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            list.add(DomsPlayer.getPlayer(p));
+        }
+        return list;
+    }
+    
     public static List<DomsPlayer> getRegisteredPlayers() {return new ArrayList<DomsPlayer>(REGISTERED_PLAYERS.values());}
     
     public static DomsPlayer getPlayer(CommandSender p) {return getPlayer(p.getName());}
@@ -144,13 +152,17 @@ public class DomsPlayer {
     public void removePlayTime(long time) {this.playtime -= time;}
     public void removePunishment(Punishment p) {this.punishments.remove(p);}
     
+    public boolean hasPermisson(String perm) {return Base.hasPermission(this.getOfflinePlayer(), perm);}
     public boolean canSee(OfflinePlayer t) {return Base.canSee(this.getOfflinePlayer(), t);}
     public boolean canBeSeenBy(OfflinePlayer t) {return Base.canSee(t, this.getOfflinePlayer());}
     public void teleport(DomsLocation to) {this.teleport(to, Base.getConfig().getBoolean("teleport.safe", true));}
     
     //Complex get's
     public final String getDisplayName() {
-        if(!this.isOnline()) return this.displayName;
+        if(!this.isOnline()) {
+            if(this.displayName == null) this.displayName = this.getPlayer();
+            return this.displayName;
+        }
         if(!Base.isVisible(this.getOnlinePlayer())) return this.displayName;
         this.displayName = this.getOnlinePlayer().getDisplayName();
         return this.displayName;

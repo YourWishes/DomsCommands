@@ -16,26 +16,26 @@
 
 package com.domsplace.DomsCommands.Commands.PunishmentCommands;
 
-import com.domsplace.DomsCommands.Bases.Base;
-import static com.domsplace.DomsCommands.Bases.Base.ChatDefault;
+import static com.domsplace.DomsCommands.Bases.Base.ChatError;
+import static com.domsplace.DomsCommands.Bases.Base.getOfflinePlayer;
+import static com.domsplace.DomsCommands.Bases.Base.sendMessage;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Punishment;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
-import java.util.Date;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 /**
  * @author      Dominic
- * @since       11/10/2013
+ * @since       13/10/2013
  */
-public class BanCommand extends BukkitCommand {
-    public BanCommand() {
-        super("ban");
-        this.addSubCommandOption(new SubCommandOption(SubCommandOption.PLAYERS_OPTION, "1hour", "reason"));
+public class KickCommand extends BukkitCommand {
+    public KickCommand() {
+        super("kick");
+        this.addSubCommandOption(new SubCommandOption(SubCommandOption.PLAYERS_OPTION, "reason"));
     }
     
     @Override
@@ -45,64 +45,55 @@ public class BanCommand extends BukkitCommand {
             return false;
         }
         
-        OfflinePlayer op = getOfflinePlayer(sender, args[0]);
+        OfflinePlayer op = getOfflinePlayer(sender, args[0]);        
         DomsPlayer rel = DomsPlayer.getPlayer(op);
         
-        if(rel.hasPermisson("DomsCommands.ban.exempt")) {
+        if(rel.hasPermisson("DomsCommands.kick.exempt")) {
             sendMessage(sender, ChatError + "You cannot ban this player.");
             return true;
         }
         
-        String reason = "Banned by an operator.";
-        String tb = "";
-        long unbandate = -1;
-        if(args.length > 1) {
-            //Check if args[1] is a time spec or not
-            if(Base.isValidTime(args[1])) {
-                //args[1] is a time spec.
-                unbandate = Base.addStringToNow(args[1]).getTime();
-                reason = "";
-                tb = " for " + ChatImportant + Base.getHumanTimeAway(new Date(unbandate)) + ChatDefault;
-            } else {
-                reason = args[1] + " ";
-            }
-            
-            if(args.length > 2) {
-                for(int i = 2; i < args.length; i++) {
-                    reason += args[i];
-                    if(i < args.length-1) {
-                        reason += " ";
-                    }
+        if(!rel.isOnline(sender)) {
+            sendMessage(sender, ChatError + rel.getDisplayName() + " isn't online.");
+            return true;
+        }
+        
+        String reason = "Kicked by an operator";
+        if(args.length > 2) {
+            reason = "";
+            for(int i = 1; i < args.length; i++) {
+                reason += args[i];
+                if(i < (args.length - 1)) {
+                    reason += " ";
                 }
             }
         }
         
-        Punishment p = new Punishment(rel, PunishmentType.BAN);
-        rel.addPunishment(p);
+        Punishment p = new Punishment(rel, PunishmentType.KICK);
         p.setReason(reason);
-        p.setEndDate(unbandate);
         p.setBanner(sender.getName());
-        rel.kickPlayer(ChatDefault + "You have been banned for " + ChatImportant + colorise(reason) + ChatDefault + tb + ".");
-        op.setBanned(true);
+        rel.addPunishment(p);
+        rel.kickPlayer(ChatDefault + "You have been kicked for " + ChatImportant + colorise(reason) + ChatDefault + ".");
+        
         
         String name = sender.getName();
         if(isPlayer(sender)) {
             name = DomsPlayer.getPlayer(sender).getDisplayName();
         }
         broadcast(
-            "DomsCommands.ban.notify",
-            ChatImportant + name + ChatDefault + " banned " + 
+            "DomsCommands.kick.notify",
+            ChatImportant + name + ChatDefault + " kicked " + 
             ChatImportant + rel.getDisplayName() + ChatDefault + 
-            " for " + ChatImportant + colorise(reason) + ChatDefault + tb + "."
+            " for " + ChatImportant + colorise(reason) + ChatDefault + "."
         );
-        if(!hasPermission(sender, "DomsCommands.ban.notify")) {
+        if(!hasPermission(sender, "DomsCommands.kick.notify")) {
             sendMessage(
                 sender,
-                ChatImportant + name + ChatDefault + " banned " + 
+                ChatImportant + name + ChatDefault + " kicked " + 
                 ChatImportant + rel.getDisplayName() + ChatDefault + 
-                " for " + ChatImportant + colorise(reason) + ChatDefault + tb + "."
+                " for " + ChatImportant + colorise(reason) + ChatDefault + "."
             );
         }
-        return false;
+        return true;
     }
 }

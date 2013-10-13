@@ -54,6 +54,7 @@ public class PardonCommand extends BukkitCommand {
             p.isPardoned(true);
         }
         
+        op.setBanned(false);
         sendMessage(sender, "Pardoned " + ChatImportant + rel.getDisplayName() + ChatDefault + ".");    
         return true;
     }
