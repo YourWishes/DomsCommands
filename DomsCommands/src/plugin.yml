@@ -101,6 +101,21 @@ commands:
       aliases: [boot, kick]
       usage: /<command> [player] (reason)
       permission: DomsCommands.kick
+   away:
+      description: Marks or unmarks yourself as being Away.
+      aliases: [afk, awayfromkeyboard, busy]
+      usage: /<command>
+      permission: DomsCommands.away
+   ping:
+      description: Sends the message "Pong!" to the client.
+      aliases: [pong]
+      usage: /<command>
+      permission: DomsCommands.ping
+   nickname:
+      description: Change the nickname of a player.
+      aliases: [nick, setnick, setnickname]
+      usage: /<command>
+      permission: DomsCommands.nickname
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -163,3 +178,11 @@ permissions:
      description: Makes a player exempt from being kicked.
    DomsCommands.kick.notify:
      description: Shows a message when a player is kicked.
+   DomsCommands.away:
+     description: Allows access to the away command.
+   DomsCommands.away.exempt:
+     description: Blocks getting automatically kicked when Away.
+   DomsCommands.ping:
+     description: Allows access to the ping command.
+   DomsCommands.nickname:
+     description: Allows access to the nickname command.

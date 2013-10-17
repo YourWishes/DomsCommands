@@ -16,6 +16,7 @@
 
 package com.domsplace.DomsCommands.Bases;
 
+import com.domsplace.DomsCommands.DataManagers.ConfigManager;
 import com.domsplace.DomsCommands.DomsCommandsPlugin;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.io.File;
@@ -382,7 +383,11 @@ public class Base extends RawBase {
     }
     
     public static YamlConfiguration getConfig() {
-        return DataManager.CONFIG_MANAGER.getCFG();
+        return getConfigManager().getCFG();
+    }
+    
+    public static ConfigManager getConfigManager() {
+        return DataManager.CONFIG_MANAGER;
     }
     
     //Location Utils

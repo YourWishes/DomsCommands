@@ -36,80 +36,35 @@ import org.bukkit.event.server.ServerListPingEvent;
  * @author      Dominic
  * @since       08/10/2013
  */
-public class PlayerNotificationListener extends DomsListener {
-    public String[] format(DomsPlayer player, String msg) {
-        String[] parts = msg.split("\\n");
-        
-        for(int i = 0; i < parts.length; i++) {
-            String p = parts[i];
-            
-            p = format(p);
-            p = p.replaceAll("\\{NAME\\}", player.getPlayer());
-            p = p.replaceAll("\\{DISPLAYNAME\\}", player.getDisplayName());
-            
-            parts[i] = Base.colorise(p);
-        }
-        
-        return parts;
-    }
-    
-    public String format(Player player, String msg) {
-        msg = format(msg);
-        msg = msg.replaceAll("\\{NAME\\}", player.getName());
-        msg = msg.replaceAll("\\{DISPLAYNAME\\}", player.getDisplayName());
-
-        return Base.colorise(msg);
-    }
-    
-    public String format(String msg) {
-        msg = msg.replaceAll("\\{SERVER\\}", Bukkit.getServerName());
-        msg = msg.replaceAll("\\{NUMPLAYERS\\}", "" + Base.getPlayersList().size());
-        msg = msg.replaceAll("\\{TOTALPLAYERS\\}", "" + Bukkit.getServer().getMaxPlayers());
-        
-        String m = "";
-        List<OfflinePlayer> list = Base.getPlayersList();
-        for(int i = 0; i < list.size(); i++) {
-            OfflinePlayer op = list.get(i);
-            String n = op.getName();
-            if(op.isOnline()) n = op.getPlayer().getDisplayName();
-            m += ChatDefault + n + ChatDefault;
-            if(i < (list.size() - 1)) {
-                m += ", ";
-            }
-        }
-        msg = msg.replaceAll("\\{PLAYERS\\}", m);
-        
-        return msg;
-    }
-    
+public class PlayerNotificationListener extends DomsListener {    
     @EventHandler
     public void sendFirstJoinBroadcast(PlayerFirstJoinedEvent e) {
-        broadcast((Object) format(e.getPlayer(), getConfig().getString("messages.firstjoin.broadcast", "")));
+        broadcast((Object) getConfigManager().format(e.getPlayer(), getConfig().getString("messages.firstjoin.broadcast", "")));
     }
     
     @EventHandler
     public void sendFirstJoinMessage(PlayerFirstJoinedEvent e) {
-        sendMessage(e.getPlayer(), (Object) format(e.getPlayer(), getConfig().getString("messages.firstjoin.message", "")));
+        sendMessage(e.getPlayer(), (Object) getConfigManager().format(e.getPlayer(), getConfig().getString("messages.firstjoin.message", "")));
     }
     
     @EventHandler(priority=EventPriority.HIGH)
     public void changeLoginMessage(PlayerJoinEvent e) {
-        e.setJoinMessage(format(e.getPlayer(), getConfig().getString("messages.login.broadcast", e.getJoinMessage())));
+        e.setJoinMessage(getConfigManager().format(e.getPlayer(), getConfig().getString("messages.login.broadcast", e.getJoinMessage())));
     }
     
     @EventHandler(priority=EventPriority.HIGH)
     public void sendLoginMessage(PlayerPostFirstJoinEvent e) {
-        sendMessage(e.getPlayer(), (Object) this.format(e.getPlayer(), getConfig().getString("messages.login.message", "")));
+        sendMessage(e.getPlayer(), (Object) getConfigManager().format(e.getPlayer(), getConfig().getString("messages.login.message", "")));
     }
     
     @EventHandler(priority=EventPriority.HIGH)
     public void changeLogoutMessage(PlayerQuitEvent e) {
-        e.setQuitMessage(format(e.getPlayer(), getConfig().getString("messages.logout.broadcast", e.getQuitMessage())));
+        e.setQuitMessage(getConfigManager().format(e.getPlayer(), getConfig().getString("messages.logout.broadcast", e.getQuitMessage())));
     }
     
     @EventHandler(priority=EventPriority.HIGH)
     public void changeKickedMessage(PlayerKickEvent e) {
-        e.setLeaveMessage(format(e.getPlayer(), getConfig().getString("messages.kicked.broadcast", e.getLeaveMessage())));
+        e.setLeaveMessage(getConfigManager().format(e.getPlayer(), getConfig().getString("messages.kicked.broadcast", e.getLeaveMessage())));
     }
     
     @EventHandler(priority=EventPriority.HIGH)

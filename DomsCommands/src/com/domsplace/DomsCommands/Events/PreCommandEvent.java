@@ -16,6 +16,7 @@
 
 package com.domsplace.DomsCommands.Events;
 
+import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Bases.DomsCancellableEvent;
 import java.util.List;
 import org.bukkit.command.CommandSender;
@@ -43,5 +44,15 @@ public class PreCommandEvent extends DomsCancellableEvent {
         }
         
         return s;
+    }
+    
+    public BukkitCommand tryGetBukkitCommand() {return BukkitCommand.getCommandSearchAliases(this.command);}
+    
+    public boolean willResult(String s) {
+        if(s.equalsIgnoreCase(command)) return true;
+        BukkitCommand cmd = this.tryGetBukkitCommand();
+        if(cmd != null) return true;
+        //TODO: Add better Searching here maybe.
+        return false;
     }
 }

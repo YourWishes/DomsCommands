@@ -20,6 +20,7 @@ import com.domsplace.DomsCommands.Commands.TeleportCommands.*;
 import com.domsplace.DomsCommands.Commands.WarpCommands.*;
 import com.domsplace.DomsCommands.Bases.*;
 import com.domsplace.DomsCommands.Commands.*;
+import com.domsplace.DomsCommands.Commands.PlayerCommands.*;
 import com.domsplace.DomsCommands.Commands.PunishmentCommands.*;
 import com.domsplace.DomsCommands.Listeners.*;
 import com.domsplace.DomsCommands.Threads.*;
@@ -38,6 +39,10 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private DomsCommandsCommand domsCommands;
     private MOTDCommand motdCommand;
     private ShutdownCommand stopCommand;
+    
+    private AwayCommand awayCommand;
+    private NicknameCommand nicknameCommand;
+    private PingCommand pingCommand;
     
     private TeleportRequestCommand tpaCommand;
     private TeleportRequestHereCommand tpahCommand;
@@ -61,13 +66,15 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private PlayerRegisterListener playerRegisterListener;
     private PlayerNotificationListener playerNotificationListener;
     private CustomEventCommandListener customEventCommandListener;
-    private CustomEventMoveListener customMoveListener;
     private CustomPlayerListener customPlayerListener;
     private PlayDirtyListener playDirtyListener;
     private EventCommandListener eventCommandListener;
+    private PlayerAwayListener playerAwayListener;
     
     //Threads
     private ConfigSaveThread configSaveThread;
+    private AddPlayerTimeThread playerTimeThread;
+    private PlayerAwayThread playerAwayThread;
     
     @Override
     public void onEnable() {
@@ -85,6 +92,10 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.domsCommands = new DomsCommandsCommand();
         this.motdCommand = new MOTDCommand();
         this.stopCommand = new ShutdownCommand();
+        
+        this.awayCommand = new AwayCommand();
+        this.nicknameCommand = new NicknameCommand();
+        this.pingCommand = new PingCommand();
         
         this.tpaCommand = new TeleportRequestCommand();
         this.tpahCommand = new TeleportRequestHereCommand();
@@ -108,13 +119,15 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.playerRegisterListener = new PlayerRegisterListener();
         this.playerNotificationListener = new PlayerNotificationListener();
         this.customEventCommandListener = new CustomEventCommandListener();
-        this.customMoveListener = new CustomEventMoveListener();
         this.customPlayerListener = new CustomPlayerListener();
         this.playDirtyListener = new PlayDirtyListener();
         this.eventCommandListener = new EventCommandListener();
+        this.playerAwayListener = new PlayerAwayListener();
         
         //Load Threads
         this.configSaveThread = new ConfigSaveThread();
+        this.playerTimeThread = new AddPlayerTimeThread();
+        this.playerAwayThread = new PlayerAwayThread();
         
         this.enabled = true;
         Base.debug("Enabled \"" + this.getName() + "\" Successsfully!");

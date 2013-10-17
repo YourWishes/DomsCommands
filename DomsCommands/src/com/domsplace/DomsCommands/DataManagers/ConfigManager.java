@@ -17,14 +17,18 @@
 package com.domsplace.DomsCommands.DataManagers;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import static com.domsplace.DomsCommands.Bases.Base.ChatDefault;
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Enums.ManagerType;
+import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 /**
  * @author      Dominic
@@ -80,6 +84,18 @@ public class ConfigManager extends DataManager {
         
         df("teleport.safe", true);
         
+        df("away.autoaway", 300);
+        df("away.autokick", 600);
+        df("away.message", "&9{DISPLAYNAME} &7is now AFK.");
+        df("away.messageback", "&9{DISPLAYNAME} &7is no longer AFK.");
+        df("away.kickmessage", "Away too long!");
+        df("away.commands.cancel", true);
+        
+        List<String> commands = new ArrayList<String>();
+        commands.add("msg");
+        commands.add("ping");
+        df("away.commands.blocked", commands);
+        
         //Store Values
         Base.DebugMode = this.config.getBoolean("debug", false);
         
@@ -112,5 +128,50 @@ public class ConfigManager extends DataManager {
     
     private String loadColor(String key) {
         return colorise(gs("colors." + key, "&7"));
+    }
+    
+    public String[] format(DomsPlayer player, String msg) {
+        String[] parts = msg.split("\\n");
+        
+        for(int i = 0; i < parts.length; i++) {
+            String p = parts[i];
+            
+            p = format(p);
+            p = p.replaceAll("\\{NAME\\}", player.getPlayer());
+            p = p.replaceAll("\\{DISPLAYNAME\\}", player.getDisplayName());
+            
+            parts[i] = Base.colorise(p);
+        }
+        
+        return parts;
+    }
+    
+    public String format(Player player, String msg) {
+        msg = format(msg);
+        msg = msg.replaceAll("\\{NAME\\}", player.getName());
+        msg = msg.replaceAll("\\{DISPLAYNAME\\}", player.getDisplayName());
+
+        return Base.colorise(msg);
+    }
+    
+    public String format(String msg) {
+        msg = msg.replaceAll("\\{SERVER\\}", Bukkit.getServerName());
+        msg = msg.replaceAll("\\{NUMPLAYERS\\}", "" + Base.getPlayersList().size());
+        msg = msg.replaceAll("\\{TOTALPLAYERS\\}", "" + Bukkit.getServer().getMaxPlayers());
+        
+        String m = "";
+        List<OfflinePlayer> list = Base.getPlayersList();
+        for(int i = 0; i < list.size(); i++) {
+            OfflinePlayer op = list.get(i);
+            String n = op.getName();
+            if(op.isOnline()) n = op.getPlayer().getDisplayName();
+            m += ChatDefault + n + ChatDefault;
+            if(i < (list.size() - 1)) {
+                m += ", ";
+            }
+        }
+        msg = msg.replaceAll("\\{PLAYERS\\}", m);
+        
+        return msg;
     }
 }

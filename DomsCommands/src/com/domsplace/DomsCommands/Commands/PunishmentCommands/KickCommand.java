@@ -49,7 +49,7 @@ public class KickCommand extends BukkitCommand {
         DomsPlayer rel = DomsPlayer.getPlayer(op);
         
         if(rel.hasPermisson("DomsCommands.kick.exempt")) {
-            sendMessage(sender, ChatError + "You cannot ban this player.");
+            sendMessage(sender, ChatError + "You cannot kick this player.");
             return true;
         }
         
@@ -59,7 +59,7 @@ public class KickCommand extends BukkitCommand {
         }
         
         String reason = "Kicked by an operator";
-        if(args.length > 2) {
+        if(args.length > 1) {
             reason = "";
             for(int i = 1; i < args.length; i++) {
                 reason += args[i];

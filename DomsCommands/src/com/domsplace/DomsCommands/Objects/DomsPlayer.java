@@ -34,6 +34,8 @@ import org.bukkit.entity.Player;
 public class DomsPlayer {
     private static final Map<String, DomsPlayer> REGISTERED_PLAYERS = new HashMap<String, DomsPlayer>();
     
+    public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#$^&*(),.\\s]*$";
+    
     public static DomsPlayer guessPlayer(CommandSender sender, String guess) {
         Player tryPlayer = Base.getPlayer(sender, guess);
         if(tryPlayer == null) {
@@ -90,6 +92,7 @@ public class DomsPlayer {
     
     private String lastIP;
     
+    private long afkTime;
     private boolean afk;
     
     private long join;
@@ -110,6 +113,7 @@ public class DomsPlayer {
         this.player = player;
         this.displayName = this.getDisplayName();
         this.punishments = new ArrayList<Punishment>();
+        this.afk = false;
         
         this.registerPlayer();
     }
@@ -123,6 +127,7 @@ public class DomsPlayer {
     public long getLoginTime() {return this.login;}
     public long getLogoutTime() {return this.logout;}
     public long getPlayTime() {return this.playtime;}
+    public long getAFKTime() {return this.afkTime;}
     public String getLastIP() {return this.lastIP;}
     public long getLastMoveTime() {return this.lastMoveTime;}
     public TeleportRequest getLastTeleporRequest() {return this.lastRequest;}
@@ -143,6 +148,8 @@ public class DomsPlayer {
     public void setLastMoveTime(long time) {this.lastMoveTime = time;}
     public void setLastTeleportRequest(TeleportRequest request) {this.lastRequest = request;}
     public void setBackLocation(DomsLocation location) {this.backLocation = location;}
+    public void setAFK(boolean i) {this.afk = i;}
+    public void setAFKTime(long now) {this.afkTime = now;}
     
     @Override public String toString() {return this.getDisplayName();}
     
@@ -152,10 +159,13 @@ public class DomsPlayer {
     public void removePlayTime(long time) {this.playtime -= time;}
     public void removePunishment(Punishment p) {this.punishments.remove(p);}
     
+    public void toggleAFK() {this.afk = !this.afk;}
+    
     public boolean hasPermisson(String perm) {return Base.hasPermission(this.getOfflinePlayer(), perm);}
     public boolean canSee(OfflinePlayer t) {return Base.canSee(this.getOfflinePlayer(), t);}
     public boolean canBeSeenBy(OfflinePlayer t) {return Base.canSee(t, this.getOfflinePlayer());}
     public void teleport(DomsLocation to) {this.teleport(to, Base.getConfig().getBoolean("teleport.safe", true));}
+    public void sendMessage(Object o) {Base.sendMessage(this, o);}
     
     //Complex get's
     public final String getDisplayName() {
@@ -179,6 +189,12 @@ public class DomsPlayer {
             puns.add(p);
         }
         return puns;
+    }
+    
+    //Complex set's
+    public void setDisplayName(String newName) {
+        this.displayName = newName;
+        if(this.isOnline()) this.getOnlinePlayer().setDisplayName(newName);
     }
     
     //Complex is's

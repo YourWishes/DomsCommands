@@ -16,21 +16,23 @@
 
 package com.domsplace.DomsCommands.Threads;
 
-import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.DomsThread;
+import com.domsplace.DomsCommands.Objects.DomsPlayer;
 
 /**
  * @author      Dominic
  * @since       13/10/2013
  */
-public class ConfigSaveThread extends DomsThread {
-    public ConfigSaveThread() {
-        super(300, 600);
+public class AddPlayerTimeThread extends DomsThread {
+    public AddPlayerTimeThread() {
+        super(1, 1, true);
     }
     
     @Override
     public void run() {
-        //log("Saving data...");
-        if(!DataManager.saveAll()) log("Failed to save all data!");
+        //Adds 1000 milliseconds to a players play time (1 second)
+        for(DomsPlayer plyr : DomsPlayer.getOnlinePlayers()) {
+            plyr.addPlayTime(1000);
+        }
     }
 }

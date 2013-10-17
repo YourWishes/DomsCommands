@@ -53,6 +53,7 @@ public class PlayerRegisterListener extends DomsListener {
             player.setLastIP(e.getPlayer().getAddress().getAddress().getHostAddress());
             player.setLastLocation(new DomsLocation(e.getPlayer().getLocation()));
             player.setLastMoveTime(getNow());
+            player.setAFKTime(getNow());
 
             //Fire Event
             PlayerFirstJoinedEvent event = new PlayerFirstJoinedEvent(player);
@@ -66,6 +67,8 @@ public class PlayerRegisterListener extends DomsListener {
         player.setLastIP(e.getPlayer().getAddress().getAddress().getHostAddress());
         player.setLastLocation(new DomsLocation(e.getPlayer().getLocation()));
         player.setLastMoveTime(getNow());
+        player.setAFK(false);
+        player.setAFKTime(getNow());
         
         //Fire event
         PlayerPostFirstJoinEvent event = new PlayerPostFirstJoinEvent(player);

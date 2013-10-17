@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Listeners;
-
-import com.domsplace.DomsCommands.Bases.DomsListener;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerMoveEvent;
+package com.domsplace.DomsCommands.Commands.PlayerCommands;
+    
+import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 
 /**
  * @author      Dominic
- * @since       08/10/2013
+ * @since       17/10/2013
  */
-public class CustomEventMoveListener extends DomsListener {
-    @EventHandler(ignoreCancelled=true)
-    public void handleDomsMoveEvent(PlayerMoveEvent e) {
-        //TODO: Finish
+public class PingCommand extends BukkitCommand {
+    public PingCommand() {
+        super("ping");
+    }
+    
+    @Override
+    public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
+        sendMessage(sender, "Pong!");
+        return true;
     }
 }
