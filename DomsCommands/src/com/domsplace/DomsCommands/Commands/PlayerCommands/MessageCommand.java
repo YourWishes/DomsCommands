@@ -18,6 +18,8 @@ package com.domsplace.DomsCommands.Commands.PlayerCommands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 
 /**
  * @author      Dominic
@@ -29,5 +31,9 @@ public class MessageCommand extends BukkitCommand {
         this.addSubCommandOption(new SubCommandOption(SubCommandOption.PLAYERS_OPTION, "message"));
     }
     
-    
+    @Override
+    public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
+        
+        return true;
+    }
 }
