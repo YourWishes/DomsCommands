@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import com.domsplace.DomsCommands.Commands.PlayerCommands.GamemodeCommand;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +42,7 @@ public class SubCommandOption extends Base {
     public static final SubCommandOption POTION_OPTION = new SubCommandOption("[POTION]");
     public static final SubCommandOption WEATHER_OPTION = new SubCommandOption("[WEATHER]");
     public static final SubCommandOption WARPS_OPTION = new SubCommandOption("[WARP]");
+    public static final SubCommandOption GAMEMODE_OPTION = new SubCommandOption("[GAMEMODE]");
     
     //Instance
     private String option;
@@ -115,6 +117,19 @@ public class SubCommandOption extends Base {
         } else if(this.compare(SubCommandOption.WARPS_OPTION)) {
             for(Warp w : Warp.getWarpsAlphabetically()) {
                 returnV.add(w.getName());
+            }
+        } else if(this.compare(SubCommandOption.GAMEMODE_OPTION)) {
+            for(String s : GamemodeCommand.adventureCommands) {
+                returnV.add(s);
+            }
+            for(String s : GamemodeCommand.survivalCommands) {
+                returnV.add(s);
+            }
+            for(String s : GamemodeCommand.creativeCommands) {
+                returnV.add(s);
+            }
+            for(String s : GamemodeCommand.toggleCommands) {
+                returnV.add(s);
             }
         } else {
             returnV.add(this.option);

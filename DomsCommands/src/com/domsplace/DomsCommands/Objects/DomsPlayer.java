@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -223,5 +224,17 @@ public class DomsPlayer {
     public void kickPlayer(String r) {
         if(!this.isOnline()) return;
         this.getOnlinePlayer().kickPlayer(r);
+    }
+
+    public void toggleGameMode() {
+        if(this.getOnlinePlayer().getGameMode().equals(GameMode.SURVIVAL)) {
+            this.getOnlinePlayer().setGameMode(GameMode.CREATIVE);
+        } else {
+            this.getOnlinePlayer().setGameMode(GameMode.SURVIVAL);
+        }
+    }
+
+    public boolean compare(CommandSender s) {
+        return s.getName().equalsIgnoreCase(this.player);
     }
 }

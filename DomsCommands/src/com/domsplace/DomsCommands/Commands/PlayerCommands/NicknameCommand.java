@@ -18,6 +18,7 @@ package com.domsplace.DomsCommands.Commands.PlayerCommands;
     
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
+import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -28,6 +29,7 @@ import org.bukkit.command.CommandSender;
 public class NicknameCommand extends BukkitCommand {
     public NicknameCommand() {
         super("nickname");
+        this.addSubCommandOption(new SubCommandOption(SubCommandOption.PLAYERS_OPTION, "nickname"));
     }
     
     @Override

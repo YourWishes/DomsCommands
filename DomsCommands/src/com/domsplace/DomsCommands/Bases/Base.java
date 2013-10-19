@@ -79,6 +79,14 @@ public class Base extends RawBase {
         return msg;
     }
     
+    public static String coloriseByPermission(Object message, DomsPlayer player, String permissionPrefix) {
+        String msg = message.toString();
+        
+        
+        
+        return msg;
+    }
+    
     public static String getPermissionMessage() {
         return Base.permissionMessage;
     }

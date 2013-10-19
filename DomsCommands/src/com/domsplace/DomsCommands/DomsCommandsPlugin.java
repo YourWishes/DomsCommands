@@ -41,6 +41,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private ShutdownCommand stopCommand;
     
     private AwayCommand awayCommand;
+    private GamemodeCommand gamemodeCommand;
     private NicknameCommand nicknameCommand;
     private PingCommand pingCommand;
     
@@ -94,6 +95,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.stopCommand = new ShutdownCommand();
         
         this.awayCommand = new AwayCommand();
+        this.gamemodeCommand = new GamemodeCommand();
         this.nicknameCommand = new NicknameCommand();
         this.pingCommand = new PingCommand();
         

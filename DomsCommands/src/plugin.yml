@@ -114,8 +114,18 @@ commands:
    nickname:
       description: Change the nickname of a player.
       aliases: [nick, setnick, setnickname]
-      usage: /<command>
+      usage: /<command> (player) [nickname]
       permission: DomsCommands.nickname
+   gamemode:
+      description: Change yours or another players gamemode.
+      aliases: [gm, creative, survival, adventure, gms, gmc, gma, gamemodecreative, gamemodec, gamemodesurvival, gamemodes, gamemodeadventure, gamemodea, togglegamemode, togglegm]
+      usage: /<command> (player) (gamemode)
+      permission: DomsCommands.gamemode
+   tell:
+      description: Change yours or another players gamemode.
+      aliases: [gm, creative, survival, adventure, gms, gmc, gma, gamemodecreative, gamemodec, gamemodesurvival, gamemodes, gamemodeadventure, gamemodea, togglegamemode, togglegm]
+      usage: /<command> (player) (gamemode)
+      permission: DomsCommands.gamemode
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -186,3 +196,9 @@ permissions:
      description: Allows access to the ping command.
    DomsCommands.nickname:
      description: Allows access to the nickname command.
+   DomsCommands.nickname.colors.*:
+     description: Allows access to use all colors in nicknames.
+   DomsCommands.nickname.colors.*:
+     description: Allows access to use colors in nicknames.
+   DomsCommands.gamemode:
+     description: Allows access to the gamemode command.
