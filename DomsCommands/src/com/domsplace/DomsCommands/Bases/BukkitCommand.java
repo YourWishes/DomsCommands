@@ -19,6 +19,7 @@ package com.domsplace.DomsCommands.Bases;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -152,13 +153,14 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
                     options.add(s);
                 }
             }
-        } else if(args.length > 1) {
-            SubCommandOption s = null;
-            
+        } else if(args.length > 1) {            
             List<String> matches = new ArrayList<String>();
             
             for(SubCommandOption sco : this.subOptions) {
-                matches.addAll(sco.tryFetch(args, 0));
+                String s = args[0].toLowerCase();
+                s = SubCommandOption.reverse(s);
+                if(!sco.getOption().toLowerCase().startsWith(s.toLowerCase())) continue;
+                matches.addAll(sco.tryFetch(args, 1));
             }
             
             if(args[args.length - 1].replaceAll(" ", "").equalsIgnoreCase("")) return matches;
@@ -169,7 +171,6 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
                 if(match.toLowerCase().startsWith(args[args.length-1].toLowerCase())) closeMatch.add(match);
             }
             
-            if(s == null) return options;
             options.addAll(closeMatch);
         }
         return options;

@@ -202,7 +202,11 @@ public class Base extends RawBase {
     }
 
     public static void sendMessage(DomsPlayer sender, Object... msg) {
-        sendMessage(sender.getOfflinePlayer(), msg);
+        if(!sender.isConsole()) {
+            sendMessage(sender.getOfflinePlayer(), msg);
+        } else {
+            sendMessage(sender.getCommandSender(), msg);
+        }
     }
     
     public static void sendMessage(Object o) {
@@ -349,6 +353,19 @@ public class Base extends RawBase {
         }
     }
     
+    public static boolean isShort(Object o) {
+        try {
+            Short.parseShort(o.toString());
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+    
+    public static short getShort(Object o) {
+        return Short.parseShort(o.toString());
+    }
+    
     public static boolean isByte(Object o) {
         try {
             Byte.parseByte(o.toString());
@@ -430,6 +447,7 @@ public class Base extends RawBase {
     
     public static boolean canSee(CommandSender p, OfflinePlayer target) {
         if(!isPlayer(p)) return true;
+        if(target == null) return true;
         if(!target.isOnline()) return true;
         return getPlayer(p).canSee(target.getPlayer());
     }
@@ -440,6 +458,8 @@ public class Base extends RawBase {
     }
     
     public static boolean isVisible(OfflinePlayer t) {
+        if(t == null) return true;
+        if(!t.isOnline()) return true;
         for(Player p : Bukkit.getOnlinePlayers()) {
             if(p.getName().equals(t.getName())) continue;
             if(!canSee((CommandSender) p, t)) return false;

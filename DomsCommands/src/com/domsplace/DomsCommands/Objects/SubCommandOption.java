@@ -18,8 +18,8 @@ package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Commands.PlayerCommands.GamemodeCommand;
+import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -99,6 +99,7 @@ public class SubCommandOption extends Base {
             }
         } else if(this.compare(SubCommandOption.ITEM_OPTION)) {
             for(Material m : Material.values()) {
+                if(m.equals(Material.AIR)) continue;
                 returnV.add(m.name());
             }
         } else if(this.compare(SubCommandOption.POTION_OPTION)) {
@@ -137,6 +138,18 @@ public class SubCommandOption extends Base {
         return returnV;
     }
     
+    public static String reverse(String s) {
+        if(Bukkit.getPlayer(s) != null) return SubCommandOption.PLAYERS_OPTION.option;
+        if(Bukkit.getWorld(s) != null) return SubCommandOption.WORLD_OPTION.option;
+        if(Enchantment.getByName(s) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
+        if(EntityType.fromName(s) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
+        if(PotionEffectType.getByName(s) != null) return SubCommandOption.POTION_OPTION.option;
+        if(Warp.getWarp(s) != null) return SubCommandOption.WARPS_OPTION.option;
+        if(GamemodeCommand.getGameMode(s) != null) return SubCommandOption.GAMEMODE_OPTION.option;
+        try {if(DomsItem.guessItem(s) != null) return SubCommandOption.ITEM_OPTION.option;} catch(InvalidItemException e){}
+        return s;
+    }
+    
     public List<String> getOptionsAsStringList() {
         List<String> returnV = new ArrayList<String>();
         for(SubCommandOption sc : this.subOptions) {
@@ -154,6 +167,10 @@ public class SubCommandOption extends Base {
         
         if(targetLevel > lvl) {
             for(SubCommandOption sco : this.subOptions) {
+                String s = args[lvl-1].toLowerCase();
+                s = reverse(s);
+                Base.debug("S: " + s + " : " + sco.getOption() + " :: " + lvl);
+                if(!sco.getOption().toLowerCase().startsWith(s.toLowerCase())) continue;
                 opts.addAll(sco.tryFetch(args, lvl));
             }
         } else {
@@ -163,8 +180,8 @@ public class SubCommandOption extends Base {
         return opts;
     }
     
-    public boolean compare(SubCommandOption o) {
-        if(o.getOption().equalsIgnoreCase(this.option)) return true;
+    public boolean compare(SubCommandOption option) {
+        if(option.getOption().equalsIgnoreCase(this.getOption())) return true;
         return false;
     }
 }

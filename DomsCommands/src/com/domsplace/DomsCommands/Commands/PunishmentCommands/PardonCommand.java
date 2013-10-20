@@ -45,7 +45,7 @@ public class PardonCommand extends BukkitCommand {
         OfflinePlayer op = getOfflinePlayer(sender, args[0]);
         DomsPlayer rel = DomsPlayer.getPlayer(op);
         
-        if(!rel.isBanned()) {
+        if(rel.isConsole() || !rel.isBanned()) {
             sendMessage(sender, ChatError + rel.getDisplayName() + ChatError + " isn't banned.");
             return true;
         }

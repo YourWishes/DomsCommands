@@ -22,6 +22,7 @@ import com.domsplace.DomsCommands.Events.PreCommandEvent;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.util.List;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
@@ -49,6 +50,17 @@ public class PlayerAwayListener extends DomsListener {
                 return;
             }
         }
+        
+        if(plyr.isVisible()) {
+            broadcast(getConfigManager().format(plyr, getConfig().getString("away.messageback", "")));
+        }
+        plyr.setAFK(false);
+    }
+    
+    @EventHandler(ignoreCancelled=true)
+    public void handleAFKChat(AsyncPlayerChatEvent e) {
+        DomsPlayer plyr = DomsPlayer.getPlayer(e.getPlayer());
+        if(!plyr.isAFK()) return;
         
         if(plyr.isVisible()) {
             broadcast(getConfigManager().format(plyr, getConfig().getString("away.messageback", "")));

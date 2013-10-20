@@ -48,7 +48,7 @@ public class BanCommand extends BukkitCommand {
         OfflinePlayer op = getOfflinePlayer(sender, args[0]);
         DomsPlayer rel = DomsPlayer.getPlayer(op);
         
-        if(rel.hasPermisson("DomsCommands.ban.exempt")) {
+        if(rel.isConsole() || rel.hasPermisson("DomsCommands.ban.exempt")) {
             sendMessage(sender, ChatError + "You cannot ban this player.");
             return true;
         }

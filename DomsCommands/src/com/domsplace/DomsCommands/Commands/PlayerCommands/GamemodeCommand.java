@@ -62,14 +62,14 @@ public class GamemodeCommand extends BukkitCommand {
         "togglegm"
     };
     
-    private boolean isToggle(String s) {
+    private static boolean isToggle(String s) {
         for(String g : toggleCommands) {
             if(s.equalsIgnoreCase(g)) return true;
         }
         return false;
     }
     
-    private GameMode getGameMode(String command) {
+    public static GameMode getGameMode(String command) {
         GameMode gamemode = null;
         
         if(gamemode == null) {

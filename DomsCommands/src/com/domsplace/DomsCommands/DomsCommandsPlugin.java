@@ -42,8 +42,12 @@ public class DomsCommandsPlugin extends JavaPlugin {
     
     private AwayCommand awayCommand;
     private GamemodeCommand gamemodeCommand;
+    private GiveCommand giveCommand;
+    private GetIDCommand getIDCommand;
+    private MessageCommand messageCommand;
     private NicknameCommand nicknameCommand;
     private PingCommand pingCommand;
+    private ReplyCommand replyCommand;
     
     private TeleportRequestCommand tpaCommand;
     private TeleportRequestHereCommand tpahCommand;
@@ -96,8 +100,12 @@ public class DomsCommandsPlugin extends JavaPlugin {
         
         this.awayCommand = new AwayCommand();
         this.gamemodeCommand = new GamemodeCommand();
+        this.giveCommand = new GiveCommand();
+        this.getIDCommand = new GetIDCommand();
+        this.messageCommand = new MessageCommand();
         this.nicknameCommand = new NicknameCommand();
         this.pingCommand = new PingCommand();
+        this.replyCommand = new ReplyCommand();
         
         this.tpaCommand = new TeleportRequestCommand();
         this.tpahCommand = new TeleportRequestHereCommand();

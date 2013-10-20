@@ -61,6 +61,11 @@ public class TeleportRequestCommand extends BukkitCommand {
             return true;
         }
         
+        if(to.isConsole()) {
+            sendMessage(sender, ChatError + "You cannot teleport to the console.");
+            return true;
+        }
+        
         TeleportRequest request = new TeleportRequest(from, to, TeleportRequestType.TELEPORT_REQUEST_TO);
         to.setLastTeleportRequest(request);
         

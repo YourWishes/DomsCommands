@@ -47,7 +47,7 @@ public class TeleportHereCommand extends BukkitCommand {
         DomsPlayer player = DomsPlayer.getPlayer(sender);
         
         DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);
-        if(guess == null || !guess.isOnline()) {
+        if(guess == null || !guess.isOnline() || guess.isConsole()) {
             sendMessage(sender, ChatError + "Couldn't find " + args[0] + "!");
             return true;
         }

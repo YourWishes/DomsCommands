@@ -31,12 +31,7 @@ public class AwayCommand extends BukkitCommand {
     }
     
     @Override
-    public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!isPlayer(sender)) {
-            sendMessage(sender, ChatError + "Only players can run this command.");
-            return true;
-        }
-        
+    public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {        
         DomsPlayer player = DomsPlayer.getPlayer(sender);
         
         if(!player.isVisible()) {

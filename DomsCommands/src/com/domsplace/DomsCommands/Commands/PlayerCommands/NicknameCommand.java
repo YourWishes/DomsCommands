@@ -40,12 +40,12 @@ public class NicknameCommand extends BukkitCommand {
         if(!isPlayer(sender)) {
             if(args.length < 1) {
                 sendMessage(sender, ChatError + "Please enter a player name.");
-                return true;
+                return false;
             }
             
             if(args.length < 2) {
                 sendMessage(sender, ChatError + "Please enter a nickname.");
-                return true;
+                return false;
             }
             
             if(args.length > 2) {
@@ -67,7 +67,7 @@ public class NicknameCommand extends BukkitCommand {
             } else {
                 if(args.length < 1) {
                     sendMessage(sender, ChatError + "Please enter a nickname or a player name.");
-                    return true;
+                    return false;
                 }
             
                 if(args.length > 1) {
@@ -87,7 +87,7 @@ public class NicknameCommand extends BukkitCommand {
         
         if(nickname == null) {
             sendMessage(sender, ChatError + "Please enter a nickname.");
-            return true;
+            return false;
         }
         
         if(!nickname.matches(DomsPlayer.NICKNAME_REGEX)) {

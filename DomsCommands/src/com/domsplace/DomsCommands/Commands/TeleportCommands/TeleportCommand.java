@@ -132,7 +132,7 @@ public class TeleportCommand extends BukkitCommand {
             return true;
         }
         
-        if(plyr == null || !plyr.isOnline(sender)) {
+        if(plyr == null || !plyr.isOnline(sender) || plyr.isConsole()) {
             sendMessage(sender, ChatError + "Please enter a player to teleport");
             return true;
         }

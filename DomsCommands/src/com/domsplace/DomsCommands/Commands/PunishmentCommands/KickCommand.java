@@ -48,7 +48,7 @@ public class KickCommand extends BukkitCommand {
         OfflinePlayer op = getOfflinePlayer(sender, args[0]);        
         DomsPlayer rel = DomsPlayer.getPlayer(op);
         
-        if(rel.hasPermisson("DomsCommands.kick.exempt")) {
+        if(rel.isConsole() || rel.hasPermisson("DomsCommands.kick.exempt")) {
             sendMessage(sender, ChatError + "You cannot kick this player.");
             return true;
         }

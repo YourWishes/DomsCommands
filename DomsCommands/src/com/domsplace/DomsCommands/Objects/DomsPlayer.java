@@ -18,15 +18,18 @@ package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
+import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author      Dominic
@@ -35,8 +38,11 @@ import org.bukkit.entity.Player;
 public class DomsPlayer {
     private static final Map<String, DomsPlayer> REGISTERED_PLAYERS = new HashMap<String, DomsPlayer>();
     
-    public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#$^&*(),.\\s]*$";
+    public static final DomsPlayer CONSOLE_PLAYER = new DomsPlayer("CONSOLE");
     
+    public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#^*(),_-\\s]*$";
+    
+    //Static
     public static DomsPlayer guessPlayer(CommandSender sender, String guess) {
         Player tryPlayer = Base.getPlayer(sender, guess);
         if(tryPlayer == null) {
@@ -110,6 +116,8 @@ public class DomsPlayer {
     
     private TeleportRequest lastRequest;
     
+    private DomsPlayer lastPrivateMessenger;
+    
     private DomsPlayer(String player) {
         this.player = player;
         this.displayName = this.getDisplayName();
@@ -135,10 +143,12 @@ public class DomsPlayer {
     public DomsLocation getBackLocation() {return this.backLocation;}
     public DomsLocation getLastLocation() {return this.lastLocation;}
     public List<Punishment> getPunishments() {return new ArrayList<Punishment>(this.punishments);}
+    public DomsPlayer getLastMessenger() {return this.lastPrivateMessenger;}
     
-    public boolean isOnline() {return this.getOfflinePlayer().isOnline();}
-    public boolean isVisible() {return Base.isVisible(this.getOfflinePlayer());}
+    public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
+    public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
     public boolean isAFK() {return this.afk;}
+    public boolean isConsole() {return this.equals(CONSOLE_PLAYER);}
     
     public void setJoinTime(long time) {this.join = time;}
     public void setLoginTime(long time) {this.login = time;}
@@ -151,6 +161,7 @@ public class DomsPlayer {
     public void setBackLocation(DomsLocation location) {this.backLocation = location;}
     public void setAFK(boolean i) {this.afk = i;}
     public void setAFKTime(long now) {this.afkTime = now;}
+    public void setLastMessenger(DomsPlayer player) {this.lastPrivateMessenger = player;}
     
     @Override public String toString() {return this.getDisplayName();}
     
@@ -170,6 +181,10 @@ public class DomsPlayer {
     
     //Complex get's
     public final String getDisplayName() {
+        if(this.isConsole()) {
+            this.displayName = "Server";
+            return this.displayName;
+        }
         if(!this.isOnline()) {
             if(this.displayName == null) this.displayName = this.getPlayer();
             return this.displayName;
@@ -191,16 +206,22 @@ public class DomsPlayer {
         }
         return puns;
     }
+
+    public CommandSender getCommandSender() {
+        if(this.isConsole()) return Bukkit.getConsoleSender();
+        return this.getOnlinePlayer();
+    }
     
     //Complex set's
     public void setDisplayName(String newName) {
         this.displayName = newName;
-        if(this.isOnline()) this.getOnlinePlayer().setDisplayName(newName);
+        if(this.isOnline() && !this.isConsole()) this.getOnlinePlayer().setDisplayName(newName);
     }
     
     //Complex is's
     public boolean isOnline(CommandSender sender) {
         if(!isOnline()) return false;
+        if(this.isConsole()) return true;
         return Base.canSee(sender, this.getOnlinePlayer());
     }
     
@@ -236,5 +257,23 @@ public class DomsPlayer {
 
     public boolean compare(CommandSender s) {
         return s.getName().equalsIgnoreCase(this.player);
+    }
+    
+    public void addItems(List<DomsItem> items) {
+        if(this.isConsole() || !this.isOnline()) return;
+        try {
+            List<ItemStack> itemStacks = DomsItem.toItemStackArray(items);
+            for(ItemStack is : itemStacks) {
+                if(is == null) continue;
+                if(is.getType() == null) continue;
+                if(is.getType().equals(Material.AIR)) continue;
+                if(DomsItem.isInventoryFull(this.getOnlinePlayer().getInventory())) {
+                    this.getOnlinePlayer().getWorld().dropItemNaturally(this.getLocation().toLocation(), is);
+                } else {
+                    this.getOnlinePlayer().getInventory().addItem(is);
+                }
+            }
+        } catch(InvalidItemException e) {
+        }
     }
 }

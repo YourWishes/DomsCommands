@@ -122,10 +122,25 @@ commands:
       usage: /<command> (player) (gamemode)
       permission: DomsCommands.gamemode
    tell:
-      description: Change yours or another players gamemode.
+      description: Send a private message to a player.
       aliases: [w, whisper, msg, message, talk, pm, pmessage, privatemessage, m]
       usage: /<command> [player] [message]
       permission: DomsCommands.tell
+   reply:
+      description: Send a reply.
+      aliases: [r, respond]
+      usage: /<command> [message]
+      permission: DomsCommands.tell
+   give:
+      description: Give items to a player.
+      aliases: [g, giveitem]
+      usage: /<command> [player] [item(:data)] (amount)
+      permission: DomsCommands.give
+   getid:
+      description: Gets information about the item in hand.
+      aliases: [gid]
+      usage: /<command> (item)
+      permission: DomsCommands.getid
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -204,3 +219,7 @@ permissions:
      description: Allows access to the gamemode command.
    DomsCommands.tell:
      description: Allows access to the tell command.
+   DomsCommands.give:
+     description: Allows access to the give command.
+   DomsCommands.getid:
+     description: Allows access to the getid command.

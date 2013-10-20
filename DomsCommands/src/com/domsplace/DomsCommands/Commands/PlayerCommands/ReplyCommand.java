@@ -26,50 +26,50 @@ import org.bukkit.command.CommandSender;
  * @author      Dominic
  * @since       17/10/2013
  */
-public class MessageCommand extends BukkitCommand {
-    public MessageCommand() {
-        super("tell");
-        this.addSubCommandOption(new SubCommandOption(SubCommandOption.PLAYERS_OPTION, "message"));
+public class ReplyCommand extends BukkitCommand {
+    public ReplyCommand() {
+        super("reply");
+        this.addSubCommandOption(new SubCommandOption("message"));
     }
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
-        if(args.length < 1) {
-            sendMessage(sender, ChatError + "Please enter a player name.");
-            return false;
+        DomsPlayer talker = DomsPlayer.getPlayer(sender);
+        DomsPlayer replier = talker.getLastMessenger();
+        
+        if(replier == null) {
+            sendMessage(sender, ChatError + "You have no one to reply to.");
+            return true;
         }
         
-        if(args.length < 2) {
+        if(args.length < 1) {
             sendMessage(sender, ChatError + "Please enter a message.");
             return false;
         }
         
-        DomsPlayer talker = DomsPlayer.getPlayer(sender);
-        DomsPlayer target = DomsPlayer.guessPlayer(sender, args[0]);
-        
-        if(talker.equals(target)) {
+        if(talker.equals(replier)) {
             sendMessage(sender, ChatError + "You can't message yourself.");
             return true;
         }
         
-        if(target == null || !target.isOnline(sender)) {
-            sendMessage(sender, ChatError + target.getDisplayName() + ChatError + " isn't online.");
+        if(!replier.isOnline(sender)) {
+            sendMessage(sender, ChatError + replier.getDisplayName() + ChatError + " isn't online.");
             return true;
         }
         
         String message = "";
-        for(int i = 1; i < args.length; i++) {
+        for(int i = 0; i < args.length; i++) {
             message += args[i];
             if(i < args.length - 1) {
                 message += " ";
             }
         }
         
-        talker.setLastMessenger(target);
-        target.setLastMessenger(talker);
+        talker.setLastMessenger(replier);
+        replier.setLastMessenger(talker);
         
-        talker.sendMessage(ChatDefault + "[" + ChatImportant + "You" + ChatDefault + " -> " + ChatImportant + target.getDisplayName() + ChatDefault + "] " + message);
-        target.sendMessage(ChatDefault + "[" + ChatImportant + talker.getDisplayName() + ChatDefault + " -> " + ChatImportant + "You" + ChatDefault + "] " + message);
+        talker.sendMessage(ChatDefault + "[" + ChatImportant + "You" + ChatDefault + " -> " + ChatImportant + replier.getDisplayName() + ChatDefault + "] " + message);
+        replier.sendMessage(ChatDefault + "[" + ChatImportant + talker.getDisplayName() + ChatDefault + " -> " + ChatImportant + "You" + ChatDefault + "] " + message);
         
         return true;
     }
