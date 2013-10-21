@@ -31,6 +31,7 @@ public class TeleportCommand extends BukkitCommand {
     public TeleportCommand() {
         super("teleport");
         this.addSubCommandOption(new SubCommandOption(SubCommandOption.PLAYERS_OPTION, SubCommandOption.PLAYERS_OPTION));
+        this.addSubCommandOption(SubCommandOption.WORLD_OPTION);
     }
     
     @Override

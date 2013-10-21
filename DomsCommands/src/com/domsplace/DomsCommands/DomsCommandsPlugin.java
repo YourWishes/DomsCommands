@@ -16,6 +16,9 @@
 
 package com.domsplace.DomsCommands;
 
+import com.domsplace.DomsCommands.Commands.ItemCommands.GiveCommand;
+import com.domsplace.DomsCommands.Commands.ItemCommands.GetIDCommand;
+import com.domsplace.DomsCommands.Commands.ItemCommands.ItemCommand;
 import com.domsplace.DomsCommands.Commands.TeleportCommands.*;
 import com.domsplace.DomsCommands.Commands.WarpCommands.*;
 import com.domsplace.DomsCommands.Bases.*;
@@ -43,11 +46,14 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private AwayCommand awayCommand;
     private GamemodeCommand gamemodeCommand;
     private GiveCommand giveCommand;
+    private ItemCommand itemCommand;
     private GetIDCommand getIDCommand;
     private MessageCommand messageCommand;
     private NicknameCommand nicknameCommand;
     private PingCommand pingCommand;
     private ReplyCommand replyCommand;
+    private TimeCommand timeCommand;
+    private WeatherCommand weatherCommand;
     
     private TeleportRequestCommand tpaCommand;
     private TeleportRequestHereCommand tpahCommand;
@@ -101,11 +107,14 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.awayCommand = new AwayCommand();
         this.gamemodeCommand = new GamemodeCommand();
         this.giveCommand = new GiveCommand();
+        this.itemCommand = new ItemCommand();
         this.getIDCommand = new GetIDCommand();
         this.messageCommand = new MessageCommand();
         this.nicknameCommand = new NicknameCommand();
         this.pingCommand = new PingCommand();
         this.replyCommand = new ReplyCommand();
+        this.timeCommand = new TimeCommand();
+        this.weatherCommand = new WeatherCommand();
         
         this.tpaCommand = new TeleportRequestCommand();
         this.tpahCommand = new TeleportRequestHereCommand();

@@ -40,7 +40,7 @@ public class DomsPlayer {
     
     public static final DomsPlayer CONSOLE_PLAYER = new DomsPlayer("CONSOLE");
     
-    public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#^*(),_-\\s]*$";
+    public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#^*&(),\\_\\-\\s]*$";
     
     //Static
     public static DomsPlayer guessPlayer(CommandSender sender, String guess) {
@@ -181,8 +181,11 @@ public class DomsPlayer {
     
     //Complex get's
     public final String getDisplayName() {
-        if(this.isConsole()) {
+        if(this.isConsole() && this.displayName == null) {
             this.displayName = "Server";
+            return this.displayName;
+        }
+        if(this.isConsole()) {
             return this.displayName;
         }
         if(!this.isOnline()) {

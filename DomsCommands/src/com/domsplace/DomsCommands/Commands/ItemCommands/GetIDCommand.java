@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Commands.PlayerCommands;
+package com.domsplace.DomsCommands.Commands.ItemCommands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
@@ -34,6 +34,8 @@ import org.bukkit.enchantments.Enchantment;
 public class GetIDCommand extends BukkitCommand {
     public GetIDCommand() {
         super("getid");
+        this.addSubCommandOption(SubCommandOption.PLAYERS_OPTION);
+        this.addSubCommandOption(SubCommandOption.ITEM_OPTION);
     }
     
     @Override
@@ -46,17 +48,27 @@ public class GetIDCommand extends BukkitCommand {
         DomsItem item;
         
         if(args.length > 0) {
-            String itm = "";
-            for(int i = 0; i < args.length; i++) {
-                itm += args[i];
-                if(i < args.length - 1) itm += " ";
-            }
-            
-            try {
-                item = DomsItem.guessItem(itm);
-            } catch (InvalidItemException e) {
-                sendMessage(sender, ChatError + "Invalid item.");
-                return true;
+            DomsPlayer player = DomsPlayer.guessPlayer(sender, args[0]);
+            if(player != null) {
+                try {
+                    item = DomsItem.itemStackToDomsItems(player.getOnlinePlayer().getItemInHand()).get(0);
+                } catch(Exception e) {
+                    sendMessage(sender, ChatError + player.getDisplayName() + ChatError + " isn't holding a valid item.");
+                    return true;
+                }
+            } else {
+                String itm = "";
+                for(int i = 0; i < args.length; i++) {
+                    itm += args[i];
+                    if(i < args.length - 1) itm += " ";
+                }
+
+                try {
+                    item = DomsItem.guessItem(itm);
+                } catch (InvalidItemException e) {
+                    sendMessage(sender, ChatError + "Invalid item.");
+                    return true;
+                }
             }
         } else {
             DomsPlayer player = DomsPlayer.getPlayer(sender);
@@ -78,7 +90,7 @@ public class GetIDCommand extends BukkitCommand {
         if(item.isAir()) {
             info.add(ChatImportant + "Information about " + ChatDefault + "Air");
         } else {
-            info.add(ChatImportant + "Information about " + ChatDefault + item.getTypeName());
+            info.add(ChatImportant + "Information about " + ChatDefault + item.toHumanString());
         }
         
         info.add(ChatImportant + "ID: " + ChatDefault + item.getID());
@@ -107,6 +119,11 @@ public class GetIDCommand extends BukkitCommand {
         
         if(item.getLores() != null && item.getLores().size() > 0) {
             info.add(ChatImportant + "Lores: " + ChatDefault + item.getLores().size());
+        }
+        
+        String i = item.toString();
+        if(i != null) {
+            info.add(ChatImportant + "Give Data: " + ChatDefault + i);
         }
         
         sendMessage(sender, info);

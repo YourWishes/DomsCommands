@@ -56,7 +56,8 @@ public class DomsCommandsCommand extends BukkitCommand {
         Base.sendMessage(sender, new String[] {
             ChatImportant + " = " + ChatDefault + getPlugin().getName() + ChatImportant + " = ",
             ChatDefault + "\tProgrammed By: " + ChatColor.LIGHT_PURPLE + "Dom",
-            ChatDefault + "\tWebsite: " + ChatColor.GREEN + "http://domsplace.com/"
+            ChatDefault + "\tWebsite: " + ChatColor.GREEN + "http://domsplace.com/",
+            ChatDefault + "\tTesters: " + ChatColor.GOLD + "Heste, Jordan, Jenae, Kyle"
         });
         return true;
     }

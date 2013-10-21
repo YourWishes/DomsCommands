@@ -65,6 +65,8 @@ public class ReplyCommand extends BukkitCommand {
             }
         }
         
+        message = coloriseByPermission(message, DomsPlayer.getPlayer(sender), "DomsCommands.tell.colors.");
+        
         talker.setLastMessenger(replier);
         replier.setLastMessenger(talker);
         

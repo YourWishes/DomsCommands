@@ -130,7 +130,7 @@ commands:
       description: Send a reply.
       aliases: [r, respond]
       usage: /<command> [message]
-      permission: DomsCommands.tell
+      permission: DomsCommands.reply
    give:
       description: Give items to a player.
       aliases: [g, giveitem]
@@ -141,6 +141,21 @@ commands:
       aliases: [gid]
       usage: /<command> (item)
       permission: DomsCommands.getid
+   time:
+      description: Gets information about the item in hand.
+      aliases: [day, night, morning, evening, midnigh, midday, fd, fixday]
+      usage: /<command> (time) (world)
+      permission: DomsCommands.time
+   weather:
+      description: Sets the weather of the world.
+      aliases: [toggledownfall, toggledown, togglerain, togglestorm, sun, storm, rain, toggledf, thunder]
+      usage: /<command> (weather) (world)
+      permission: DomsCommands.weather
+   item:
+      description: Gives yourself an item.
+      aliases: [i, get, getitem, giveme, want]
+      usage: /<command> [item] (amount)
+      permission: DomsCommands.item
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -213,13 +228,147 @@ permissions:
      description: Allows access to the nickname command.
    DomsCommands.nickname.colors.*:
      description: Allows access to use all colors in nicknames.
-   DomsCommands.nickname.colors.*:
-     description: Allows access to use colors in nicknames.
+     children:
+         DomsCommands.nickname.colors.black: true
+         DomsCommands.nickname.colors.darkblue: true
+         DomsCommands.nickname.colors.darkgreen: true
+         DomsCommands.nickname.colors.cyan: true
+         DomsCommands.nickname.colors.darkred: true
+         DomsCommands.nickname.colors.purple: true
+         DomsCommands.nickname.colors.gold: true
+         DomsCommands.nickname.colors.gray: true
+         DomsCommands.nickname.colors.darkgray: true
+         DomsCommands.nickname.colors.green: true
+         DomsCommands.nickname.colors.lightblue: true
+         DomsCommands.nickname.colors.red: true
+         DomsCommands.nickname.colors.pink: true
+         DomsCommands.nickname.colors.yellow: true
+         DomsCommands.nickname.colors.white: true
+         DomsCommands.nickname.colors.magic: true
+         DomsCommands.nickname.colors.bold: true
+         DomsCommands.nickname.colors.strike: true
+         DomsCommands.nickname.colors.underline: true
+         DomsCommands.nickname.colors.italics: true
+   DomsCommands.nickname.colors.black:
+     description: Allows access to use black in nicknames.
+   DomsCommands.nickname.colors.darkblue:
+     description: Allows access to use darkblue in nicknames.
+   DomsCommands.nickname.colors.darkgreen:
+     description: Allows access to use darkgreen in nicknames.
+   DomsCommands.nickname.colors.cyan:
+     description: Allows access to use cyan in nicknames.
+   DomsCommands.nickname.colors.darkred:
+     description: Allows access to use darkred in nicknames.
+   DomsCommands.nickname.colors.purple:
+     description: Allows access to use purple in nicknames.
+   DomsCommands.nickname.colors.gold:
+     description: Allows access to use gold in nicknames.
+   DomsCommands.nickname.colors.gray:
+     description: Allows access to use gray in nicknames.
+   DomsCommands.nickname.colors.darkgray:
+     description: Allows access to use darkgray in nicknames.
+   DomsCommands.nickname.colors.blue:
+     description: Allows access to use blue in nicknames.
+   DomsCommands.nickname.colors.green:
+     description: Allows access to use green in nicknames.
+   DomsCommands.nickname.colors.lightblue:
+     description: Allows access to use lightblue in nicknames.
+   DomsCommands.nickname.colors.red:
+     description: Allows access to use red in nicknames.
+   DomsCommands.nickname.colors.pink:
+     description: Allows access to use pink in nicknames.
+   DomsCommands.nickname.colors.yellow:
+     description: Allows access to use yellow in nicknames.
+   DomsCommands.nickname.colors.white:
+     description: Allows access to use white in nicknames.
+   DomsCommands.nickname.colors.magic:
+     description: Allows access to use magic in nicknames.
+   DomsCommands.nickname.colors.bold:
+     description: Allows access to use bold in nicknames.
+   DomsCommands.nickname.colors.strike:
+     description: Allows access to use strike in nicknames.
+   DomsCommands.nickname.colors.underline:
+     description: Allows access to use underline in nicknames.
+   DomsCommands.nickname.colors.italics:
+     description: Allows access to use italics in nicknames.
    DomsCommands.gamemode:
      description: Allows access to the gamemode command.
    DomsCommands.tell:
      description: Allows access to the tell command.
+   DomsCommands.tell.colors.*:
+     description: Allows access to use all colors in messages.
+     children:
+         DomsCommands.tell.colors.black: true
+         DomsCommands.tell.colors.darkblue: true
+         DomsCommands.tell.colors.darkgreen: true
+         DomsCommands.tell.colors.cyan: true
+         DomsCommands.tell.colors.darkred: true
+         DomsCommands.tell.colors.purple: true
+         DomsCommands.tell.colors.gold: true
+         DomsCommands.tell.colors.gray: true
+         DomsCommands.tell.colors.darkgray: true
+         DomsCommands.tell.colors.green: true
+         DomsCommands.tell.colors.lightblue: true
+         DomsCommands.tell.colors.red: true
+         DomsCommands.tell.colors.pink: true
+         DomsCommands.tell.colors.yellow: true
+         DomsCommands.tell.colors.white: true
+         DomsCommands.tell.colors.magic: true
+         DomsCommands.tell.colors.bold: true
+         DomsCommands.tell.colors.strike: true
+         DomsCommands.tell.colors.underline: true
+         DomsCommands.tell.colors.italics: true
+   DomsCommands.tell.colors.black:
+     description: Allows access to use black in messages.
+   DomsCommands.tell.colors.darkblue:
+     description: Allows access to use darkblue in messages.
+   DomsCommands.tell.colors.darkgreen:
+     description: Allows access to use darkgreen in messages.
+   DomsCommands.tell.colors.cyan:
+     description: Allows access to use cyan in messages.
+   DomsCommands.tell.colors.darkred:
+     description: Allows access to use darkred in messages.
+   DomsCommands.tell.colors.purple:
+     description: Allows access to use purple in messages.
+   DomsCommands.tell.colors.gold:
+     description: Allows access to use gold in messages.
+   DomsCommands.tell.colors.gray:
+     description: Allows access to use gray in messages.
+   DomsCommands.tell.colors.darkgray:
+     description: Allows access to use darkgray in messages.
+   DomsCommands.tell.colors.blue:
+     description: Allows access to use blue in messages.
+   DomsCommands.tell.colors.green:
+     description: Allows access to use green in messages.
+   DomsCommands.tell.colors.lightblue:
+     description: Allows access to use lightblue in messages.
+   DomsCommands.tell.colors.red:
+     description: Allows access to use red in messages.
+   DomsCommands.tell.colors.pink:
+     description: Allows access to use pink in messages.
+   DomsCommands.tell.colors.yellow:
+     description: Allows access to use yellow in messages.
+   DomsCommands.tell.colors.white:
+     description: Allows access to use white in messages.
+   DomsCommands.tell.colors.magic:
+     description: Allows access to use magic in messages.
+   DomsCommands.tell.colors.bold:
+     description: Allows access to use bold in messages.
+   DomsCommands.tell.colors.strike:
+     description: Allows access to use strike in messages.
+   DomsCommands.tell.colors.underline:
+     description: Allows access to use underline in messages.
+   DomsCommands.tell.colors.italics:
+     description: Allows access to use italics in messages.
+   DomsCommands.reply:
+     description: Allows access to the reply command.
    DomsCommands.give:
      description: Allows access to the give command.
    DomsCommands.getid:
      description: Allows access to the getid command.
+   DomsCommands.time:
+     description: Allows access to the time command.
+   DomsCommands.weather:
+     description: Allows access to the weather command.
+   DomsCommands.item:
+     description: Allows access to the item command.

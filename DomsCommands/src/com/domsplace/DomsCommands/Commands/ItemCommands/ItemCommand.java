@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Commands.PlayerCommands;
+package com.domsplace.DomsCommands.Commands.ItemCommands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
@@ -28,38 +28,34 @@ import org.bukkit.command.CommandSender;
  *
  * @author Dominic Masters
  */
-public class GiveCommand extends BukkitCommand {
-    public GiveCommand() {
-        super("give");
+public class ItemCommand extends BukkitCommand {
+    public ItemCommand() {
+        super("item");
         this.addSubCommandOption(
-            new SubCommandOption(SubCommandOption.PLAYERS_OPTION, new SubCommandOption(SubCommandOption.ITEM_OPTION, "amount"))
+            new SubCommandOption(SubCommandOption.ITEM_OPTION, "amount")
         );
     }
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
-        if(args.length < 1) {
-            sendMessage(sender, ChatError + "Enter a player name.");
+        if(!isPlayer(sender)) {
+            sendMessage(sender, ChatError + "Only players can run this command.");
             return true;
         }
         
-        if(args.length < 2) {
+        if(args.length < 1) {
             sendMessage(sender, ChatError + "Please enter an item name/item id.");
             return true;
         }
         
-        DomsPlayer player = DomsPlayer.guessPlayer(sender, args[0]);
-        if(player == null || player.isConsole() || !player.isOnline(sender)) {
-            sendMessage(sender, ChatError + args[0] + ChatError + " cannot take items.");
-            return true;
-        }
+        DomsPlayer player = DomsPlayer.getPlayer(sender);
         
         int arrEnd = args.length;
         short data = DomsItem.BAD_DATA;
         
         int size = 64;
-        if(args.length > 2) {
-            if(args.length > 3 && isShort(args[args.length-1]) && isInt(args[args.length - 2])) {
+        if(args.length > 1) {
+            if(args.length > 2 && isShort(args[args.length-1]) && isInt(args[args.length - 2])) {
                 size = getInt(args[args.length - 2]);
                 data = getShort(args[args.length-1]);
                 arrEnd -= 2;
@@ -72,7 +68,7 @@ public class GiveCommand extends BukkitCommand {
         }
         
         String itemStr = "";
-        for(int i = 1; i < arrEnd; i++) {
+        for(int i = 0; i < arrEnd; i++) {
             itemStr += args[i];
             if(i < arrEnd-1) itemStr += " ";
         }
@@ -91,12 +87,6 @@ public class GiveCommand extends BukkitCommand {
         }
         
         player.addItems(DomsItem.multiply(item, size));
-        if(!DomsPlayer.getPlayer(sender).equals(player)) {
-            sendMessage(sender, ChatDefault + "Giving " + ChatImportant + size +
-                    ChatDefault + " of " + ChatImportant + item.toHumanString() + 
-                    ChatDefault + " to " + ChatImportant + player.getDisplayName()
-                    + ChatDefault + ".");
-        }
         sendMessage(player, ChatDefault + "You have been given " + ChatImportant + size + ChatDefault + " of " + ChatImportant + item.toHumanString()+ ChatDefault + ".");
         return true;
     }

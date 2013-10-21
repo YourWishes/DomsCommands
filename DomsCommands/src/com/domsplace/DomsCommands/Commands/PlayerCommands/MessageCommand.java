@@ -65,6 +65,8 @@ public class MessageCommand extends BukkitCommand {
             }
         }
         
+        message = coloriseByPermission(message, DomsPlayer.getPlayer(sender), "DomsCommands.tell.colors.");
+        
         talker.setLastMessenger(target);
         target.setLastMessenger(talker);
         

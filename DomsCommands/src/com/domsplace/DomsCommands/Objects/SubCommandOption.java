@@ -18,6 +18,8 @@ package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Commands.PlayerCommands.GamemodeCommand;
+import com.domsplace.DomsCommands.Commands.PlayerCommands.TimeCommand;
+import com.domsplace.DomsCommands.Commands.PlayerCommands.WeatherCommand;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,7 @@ public class SubCommandOption extends Base {
     public static final SubCommandOption ITEM_OPTION = new SubCommandOption("[ITEM]");
     public static final SubCommandOption POTION_OPTION = new SubCommandOption("[POTION]");
     public static final SubCommandOption WEATHER_OPTION = new SubCommandOption("[WEATHER]");
+    public static final SubCommandOption TIME_OPTION = new SubCommandOption("[TIME]");
     public static final SubCommandOption WARPS_OPTION = new SubCommandOption("[WARP]");
     public static final SubCommandOption GAMEMODE_OPTION = new SubCommandOption("[GAMEMODE]");
     
@@ -107,14 +110,22 @@ public class SubCommandOption extends Base {
                 returnV.add(pet.getName());
             }
         } else if(this.compare(SubCommandOption.WEATHER_OPTION)) {
-            returnV.add("sun");
-            returnV.add("rain");
-            returnV.add("clear");
-            returnV.add("fog");
-            returnV.add("storm");
-            returnV.add("lightning");
-            returnV.add("sunny");
-            returnV.add("sunshine");
+            for(String s : WeatherCommand.RAIN_COMMANDS) {
+                returnV.add(s);
+            }
+            for(String s : WeatherCommand.SUN_COMMANDS) {
+                returnV.add(s);
+            }
+            for(String s : WeatherCommand.STORM_COMMANDS) {
+                returnV.add(s);
+            }
+            for(String s : WeatherCommand.TOGGLE_COMMANDS) {
+                returnV.add(s);
+            }
+        } else if(this.compare(SubCommandOption.TIME_OPTION)) {
+            for(String s : TimeCommand.TIME_COMMANDS) {
+                returnV.add(s);
+            }
         } else if(this.compare(SubCommandOption.WARPS_OPTION)) {
             for(Warp w : Warp.getWarpsAlphabetically()) {
                 returnV.add(w.getName());
@@ -144,6 +155,7 @@ public class SubCommandOption extends Base {
         if(Enchantment.getByName(s) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
         if(EntityType.fromName(s) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
         if(PotionEffectType.getByName(s) != null) return SubCommandOption.POTION_OPTION.option;
+        if(WeatherCommand.getType(s) != null) return SubCommandOption.WEATHER_OPTION.option;
         if(Warp.getWarp(s) != null) return SubCommandOption.WARPS_OPTION.option;
         if(GamemodeCommand.getGameMode(s) != null) return SubCommandOption.GAMEMODE_OPTION.option;
         try {if(DomsItem.guessItem(s) != null) return SubCommandOption.ITEM_OPTION.option;} catch(InvalidItemException e){}

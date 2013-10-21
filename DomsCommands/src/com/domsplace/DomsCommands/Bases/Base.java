@@ -82,7 +82,23 @@ public class Base extends RawBase {
     public static String coloriseByPermission(Object message, DomsPlayer player, String permissionPrefix) {
         String msg = message.toString();
         
+        String[] andCodes = {"&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", 
+            "&8", "&9", "&a", "&b", "&c", "&d", "&e", "&f", "&l", "&o", "&n", 
+            "&m", "&k", "&r"};
         
+        String[] altCodes = {"§0", "§1", "§2", "§3", "§4", "§5", "§6", "§7", 
+            "§8", "§9", "§a", "§b", "§c", "§d", "§e", "§f", "§l", "§o", "§n", 
+            "§m", "§k", "§r"};
+        
+        String[] perms = {"black", "darkblue", "darkgreen", "cyan", "darkred", 
+            "purple", "gold", "gray", "darkgray", "blue", "green", "lightblue", 
+            "red", "pink", "yellow", "white", "magic", "bold", "strike", 
+            "underline", "italics"};
+        
+        for(int i = 0; i < perms.length; i++) {
+            if(!player.hasPermisson(permissionPrefix + perms[i])) continue;
+            msg = msg.replaceAll(andCodes[i], altCodes[i]);
+        }
         
         return msg;
     }
@@ -377,6 +393,19 @@ public class Base extends RawBase {
     
     public static byte getByte(Object o) {
         return Byte.parseByte(o.toString());
+    }
+    
+    public static boolean isLong(Object o) {
+        try {
+            Long.parseLong(o.toString());
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+    
+    public static long getLong(Object o) {
+        return Long.parseLong(o.toString());
     }
     
     public static String listToString(List<? extends Object> strings) {

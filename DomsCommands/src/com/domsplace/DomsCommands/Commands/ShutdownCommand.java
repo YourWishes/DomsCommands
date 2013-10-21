@@ -18,6 +18,7 @@ package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Events.ServerShutdownEvent;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import org.bukkit.Bukkit;
@@ -49,6 +50,7 @@ public class ShutdownCommand extends BukkitCommand {
         message = event.getMessage();
         
         log("Saving Players");
+        DataManager.saveAll();
         getPlugin().getServer().savePlayers();
         for(Player p : Bukkit.getOnlinePlayers()) {
             p.kickPlayer(colorise(message));

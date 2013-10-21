@@ -545,7 +545,7 @@ public class DomsItem {
         if(this.enchants != null) {
             for(Enchantment e : this.enchants.keySet()) {
                 if(e == null) continue;
-                msg += ",{enchantment: \"" + e.getName() + "*" + this.enchants.get(e) + "\"}";
+                msg += ",{enchantment:\"" + e.getName() + "*" + this.enchants.get(e) + "\"}";
             }
         }
         
