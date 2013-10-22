@@ -90,6 +90,16 @@ public class GiveCommand extends BukkitCommand {
             item.setData(data);
         }
         
+        if(size < 1) {
+            sendMessage(sender, ChatError + "Amount must be at least 1.");
+            return true;
+        }
+        
+        if(size > 2560) {
+            sendMessage(sender, ChatError + "Amount must be below 2560.");
+            return true;
+        }
+        
         player.addItems(DomsItem.multiply(item, size));
         if(!DomsPlayer.getPlayer(sender).equals(player)) {
             sendMessage(sender, ChatDefault + "Giving " + ChatImportant + size +

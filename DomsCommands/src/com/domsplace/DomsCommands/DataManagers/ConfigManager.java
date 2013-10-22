@@ -96,6 +96,11 @@ public class ConfigManager extends DataManager {
         commands.add("ping");
         df("away.commands.blocked", commands);
         
+        commands = new ArrayList<String>();
+        commands.add("say");
+        commands.add("broadcast");
+        df("punishment.mute.blockedcommands", commands);
+        
         //Store Values
         Base.DebugMode = this.config.getBoolean("debug", false);
         

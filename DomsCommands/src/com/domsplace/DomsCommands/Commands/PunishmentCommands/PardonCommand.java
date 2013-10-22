@@ -21,7 +21,7 @@ import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Punishment;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -42,8 +42,17 @@ public class PardonCommand extends BukkitCommand {
             return false;
         }
         
-        OfflinePlayer op = getOfflinePlayer(sender, args[0]);
-        DomsPlayer rel = DomsPlayer.getPlayer(op);
+        DomsPlayer rel;
+        if(isIP(args[0])) {
+            rel = DomsPlayer.getPlayerByIP(args[0]);
+            if(rel == null) {
+                Bukkit.unbanIP(args[0]);
+                sendMessage(sender, "Unbanned " + args[0]);
+                return true;
+            }
+        } else {
+            rel = DomsPlayer.guessPlayer(sender, args[0], true);
+        }
         
         if(rel.isConsole() || !rel.isBanned()) {
             sendMessage(sender, ChatError + rel.getDisplayName() + ChatError + " isn't banned.");
@@ -54,7 +63,8 @@ public class PardonCommand extends BukkitCommand {
             p.isPardoned(true);
         }
         
-        op.setBanned(false);
+        rel.getOfflinePlayer().setBanned(false);
+        if(isIP(args[0])) Bukkit.unbanIP(rel.getLastIP());
         sendMessage(sender, "Pardoned " + ChatImportant + rel.getDisplayName() + ChatDefault + ".");    
         return true;
     }

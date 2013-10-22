@@ -16,6 +16,7 @@
 
 package com.domsplace.DomsCommands.Events;
 
+import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Bases.DomsCancellableEvent;
 import java.util.List;
@@ -51,8 +52,7 @@ public class PreCommandEvent extends DomsCancellableEvent {
     public boolean willResult(String s) {
         if(s.equalsIgnoreCase(command)) return true;
         BukkitCommand cmd = this.tryGetBukkitCommand();
-        if(cmd != null) return true;
-        //TODO: Add better Searching here maybe.
-        return false;
+        if(cmd == null) return false;
+        return cmd.isCommand(s);
     }
 }

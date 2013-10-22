@@ -24,7 +24,7 @@ import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Punishment;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import java.util.Date;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -33,9 +33,23 @@ import org.bukkit.command.CommandSender;
  * @since       11/10/2013
  */
 public class BanCommand extends BukkitCommand {
+    private static final String[] IP_BAN_COMMANDS = new String[] {
+        "ipban",
+        "banip",
+        "baniship",
+        "ipbanish"
+    };
+    
     public BanCommand() {
         super("ban");
         this.addSubCommandOption(new SubCommandOption(SubCommandOption.PLAYERS_OPTION, "1hour", "reason"));
+    }
+    
+    public boolean isIPBanCommand(String s) {
+        for(String str : IP_BAN_COMMANDS) {
+            if(str.equalsIgnoreCase(s)) return true;
+        }
+        return false;
     }
     
     @Override
@@ -45,13 +59,31 @@ public class BanCommand extends BukkitCommand {
             return false;
         }
         
-        OfflinePlayer op = getOfflinePlayer(sender, args[0]);
-        DomsPlayer rel = DomsPlayer.getPlayer(op);
+        DomsPlayer rel;
+        boolean isIP = false;
+        
+        if(isIP(args[0]) && isIPBanCommand(label)) {
+            rel = DomsPlayer.getPlayerByIP(args[0]);
+            isIP = true;
+            if(rel == null) {
+                if(!hasPermission(sender, "DomsCommands.banip")) return this.noPermission(sender, cmd, label, args);
+                Bukkit.banIP(args[0]);
+                sendMessage(sender, ChatDefault + "Banned " + args[0] + ".");
+                return true;
+            }
+        } else if(isIP(args[0])) {
+            sendMessage(sender, ChatError + "Please type /ipban " + args[0] + " to ban IP Addresses.");
+            return true;
+        } else {
+            rel = DomsPlayer.guessPlayer(sender, args[0], true);
+        }
         
         if(rel.isConsole() || rel.hasPermisson("DomsCommands.ban.exempt")) {
             sendMessage(sender, ChatError + "You cannot ban this player.");
             return true;
         }
+        
+        if(isIP && !hasPermission(sender, "DomsCommands.banip")) return this.noPermission(sender, cmd, label, args);
         
         String reason = "Banned by an operator.";
         String tb = "";
@@ -61,7 +93,7 @@ public class BanCommand extends BukkitCommand {
             if(Base.isValidTime(args[1])) {
                 //args[1] is a time spec.
                 unbandate = Base.addStringToNow(args[1]).getTime();
-                reason = "";
+                if(args.length > 2) reason = "";
                 tb = " for " + ChatImportant + Base.getHumanTimeAway(new Date(unbandate)) + ChatDefault;
             } else {
                 reason = args[1] + " ";
@@ -83,7 +115,7 @@ public class BanCommand extends BukkitCommand {
         p.setEndDate(unbandate);
         p.setBanner(sender.getName());
         rel.kickPlayer(ChatDefault + "You have been banned for " + ChatImportant + colorise(reason) + ChatDefault + tb + ".");
-        op.setBanned(true);
+        rel.getOfflinePlayer().setBanned(true);
         
         String name = sender.getName();
         if(isPlayer(sender)) {
@@ -103,6 +135,7 @@ public class BanCommand extends BukkitCommand {
                 " for " + ChatImportant + colorise(reason) + ChatDefault + tb + "."
             );
         }
-        return false;
+        if(isIP) Bukkit.banIP(rel.getLastIP());
+        return true;
     }
 }

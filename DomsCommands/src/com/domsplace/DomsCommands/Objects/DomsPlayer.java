@@ -43,16 +43,18 @@ public class DomsPlayer {
     public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#^*&(),\\_\\-\\s]*$";
     
     //Static
-    public static DomsPlayer guessPlayer(CommandSender sender, String guess) {
+    public static DomsPlayer guessPlayer(CommandSender sender, String guess) {return guessPlayer(sender, guess, false);}
+    public static DomsPlayer guessPlayer(CommandSender sender, String guess, boolean createIfNotExists) {
         Player tryPlayer = Base.getPlayer(sender, guess);
         if(tryPlayer == null) {
-            return guessPlayer(guess);
+            return guessPlayer(guess, createIfNotExists);
         } else {
             return getPlayer(tryPlayer);
         }
     }
     
-    public static DomsPlayer guessPlayer(String guess) {
+    public static DomsPlayer guessPlayer(String guess) {return guessPlayer(guess, false);}
+    public static DomsPlayer guessPlayer(String guess, boolean createIfNotExists) {
         DomsPlayer p = null;
         for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
             if(!plyr.getPlayer().toLowerCase().contains(guess.toLowerCase())) continue;
@@ -68,6 +70,7 @@ public class DomsPlayer {
             }
         }
         
+        if(createIfNotExists && p == null) {return getPlayer(guess);}
         return p;
     }
     
@@ -86,8 +89,16 @@ public class DomsPlayer {
     public static DomsPlayer getPlayer(OfflinePlayer player) {return getPlayer(player.getName());}
     public static DomsPlayer getPlayer(String player) {
         if(isPlayerRegistered(player)) return REGISTERED_PLAYERS.get(player);
-        
         return new DomsPlayer(player);
+    }
+    public static DomsPlayer getPlayerByIP(String string) {
+        for(DomsPlayer player : REGISTERED_PLAYERS.values()) {
+            if(player == null) continue;
+            if(player.getLastIP() == null) continue;
+            if(player.getLastIP().equalsIgnoreCase(string)) return player;
+        }
+        
+        return null;
     }
     
     public static boolean isPlayerRegistered(Player player) {return isPlayerRegistered(player.getName());}
@@ -113,6 +124,7 @@ public class DomsPlayer {
     private long lastMoveTime;
     
     private List<Punishment> punishments;
+    private List<Home> homes;
     
     private TeleportRequest lastRequest;
     
@@ -122,7 +134,10 @@ public class DomsPlayer {
         this.player = player;
         this.displayName = this.getDisplayName();
         this.punishments = new ArrayList<Punishment>();
+        this.homes = new ArrayList<Home>();
         this.afk = false;
+        this.afkTime = Base.getNow();
+        this.lastMoveTime = Base.getNow();
         
         this.registerPlayer();
     }
@@ -143,6 +158,7 @@ public class DomsPlayer {
     public DomsLocation getBackLocation() {return this.backLocation;}
     public DomsLocation getLastLocation() {return this.lastLocation;}
     public List<Punishment> getPunishments() {return new ArrayList<Punishment>(this.punishments);}
+    public List<Home> getHomes() {return new ArrayList<Home>(this.homes);}
     public DomsPlayer getLastMessenger() {return this.lastPrivateMessenger;}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
@@ -167,9 +183,11 @@ public class DomsPlayer {
     
     public void addPlayTime(long time) {this.playtime += time;}
     public void addPunishment(Punishment p) {this.punishments.add(p);}
+    public void addHome(Home h) {this.homes.add(h);}
     
     public void removePlayTime(long time) {this.playtime -= time;}
     public void removePunishment(Punishment p) {this.punishments.remove(p);}
+    public void removeHome(Home h) {this.homes.remove(h);}
     
     public void toggleAFK() {this.afk = !this.afk;}
     
@@ -215,6 +233,27 @@ public class DomsPlayer {
         return this.getOnlinePlayer();
     }
     
+    public Home getHome(String s) {
+        for(Home h : this.homes) {
+            if(h.getName().equalsIgnoreCase(s)) return h;
+        }
+        return null;
+    }
+
+    public Punishment getMostRecentPunishmentOfType(PunishmentType type) {
+        Punishment recent = null;
+        for(Punishment p : this.getPunishmentsOfType(type)) {
+            if(recent == null) {
+                recent = p;
+                continue;
+            }
+            
+            if(p.getDate() <= recent.getDate()) continue;
+            recent = p;
+        }
+        return recent;
+    }
+    
     //Complex set's
     public void setDisplayName(String newName) {
         this.displayName = newName;
@@ -231,6 +270,14 @@ public class DomsPlayer {
     public boolean isBanned() {
         if(this.getOfflinePlayer().isBanned()) return true;
         for(Punishment p : this.getPunishmentsOfType(PunishmentType.BAN)) {
+            if(!p.isActive()) continue;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isMuted() {
+        for(Punishment p : this.getPunishmentsOfType(PunishmentType.MUTE)) {
             if(!p.isActive()) continue;
             return true;
         }

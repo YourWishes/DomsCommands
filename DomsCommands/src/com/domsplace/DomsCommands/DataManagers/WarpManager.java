@@ -45,7 +45,7 @@ public class WarpManager extends DataManager {
         yml = YamlConfiguration.loadConfiguration(warpsFile);
         
         //Clear old Warps
-        for(Warp w : Warp.getWarps()) {
+        for(Warp w : Warp.getWarpsAlphabetically()) {
             if(w == null) continue;
             w.deRegister();
             w = null;

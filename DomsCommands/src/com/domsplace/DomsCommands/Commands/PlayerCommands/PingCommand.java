@@ -17,6 +17,8 @@
 package com.domsplace.DomsCommands.Commands.PlayerCommands;
     
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Objects.DomsPlayer;
+import com.domsplace.DomsCommands.Threads.PingThread;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -31,7 +33,10 @@ public class PingCommand extends BukkitCommand {
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
-        sendMessage(sender, "Pong!");
+        if(!isPlayer(sender)) return this.noPermission(sender, cmd, label, args);
+        
+        sendMessage(sender, "Please wait while we check your ping.");
+        PingThread thread = new PingThread(DomsPlayer.getPlayer(sender));
         return true;
     }
 }

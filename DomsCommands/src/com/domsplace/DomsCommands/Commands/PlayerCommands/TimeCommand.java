@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Commands.PlayerCommands;
     
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Enums.WeatherType;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import java.util.ArrayList;
@@ -227,9 +228,7 @@ public class TimeCommand extends BukkitCommand {
             }
             
             if((c.equalsIgnoreCase("fd") || c.equalsIgnoreCase("fixday")) && hasPermission(sender, "DomsCommands.weather")) {
-                wr.setStorm(false);
-                wr.setThundering(false);
-                wr.setWeatherDuration((300 + new Random().nextInt(600)) * 20);
+                WeatherType.SUN.applyTo(w);
             }
             
             if(ts.equalsIgnoreCase("ADD")) {

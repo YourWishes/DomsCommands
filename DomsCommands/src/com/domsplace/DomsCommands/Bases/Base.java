@@ -20,6 +20,7 @@ import com.domsplace.DomsCommands.DataManagers.ConfigManager;
 import com.domsplace.DomsCommands.DomsCommandsPlugin;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -408,6 +409,11 @@ public class Base extends RawBase {
         return Long.parseLong(o.toString());
     }
     
+    public static boolean isIP(Object o) {
+        String s = o.toString();
+        return s.matches("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
+    }
+    
     public static String listToString(List<? extends Object> strings) {
         return listToString(strings, ", ");
     }
@@ -421,6 +427,11 @@ public class Base extends RawBase {
         }
         
         return m;
+    }
+    
+    public String twoDecimalPlaces(double x) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(x);
     }
     
     //Plugin Utils
@@ -509,6 +520,7 @@ public class Base extends RawBase {
     public static long getNow() {
         return System.currentTimeMillis();
     }
+    
     public static boolean isValidTime(String input) {
         String[] names = new String[]{
             ("year"),

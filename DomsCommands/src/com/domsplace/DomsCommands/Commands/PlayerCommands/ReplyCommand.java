@@ -37,6 +37,11 @@ public class ReplyCommand extends BukkitCommand {
         DomsPlayer talker = DomsPlayer.getPlayer(sender);
         DomsPlayer replier = talker.getLastMessenger();
         
+        if(talker.isMuted()) {
+            sendMessage(sender, ChatError + "You can't message, you're muted.");
+            return true;
+        }
+        
         if(replier == null) {
             sendMessage(sender, ChatError + "You have no one to reply to.");
             return true;

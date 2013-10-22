@@ -29,16 +29,16 @@ import org.bukkit.command.CommandSender;
  * @author      Dominic
  * @since       13/10/2013
  */
-public class KickCommand extends BukkitCommand {
-    public KickCommand() {
-        super("kick");
+public class WarnCommand extends BukkitCommand {
+    public WarnCommand() {
+        super("warn");
         this.addSubCommandOption(new SubCommandOption(SubCommandOption.PLAYERS_OPTION, "reason"));
     }
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
         if(args.length < 1) {
-            sendMessage(sender, ChatError + "Please enter a player name to kick.");
+            sendMessage(sender, ChatError + "Please enter a player name to warn.");
             return false;
         }
             
@@ -48,17 +48,12 @@ public class KickCommand extends BukkitCommand {
             return true;
         }
         
-        if(rel.isConsole() || rel.hasPermisson("DomsCommands.kick.exempt")) {
-            sendMessage(sender, ChatError + "You cannot kick this player.");
+        if(rel.isConsole() || rel.hasPermisson("DomsCommands.warn.exempt")) {
+            sendMessage(sender, ChatError + "You cannot warn this player.");
             return true;
         }
         
-        if(!rel.isOnline(sender)) {
-            sendMessage(sender, ChatError + rel.getDisplayName() + " isn't online.");
-            return true;
-        }
-        
-        String reason = "Kicked by an operator";
+        String reason = "Warned by an operator";
         if(args.length > 1) {
             reason = "";
             for(int i = 1; i < args.length; i++) {
@@ -69,11 +64,11 @@ public class KickCommand extends BukkitCommand {
             }
         }
         
-        Punishment p = new Punishment(rel, PunishmentType.KICK);
+        Punishment p = new Punishment(rel, PunishmentType.WARN);
         p.setReason(reason);
         p.setBanner(sender.getName());
         rel.addPunishment(p);
-        rel.kickPlayer(ChatDefault + "You have been kicked for " + ChatImportant + colorise(reason) + ChatDefault + ".");
+        rel.sendMessage(ChatDefault + "You have been warned for " + ChatImportant + colorise(reason) + ChatDefault + ".");
         
         
         String name = sender.getName();
@@ -81,15 +76,15 @@ public class KickCommand extends BukkitCommand {
             name = DomsPlayer.getPlayer(sender).getDisplayName();
         }
         broadcast(
-            "DomsCommands.kick.notify",
-            ChatImportant + name + ChatDefault + " kicked " + 
+            "DomsCommands.warn.notify",
+            ChatImportant + name + ChatDefault + " warned " + 
             ChatImportant + rel.getDisplayName() + ChatDefault + 
             " for " + ChatImportant + colorise(reason) + ChatDefault + "."
         );
-        if(!hasPermission(sender, "DomsCommands.kick.notify")) {
+        if(!hasPermission(sender, "DomsCommands.warn.notify")) {
             sendMessage(
                 sender,
-                ChatImportant + name + ChatDefault + " kicked " + 
+                ChatImportant + name + ChatDefault + " warned " + 
                 ChatImportant + rel.getDisplayName() + ChatDefault + 
                 " for " + ChatImportant + colorise(reason) + ChatDefault + "."
             );

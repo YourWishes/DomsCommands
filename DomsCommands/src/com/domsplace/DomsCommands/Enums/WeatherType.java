@@ -63,5 +63,6 @@ public class WeatherType extends DomsEnum {
     private final String name;
     private WeatherType(String name) {this.name = name;}
     public String getName() {return this.name;}
+    public void applyTo(World w) {this.applyTo(w, Integer.MAX_VALUE);}
     public void applyTo(World w, int d) {apply(w, d, this);}
 }

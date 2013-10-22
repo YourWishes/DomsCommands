@@ -16,6 +16,7 @@
 
 package com.domsplace.DomsCommands.Threads;
 
+import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.DomsThread;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;

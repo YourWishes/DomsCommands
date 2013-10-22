@@ -47,6 +47,11 @@ public class MessageCommand extends BukkitCommand {
         DomsPlayer talker = DomsPlayer.getPlayer(sender);
         DomsPlayer target = DomsPlayer.guessPlayer(sender, args[0]);
         
+        if(talker.isMuted()) {
+            sendMessage(sender, ChatError + "You can't message, you're muted.");
+            return true;
+        }
+        
         if(talker.equals(target)) {
             sendMessage(sender, ChatError + "You can't message yourself.");
             return true;

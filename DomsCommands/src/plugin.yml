@@ -26,6 +26,11 @@ commands:
       aliases: [stop]
       usage: /<command> [message]
       permission: DomsCommands.shutdown
+   checklag:
+      description: Check the lag of the server and run the garbage collector.
+      aliases: [lag, checkl, clag, gc, garbagecollect, garbagec, gcollect, fixlag]
+      usage: /<command>
+      permission: DomsCommands.checklag
    teleportrequest:
       description: Sends a teleport request to the supplied player.
       aliases: [tpa, teleportto, teleportplease, tprequest]
@@ -88,9 +93,14 @@ commands:
       permission: DomsCommands.warp
    ban:
       description: Ban a player.
-      aliases: [banish]
-      usage: /<command> [player] (time) (reason)
+      aliases: [banish, ipban, banip, baniship, ipbanish]
+      usage: /<command> [player|ip] (time) (reason)
       permission: DomsCommands.ban
+   mute:
+      description: Mutes a player.
+      aliases: [unmute, pardonmute, silence, slient, quiet, shush, InstallWindowsVistaKeyboardDrivers]
+      usage: /<command> [player] (time) (reason)
+      permission: DomsCommands.mute
    pardon:
       description: Unban a player and allow them back on the server.
       aliases: [unban, unbanish]
@@ -101,6 +111,11 @@ commands:
       aliases: [boot]
       usage: /<command> [player] (reason)
       permission: DomsCommands.kick
+   warn:
+      description: Warns a player from the server with an optional reason.
+      aliases: [warning, bad]
+      usage: /<command> [player] (reason)
+      permission: DomsCommands.warn
    away:
       description: Marks or unmarks yourself as being Away.
       aliases: [afk, awayfromkeyboard, busy]
@@ -156,6 +171,31 @@ commands:
       aliases: [i, get, getitem, giveme, want]
       usage: /<command> [item] (amount)
       permission: DomsCommands.item
+   more:
+      description: Gives more of the item in your hand, or the player you enter.
+      aliases: [m, gimme, wantmore]
+      usage: /<command> (player)
+      permission: DomsCommands.more
+   clearinventory:
+      description: Clear all items from your inventory.
+      aliases: [ci, clear, cinv, clearinv, cleari]
+      usage: /<command> (player)
+      permission: DomsCommands.clearinventory
+   enchant:
+      description: Enchant an item.
+      aliases: [e, ench, enchantment, addenchant, addenchantment]
+      usage: /<command> (player) [enchant] (level) (force)
+      permission: DomsCommands.enchant
+   renameitem:
+      description: Rename an item.
+      aliases: [setname, rename, sname, nameitem]
+      usage: /<command> [name]
+      permission: DomsCommands.renameitem
+   clearlores:
+      description: Remove all lores from an item.
+      aliases: [clearlore, nolore, nolores, removelore, removelores, resetlore, resetlores]
+      usage: /<command>
+      permission: DomsCommands.clearlores
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -206,6 +246,8 @@ permissions:
      description: Allows access to the warp command.
    DomsCommands.ban:
      description: Allows access to the ban command.
+   DomsCommands.banip:
+     description: Allows access to ban IP addresses.
    DomsCommands.ban.notify:
      description: Shows a message when a player is banned.
    DomsCommands.ban.exempt:
@@ -218,6 +260,18 @@ permissions:
      description: Makes a player exempt from being kicked.
    DomsCommands.kick.notify:
      description: Shows a message when a player is kicked.
+   DomsCommands.warn:
+     description: Allows access to the warn command.
+   DomsCommands.warn.exempt:
+     description: Makes a player exempt from being warned.
+   DomsCommands.warn.notify:
+     description: Shows a message when a player is warned.
+   DomsCommands.mute:
+     description: Allows access to the mute command.
+   DomsCommands.mute.exempt:
+     description: Makes a player exempt from being muted.
+   DomsCommands.mute.notify:
+     description: Shows a message when a player is muted.
    DomsCommands.away:
      description: Allows access to the away command.
    DomsCommands.away.exempt:
@@ -372,3 +426,84 @@ permissions:
      description: Allows access to the weather command.
    DomsCommands.item:
      description: Allows access to the item command.
+   DomsCommands.more:
+     description: Allows access to the more command.
+   DomsCommands.more.others:
+     description: Allows access to get more of items in others' hands'.
+   DomsCommands.clearinventory:
+     description: Allows access to the clearinventory command.
+   DomsCommands.clearinventory.others:
+     description: Allows access to clear the inventory of another player.
+   DomsCommands.enchant:
+     description: Allows access to the enchant command.
+   DomsCommands.enchant.others:
+     description: Allows access to enchant others' inventories.
+   DomsCommands.renameitem:
+     description: Allows access to the renameitem command.
+   DomsCommands.renameitem.colors.*:
+     description: Allows access to use all colors in item names.
+     children:
+         DomsCommands.renameitem.colors.black: true
+         DomsCommands.renameitem.colors.darkblue: true
+         DomsCommands.renameitem.colors.darkgreen: true
+         DomsCommands.renameitem.colors.cyan: true
+         DomsCommands.renameitem.colors.darkred: true
+         DomsCommands.renameitem.colors.purple: true
+         DomsCommands.renameitem.colors.gold: true
+         DomsCommands.renameitem.colors.gray: true
+         DomsCommands.renameitem.colors.darkgray: true
+         DomsCommands.renameitem.colors.green: true
+         DomsCommands.renameitem.colors.lightblue: true
+         DomsCommands.renameitem.colors.red: true
+         DomsCommands.renameitem.colors.pink: true
+         DomsCommands.renameitem.colors.yellow: true
+         DomsCommands.renameitem.colors.white: true
+         DomsCommands.renameitem.colors.magic: true
+         DomsCommands.renameitem.colors.bold: true
+         DomsCommands.renameitem.colors.strike: true
+         DomsCommands.renameitem.colors.underline: true
+         DomsCommands.renameitem.colors.italics: true
+   DomsCommands.renameitem.colors.black:
+     description: Allows access to use black in item names.
+   DomsCommands.renameitem.colors.darkblue:
+     description: Allows access to use darkblue in item names.
+   DomsCommands.renameitem.colors.darkgreen:
+     description: Allows access to use darkgreen in item names.
+   DomsCommands.renameitem.colors.cyan:
+     description: Allows access to use cyan in item names.
+   DomsCommands.renameitem.colors.darkred:
+     description: Allows access to use darkred in item names.
+   DomsCommands.renameitem.colors.purple:
+     description: Allows access to use purple in item names.
+   DomsCommands.renameitem.colors.gold:
+     description: Allows access to use gold in item names.
+   DomsCommands.renameitem.colors.gray:
+     description: Allows access to use gray in item names.
+   DomsCommands.renameitem.colors.darkgray:
+     description: Allows access to use darkgray in item names.
+   DomsCommands.renameitem.colors.blue:
+     description: Allows access to use blue in item names.
+   DomsCommands.renameitem.colors.green:
+     description: Allows access to use green in item names.
+   DomsCommands.renameitem.colors.lightblue:
+     description: Allows access to use lightblue in item names.
+   DomsCommands.renameitem.colors.red:
+     description: Allows access to use red in item names.
+   DomsCommands.renameitem.colors.pink:
+     description: Allows access to use pink in item names.
+   DomsCommands.renameitem.colors.yellow:
+     description: Allows access to use yellow in item names.
+   DomsCommands.renameitem.colors.white:
+     description: Allows access to use white in item names.
+   DomsCommands.renameitem.colors.magic:
+     description: Allows access to use magic in item names.
+   DomsCommands.renameitem.colors.bold:
+     description: Allows access to use bold in item names.
+   DomsCommands.renameitem.colors.strike:
+     description: Allows access to use strike in item names.
+   DomsCommands.renameitem.colors.underline:
+     description: Allows access to use underline in item names.
+   DomsCommands.renameitem.colors.italics:
+     description: Allows access to use italics in item names.
+   DomsCommands.clearlores:
+     description: Allows access to the clearlores command.

@@ -60,8 +60,12 @@ public class Punishment {
     public void setReason(String r) {this.reason = r;}
     public void setEndDate(long l) {this.endDate = l;}
     
-    public boolean isPermanent() {return this.endDate > date;}
-    public boolean isActive() {return !this.pardoned && (this.isPermanent()) || (this.getEndDate() <= Base.getNow());}
+    public boolean isPermanent() {return (this.endDate <= 0) || (this.endDate <= date);}
+    public boolean isActive() {
+        if(this.pardoned) return false;
+        if(this.isPermanent()) return true;
+        return this.getEndDate() > Base.getNow();
+    }
     public boolean isPardoned() {return this.pardoned;}
     
     public void isPardoned(boolean t) {this.pardoned = t;}

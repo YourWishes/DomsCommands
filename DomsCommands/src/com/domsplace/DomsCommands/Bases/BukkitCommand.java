@@ -39,6 +39,7 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
         cmd.setPermissionMessage(colorise(Base.getPermissionMessage()));
         cmd.setTabCompleter(command);
         COMMANDS.add(command);
+        debug("Registered Command \"" + command.command + "\"");
         return cmd;
     }
     
@@ -69,7 +70,6 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
         this.command = command;
         this.cmd = BukkitCommand.registerCommand(this);
         this.subOptions = new ArrayList<SubCommandOption>();
-        registerCommand(this);
     }
 
     @Override

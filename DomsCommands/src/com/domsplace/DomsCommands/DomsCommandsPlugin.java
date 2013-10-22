@@ -16,9 +16,7 @@
 
 package com.domsplace.DomsCommands;
 
-import com.domsplace.DomsCommands.Commands.ItemCommands.GiveCommand;
-import com.domsplace.DomsCommands.Commands.ItemCommands.GetIDCommand;
-import com.domsplace.DomsCommands.Commands.ItemCommands.ItemCommand;
+import com.domsplace.DomsCommands.Commands.ItemCommands.*;
 import com.domsplace.DomsCommands.Commands.TeleportCommands.*;
 import com.domsplace.DomsCommands.Commands.WarpCommands.*;
 import com.domsplace.DomsCommands.Bases.*;
@@ -38,6 +36,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private boolean enabled = false;
     
     //Commands
+    private CheckLagCommand checkLagCommand;
     private DoNothingCommand doNothingCommand;
     private DomsCommandsCommand domsCommands;
     private MOTDCommand motdCommand;
@@ -45,15 +44,21 @@ public class DomsCommandsPlugin extends JavaPlugin {
     
     private AwayCommand awayCommand;
     private GamemodeCommand gamemodeCommand;
-    private GiveCommand giveCommand;
-    private ItemCommand itemCommand;
-    private GetIDCommand getIDCommand;
     private MessageCommand messageCommand;
     private NicknameCommand nicknameCommand;
     private PingCommand pingCommand;
     private ReplyCommand replyCommand;
     private TimeCommand timeCommand;
     private WeatherCommand weatherCommand;
+    
+    private ClearInventoryCommand clearInventoryCommand;
+    private ClearLoresCommand clearLoresCommand;
+    private EnchantCommand enchantCommand;
+    private GiveCommand giveCommand;
+    private ItemCommand itemCommand;
+    private GetIDCommand getIDCommand;
+    private MoreCommand moreCommand;
+    private RenameItemCommand renameItemCommand;
     
     private TeleportRequestCommand tpaCommand;
     private TeleportRequestHereCommand tpahCommand;
@@ -72,6 +77,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private BanCommand banCommand;
     private PardonCommand pardonCommand;
     private KickCommand kickCommand;
+    private MuteCommand muteCommand;
+    private WarnCommand warnCommand;
     
     //Listeners
     private PlayerRegisterListener playerRegisterListener;
@@ -81,11 +88,13 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private PlayDirtyListener playDirtyListener;
     private EventCommandListener eventCommandListener;
     private PlayerAwayListener playerAwayListener;
+    private PunishmentListener punishmentListener;
     
     //Threads
     private ConfigSaveThread configSaveThread;
     private AddPlayerTimeThread playerTimeThread;
     private PlayerAwayThread playerAwayThread;
+    private ServerTPSThread serverTPSThread;
     
     @Override
     public void onEnable() {
@@ -99,6 +108,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         }
         
         //Load Commands
+        this.checkLagCommand = new CheckLagCommand();
         this.doNothingCommand = new DoNothingCommand();
         this.domsCommands = new DomsCommandsCommand();
         this.motdCommand = new MOTDCommand();
@@ -106,15 +116,21 @@ public class DomsCommandsPlugin extends JavaPlugin {
         
         this.awayCommand = new AwayCommand();
         this.gamemodeCommand = new GamemodeCommand();
-        this.giveCommand = new GiveCommand();
-        this.itemCommand = new ItemCommand();
-        this.getIDCommand = new GetIDCommand();
         this.messageCommand = new MessageCommand();
         this.nicknameCommand = new NicknameCommand();
         this.pingCommand = new PingCommand();
         this.replyCommand = new ReplyCommand();
         this.timeCommand = new TimeCommand();
         this.weatherCommand = new WeatherCommand();
+        
+        this.clearInventoryCommand = new ClearInventoryCommand();
+        this.clearLoresCommand = new ClearLoresCommand();
+        this.enchantCommand = new EnchantCommand();
+        this.giveCommand = new GiveCommand();
+        this.itemCommand = new ItemCommand();
+        this.getIDCommand = new GetIDCommand();
+        this.moreCommand = new MoreCommand();
+        this.renameItemCommand = new RenameItemCommand();
         
         this.tpaCommand = new TeleportRequestCommand();
         this.tpahCommand = new TeleportRequestHereCommand();
@@ -133,6 +149,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.banCommand = new BanCommand();
         this.pardonCommand = new PardonCommand();
         this.kickCommand = new KickCommand();
+        this.muteCommand = new MuteCommand();
+        this.warnCommand = new WarnCommand();
         
         //Load Listeners
         this.playerRegisterListener = new PlayerRegisterListener();
@@ -142,14 +160,16 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.playDirtyListener = new PlayDirtyListener();
         this.eventCommandListener = new EventCommandListener();
         this.playerAwayListener = new PlayerAwayListener();
+        this.punishmentListener = new PunishmentListener();
         
         //Load Threads
         this.configSaveThread = new ConfigSaveThread();
         this.playerTimeThread = new AddPlayerTimeThread();
         this.playerAwayThread = new PlayerAwayThread();
+        this.serverTPSThread = new ServerTPSThread();
         
         this.enabled = true;
-        Base.debug("Enabled \"" + this.getName() + "\" Successsfully!");
+        Base.log("Finished Loading " + this.getName() + ", " + BukkitCommand.getCommands().size() + " commands registered.");
     }
     
     @Override
@@ -160,7 +180,6 @@ public class DomsCommandsPlugin extends JavaPlugin {
         }
         
         DomsThread.stopAllThreads();
-        
         DataManager.saveAll();
     }
     

@@ -291,6 +291,10 @@ public class DomsItem {
         
         return DomsItem.BAD_DATA;
     }
+
+    public static DomsItem createItem(ItemStack is) {
+        return DomsItem.itemStackToDomsItems(is).get(0);
+    }
     
     //Instance
     private int id;
