@@ -103,7 +103,7 @@ commands:
       permission: DomsCommands.mute
    pardon:
       description: Unban a player and allow them back on the server.
-      aliases: [unban, unbanish]
+      aliases: [unban, unbanish, pardonip, pardon-ip, ippardon, ip-pardon]
       usage: /<command> [player]
       permission: DomsCommands.pardon
    kick:
@@ -196,6 +196,31 @@ commands:
       aliases: [clearlore, nolore, nolores, removelore, removelores, resetlore, resetlores]
       usage: /<command>
       permission: DomsCommands.clearlores
+   addlores:
+      description: Adds a lore to an item.
+      aliases: [addlore, setlore, setlores, lores, lore]
+      usage: /<command> [lore]
+      permission: DomsCommands.addlores
+   sethome:
+      description: Sets a home that you can return to later.
+      aliases: [shome, setrhome, homset, rhomeset]
+      usage: /<command> (home)
+      permission: DomsCommands.sethome
+   home:
+      description: Go to a set home.
+      aliases: [rhome, h]
+      usage: /<command> (home)
+      permission: DomsCommands.home
+   homes:
+      description: Go to a set homes.
+      aliases: [rhomes]
+      usage: /<command> (player)
+      permission: DomsCommands.homes
+   deletehome:
+      description: Go to a set homes.
+      aliases: [delhome, dhome, drhome, deleteh]
+      usage: /<command> [home]
+      permission: DomsCommands.deletehome
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -303,6 +328,7 @@ permissions:
          DomsCommands.nickname.colors.strike: true
          DomsCommands.nickname.colors.underline: true
          DomsCommands.nickname.colors.italics: true
+         DomsCommands.nickname.colors.reset: true
    DomsCommands.nickname.colors.black:
      description: Allows access to use black in nicknames.
    DomsCommands.nickname.colors.darkblue:
@@ -345,6 +371,8 @@ permissions:
      description: Allows access to use underline in nicknames.
    DomsCommands.nickname.colors.italics:
      description: Allows access to use italics in nicknames.
+   DomsCommands.nickname.colors.reset:
+     description: Allows access to use reset in nicknames.
    DomsCommands.gamemode:
      description: Allows access to the gamemode command.
    DomsCommands.tell:
@@ -372,6 +400,7 @@ permissions:
          DomsCommands.tell.colors.strike: true
          DomsCommands.tell.colors.underline: true
          DomsCommands.tell.colors.italics: true
+         DomsCommands.tell.colors.reset: true
    DomsCommands.tell.colors.black:
      description: Allows access to use black in messages.
    DomsCommands.tell.colors.darkblue:
@@ -414,6 +443,8 @@ permissions:
      description: Allows access to use underline in messages.
    DomsCommands.tell.colors.italics:
      description: Allows access to use italics in messages.
+   DomsCommands.tell.colors.reset:
+     description: Allows access to use reset in messages.
    DomsCommands.reply:
      description: Allows access to the reply command.
    DomsCommands.give:
@@ -463,6 +494,7 @@ permissions:
          DomsCommands.renameitem.colors.strike: true
          DomsCommands.renameitem.colors.underline: true
          DomsCommands.renameitem.colors.italics: true
+         DomsCommands.renameitem.colors.reset: true
    DomsCommands.renameitem.colors.black:
      description: Allows access to use black in item names.
    DomsCommands.renameitem.colors.darkblue:
@@ -505,5 +537,87 @@ permissions:
      description: Allows access to use underline in item names.
    DomsCommands.renameitem.colors.italics:
      description: Allows access to use italics in item names.
+   DomsCommands.renameitem.colors.reset:
+     description: Allows access to use reset in item names.
    DomsCommands.clearlores:
      description: Allows access to the clearlores command.
+   DomsCommands.addlores:
+     description: Allows access to the addlores command.
+   DomsCommands.addlores.colors.*:
+     description: Allows access to use all colors in item lores.
+     children:
+         DomsCommands.addlores.colors.black: true
+         DomsCommands.addlores.colors.darkblue: true
+         DomsCommands.addlores.colors.darkgreen: true
+         DomsCommands.addlores.colors.cyan: true
+         DomsCommands.addlores.colors.darkred: true
+         DomsCommands.addlores.colors.purple: true
+         DomsCommands.addlores.colors.gold: true
+         DomsCommands.addlores.colors.gray: true
+         DomsCommands.addlores.colors.darkgray: true
+         DomsCommands.addlores.colors.green: true
+         DomsCommands.addlores.colors.lightblue: true
+         DomsCommands.addlores.colors.red: true
+         DomsCommands.addlores.colors.pink: true
+         DomsCommands.addlores.colors.yellow: true
+         DomsCommands.addlores.colors.white: true
+         DomsCommands.addlores.colors.magic: true
+         DomsCommands.addlores.colors.bold: true
+         DomsCommands.addlores.colors.strike: true
+         DomsCommands.addlores.colors.underline: true
+         DomsCommands.addlores.colors.italics: true
+         DomsCommands.addlores.colors.reset: true
+   DomsCommands.addlores.colors.black:
+     description: Allows access to use black in item lores.
+   DomsCommands.addlores.colors.darkblue:
+     description: Allows access to use darkblue in item lores.
+   DomsCommands.addlores.colors.darkgreen:
+     description: Allows access to use darkgreen in item lores.
+   DomsCommands.addlores.colors.cyan:
+     description: Allows access to use cyan in item lores.
+   DomsCommands.addlores.colors.darkred:
+     description: Allows access to use darkred in item lores.
+   DomsCommands.addlores.colors.purple:
+     description: Allows access to use purple in item lores.
+   DomsCommands.addlores.colors.gold:
+     description: Allows access to use gold in item lores.
+   DomsCommands.addlores.colors.gray:
+     description: Allows access to use gray in item lores.
+   DomsCommands.addlores.colors.darkgray:
+     description: Allows access to use darkgray in item lores.
+   DomsCommands.addlores.colors.blue:
+     description: Allows access to use blue in item lores.
+   DomsCommands.addlores.colors.green:
+     description: Allows access to use green in item lores.
+   DomsCommands.addlores.colors.lightblue:
+     description: Allows access to use lightblue in item lores.
+   DomsCommands.addlores.colors.red:
+     description: Allows access to use red in item lores.
+   DomsCommands.addlores.colors.pink:
+     description: Allows access to use pink in item lores.
+   DomsCommands.addlores.colors.yellow:
+     description: Allows access to use yellow in item lores.
+   DomsCommands.addlores.colors.white:
+     description: Allows access to use white in item lores.
+   DomsCommands.addlores.colors.magic:
+     description: Allows access to use magic in item lores.
+   DomsCommands.addlores.colors.bold:
+     description: Allows access to use bold in item lores.
+   DomsCommands.addlores.colors.strike:
+     description: Allows access to use strike in item lores.
+   DomsCommands.addlores.colors.underline:
+     description: Allows access to use underline in item lores.
+   DomsCommands.addlores.colors.italics:
+     description: Allows access to use italics in item lores.
+   DomsCommands.addlores.colors.reset:
+     description: Allows access to use reset in item lores.
+   DomsCommands.sethome:
+     description: Allows access to the sethome command.
+   DomsCommands.sethome.multiple:
+     description: Allows access to set multiple homes.
+   DomsCommands.home:
+     description: Allows access to the home command.
+   DomsCommands.homes:
+     description: Allows access to the homes command.
+   DomsCommands.deletehome:
+     description: Allows access to the deletehome command.

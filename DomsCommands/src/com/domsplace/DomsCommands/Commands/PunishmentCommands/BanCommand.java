@@ -114,6 +114,7 @@ public class BanCommand extends BukkitCommand {
         p.setReason(reason);
         p.setEndDate(unbandate);
         p.setBanner(sender.getName());
+        p.setLocation(DomsPlayer.getPlayer(sender));
         rel.kickPlayer(ChatDefault + "You have been banned for " + ChatImportant + colorise(reason) + ChatDefault + tb + ".");
         rel.getOfflinePlayer().setBanned(true);
         

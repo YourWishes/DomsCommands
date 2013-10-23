@@ -76,7 +76,7 @@ public class WarpManager extends DataManager {
         if(warpsFile.exists()) warpsFile.delete();
         warpsFile.createNewFile();
         
-        yml = YamlConfiguration.loadConfiguration(warpsFile);
+        yml = new YamlConfiguration();
         
         for(Warp w : Warp.getWarpsAlphabetically()) {
             yml.set(w.getName() + ".pos", w.getLocation().toString());

@@ -16,6 +16,7 @@
 
 package com.domsplace.DomsCommands.Listeners;
 
+import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.DomsListener;
 import com.domsplace.DomsCommands.Events.PlayerFirstJoinedEvent;
 import com.domsplace.DomsCommands.Events.PlayerLeaveGameEvent;
@@ -43,7 +44,8 @@ public class PlayerRegisterListener extends DomsListener {
     
     @EventHandler(priority=EventPriority.LOWEST)
     public void registerOnJoin(PlayerJoinEvent e) {
-        if(!DomsPlayer.isPlayerRegistered(e.getPlayer())) {
+        DataManager.PLAYER_MANAGER.load();
+        if(!DomsPlayer.isPlayerRegistered(e.getPlayer()) || !DomsPlayer.getPlayer(e.getPlayer()).hasPlayedBefore()) {
             //Create Player
             DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
             
@@ -73,6 +75,8 @@ public class PlayerRegisterListener extends DomsListener {
         //Fire event
         PlayerPostFirstJoinEvent event = new PlayerPostFirstJoinEvent(player);
         event.fireEvent();
+        
+        DataManager.PLAYER_MANAGER.save();
     }
     
     @EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
@@ -91,5 +95,6 @@ public class PlayerRegisterListener extends DomsListener {
         player.setLastLocation(player.getLocation());
         player.getDisplayName();
         player.setLastTeleportRequest(null);
+        DataManager.PLAYER_MANAGER.save();
     }
 }

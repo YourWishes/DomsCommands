@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffectType;
@@ -37,6 +38,7 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class SubCommandOption extends Base {
     public static final SubCommandOption PLAYERS_OPTION = new SubCommandOption("[PLAYER]");
+    public static final SubCommandOption HOMES_OPTION = new SubCommandOption("[HOME]");
     public static final SubCommandOption WORLD_OPTION = new SubCommandOption("[WORLD]");
     public static final SubCommandOption ENCHANTMENT_OPTION = new SubCommandOption("[ENCHANTS]");
     public static final SubCommandOption MOB_OPTION = new SubCommandOption("[MOB]");
@@ -81,11 +83,15 @@ public class SubCommandOption extends Base {
     public String getOption() {return this.option;}
     public List<SubCommandOption> getSubCommandOptions() {return new ArrayList<SubCommandOption>(this.subOptions);}
 
-    public List<String> getOptionsFormatted() {
+    public List<String> getOptionsFormatted(CommandSender sender) {
         List<String> returnV = new ArrayList<String>();
         if(this.compare(SubCommandOption.PLAYERS_OPTION)) {
-            for(OfflinePlayer p : getPlayersList()) {
-                returnV.add(p.getName());
+            for(DomsPlayer p : DomsPlayer.getOnlinePlayers(sender)) {
+                returnV.add(p.getPlayer());
+            }
+        } else if(this.compare(SubCommandOption.HOMES_OPTION)) {
+            for(Home home : DomsPlayer.getPlayer(sender).getHomes()) {
+                returnV.add(home.getName());
             }
         } else if(this.compare(SubCommandOption.ENCHANTMENT_OPTION)) {
             for(Enchantment e : Enchantment.values()) {
@@ -149,7 +155,7 @@ public class SubCommandOption extends Base {
         return returnV;
     }
     
-    public static String reverse(String s) {
+    public static String reverse(String s, CommandSender sender) {
         if(Bukkit.getPlayer(s) != null) return SubCommandOption.PLAYERS_OPTION.option;
         if(Bukkit.getWorld(s) != null) return SubCommandOption.WORLD_OPTION.option;
         if(Enchantment.getByName(s) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
@@ -162,16 +168,16 @@ public class SubCommandOption extends Base {
         return s;
     }
     
-    public List<String> getOptionsAsStringList() {
+    public List<String> getOptionsAsStringList(CommandSender sender) {
         List<String> returnV = new ArrayList<String>();
         for(SubCommandOption sc : this.subOptions) {
-            returnV.addAll(sc.getOptionsFormatted());
+            returnV.addAll(sc.getOptionsFormatted(sender));
         }
         
         return returnV;
     }
     
-    public List<String> tryFetch(String[] args, int lvl) {
+    public List<String> tryFetch(String[] args, int lvl, CommandSender sender) {
         List<String> opts = new ArrayList<String>();
         
         lvl = lvl + 1;
@@ -180,13 +186,12 @@ public class SubCommandOption extends Base {
         if(targetLevel > lvl) {
             for(SubCommandOption sco : this.subOptions) {
                 String s = args[lvl-1].toLowerCase();
-                s = reverse(s);
-                Base.debug("S: " + s + " : " + sco.getOption() + " :: " + lvl);
+                s = reverse(s, sender);
                 if(!sco.getOption().toLowerCase().startsWith(s.toLowerCase())) continue;
-                opts.addAll(sco.tryFetch(args, lvl));
+                opts.addAll(sco.tryFetch(args, lvl, sender));
             }
         } else {
-            return this.getOptionsAsStringList();
+            return this.getOptionsAsStringList(sender);
         }
         
         return opts;

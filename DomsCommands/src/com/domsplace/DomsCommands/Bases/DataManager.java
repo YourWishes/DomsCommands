@@ -31,6 +31,7 @@ public class DataManager extends Base {
     
     public static final PluginManager PLUGIN_MANAGER = new PluginManager();
     public static final ConfigManager CONFIG_MANAGER = new ConfigManager();
+    public static final PlayerManager PLAYER_MANAGER = new PlayerManager();
     public static final WarpManager WARP_MANAGER = new WarpManager();
     public static final CraftBukkitManager CRAFT_BUKKIT_MANAGER = new CraftBukkitManager();
     

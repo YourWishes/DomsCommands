@@ -16,9 +16,11 @@
 
 package com.domsplace.DomsCommands.Commands.ItemCommands;
 
+import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Objects.DomsItem;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
+import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Material;
@@ -31,9 +33,10 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author Dominic Masters
  */
-public class ClearLoresCommand extends BukkitCommand {
-    public ClearLoresCommand() {
-        super("clearlores");
+public class AddLoresCommand extends BukkitCommand {
+    public AddLoresCommand() {
+        super("addlores");
+        this.addSubCommandOption(new SubCommandOption("lore"));
     }
     
     @Override
@@ -42,24 +45,35 @@ public class ClearLoresCommand extends BukkitCommand {
             sendMessage(sender, ChatError + "Only players can do this.");
             return true;
         }
+        
+        if(args.length < 1) {
+            sendMessage(sender, ChatError + "Please enter a lore name.");
+            return false;
+        }
+        
         DomsPlayer player = DomsPlayer.getPlayer(sender);
         
         ItemStack is = player.getOnlinePlayer().getItemInHand();
         if(is == null || 
                 is.getType() == null || 
                 is.getType().equals(Material.AIR) || 
-                is.getItemMeta() == null || 
-                is.getItemMeta().getLore() == null || 
-                is.getItemMeta().getLore().size() < 1) {
-            sendMessage(sender, ChatError + "Item has no lores.");
+                is.getItemMeta() == null) {
+            sendMessage(sender, ChatError + "Cannot add lores to this item");
             return true;
         }
         
+        String lore = Base.arrayToString(args,  " ");
+        lore = Base.coloriseByPermission(lore, player, "DomsCommands.addlores.colors.");
+        
+        sendMessage(sender, "Added lore " + ChatImportant + lore + ChatDefault + " to " + ChatImportant + DomsItem.createItem(is).toHumanString() + ChatDefault + ".");
+        
         ItemMeta im = is.getItemMeta();
-        List<String> lores = new ArrayList<String>();
+        List<String> lores = im.getLore();
+        if(lores == null) lores = new ArrayList<String>();
+        lores.add(lore);
         im.setLore(lores);
+        
         is.setItemMeta(im);
-        sendMessage(sender, "Cleared lores for " + ChatImportant + DomsItem.createItem(is).toHumanString() + ChatDefault + ".");
         return true;
     }
 }

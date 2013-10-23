@@ -19,7 +19,6 @@ package com.domsplace.DomsCommands.Bases;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -76,7 +75,15 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(cmd.getName().equalsIgnoreCase(this.command)) {
             if(!hasPermission(sender, cmd.getPermission())) return noPermission(sender, cmd, label, args);
-            boolean result = this.cmd(sender, cmd, label, args);
+            boolean result = false;
+            //Error Handling
+            try {
+                result = this.cmd(sender, cmd, label, args);
+            } catch(Exception e) {
+                error("Command Execution failed \"" + this.toFullCommand(sender, cmd, label, args) + "\" Show to Plugin Author!", e);
+                sendMessage(sender, ChatError + "A command error occured and the command was not finished successfully, please contact an admin!");
+            }
+            
             if(!result) return commandFailed(sender, cmd, label, args);
             DataManager.saveAll();
             return commandSuccess(sender, cmd, label, args);
@@ -110,7 +117,7 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
     public boolean commandSuccess(CommandSender sender, Command cmd, String label, String[] args) {return true;}
     public boolean commandFailed(CommandSender sender, Command cmd, String label, String[] args) {return false;}
     
-    public List<String> tab(CommandSender sender, Command cmd, String label, String[] args) {return this.getArgumentGuesses(args);}
+    public List<String> tab(CommandSender sender, Command cmd, String label, String[] args) {return this.getArgumentGuesses(args, sender);}
     public List<String> tabFailed(CommandSender sender, Command cmd, String label, String[] args) {return null;}
     public List<String> badTab(CommandSender sender, Command cmd, String label, String[] args) {return null;}
     public List<String> tabSuccess(CommandSender sender, Command cmd, String label, String[] args, List<String> successValue) {return successValue;}
@@ -140,15 +147,15 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
         return this.onCommand(sender, cmd, lbl, args);
     }
     
-    public List<String> getArgumentGuesses(String[] args) {
+    public List<String> getArgumentGuesses(String[] args, CommandSender sender) {
         List<String> options = new ArrayList<String>();
         if(args.length == 0) {
             for(SubCommandOption sco : this.subOptions) {
-                options.addAll(sco.getOptionsFormatted());
+                options.addAll(sco.getOptionsFormatted(sender));
             }
         } else if(args.length == 1) {
             for(SubCommandOption sco : this.subOptions) {
-                for(String s : sco.getOptionsFormatted()) {
+                for(String s : sco.getOptionsFormatted(sender)) {
                     if(!s.toLowerCase().startsWith(args[0].toLowerCase())) continue;
                     options.add(s);
                 }
@@ -158,9 +165,9 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
             
             for(SubCommandOption sco : this.subOptions) {
                 String s = args[0].toLowerCase();
-                s = SubCommandOption.reverse(s);
+                s = SubCommandOption.reverse(s, sender);
                 if(!sco.getOption().toLowerCase().startsWith(s.toLowerCase())) continue;
-                matches.addAll(sco.tryFetch(args, 1));
+                matches.addAll(sco.tryFetch(args, 1, sender));
             }
             
             if(args[args.length - 1].replaceAll(" ", "").equalsIgnoreCase("")) return matches;
@@ -185,5 +192,11 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
         }
         
         return false;
+    }
+
+    private String toFullCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        String s = isPlayer(sender) ? "/" : "";
+        s += label + Base.arrayToString(args, " ");
+        return s;
     }
 }

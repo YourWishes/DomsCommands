@@ -94,7 +94,7 @@ public class Base extends RawBase {
         String[] perms = {"black", "darkblue", "darkgreen", "cyan", "darkred", 
             "purple", "gold", "gray", "darkgray", "blue", "green", "lightblue", 
             "red", "pink", "yellow", "white", "magic", "bold", "strike", 
-            "underline", "italics"};
+            "underline", "italics", "reset"};
         
         for(int i = 0; i < perms.length; i++) {
             if(!player.hasPermisson(permissionPrefix + perms[i])) continue;
@@ -429,7 +429,7 @@ public class Base extends RawBase {
         return m;
     }
     
-    public String twoDecimalPlaces(double x) {
+    public static String twoDecimalPlaces(double x) {
         DecimalFormat df = new DecimalFormat("#.00");
         return df.format(x);
     }

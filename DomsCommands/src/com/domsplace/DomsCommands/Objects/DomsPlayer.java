@@ -19,6 +19,7 @@ package com.domsplace.DomsCommands.Objects;
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +82,28 @@ public class DomsPlayer {
         }
         return list;
     }
+
+    public static List<DomsPlayer> getOnlinePlayers(CommandSender sender) {
+        List<DomsPlayer> list = new ArrayList<DomsPlayer>();
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            DomsPlayer player = DomsPlayer.getPlayer(p);
+            if(player.isConsole()) continue;
+            if(!player.isOnline()) continue;
+            if(!player.isOnline(sender)) continue;
+            list.add(player);
+        }
+        return list;
+    }
+    
+    public static List<DomsPlayer> getVisibleOnlinePlayers() {
+        List<DomsPlayer> list = new ArrayList<DomsPlayer>();
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            DomsPlayer pl = DomsPlayer.getPlayer(p);
+            if(!pl.isVisible()) continue;
+            list.add(pl);
+        }
+        return list;
+    }
     
     public static List<DomsPlayer> getRegisteredPlayers() {return new ArrayList<DomsPlayer>(REGISTERED_PLAYERS.values());}
     
@@ -107,6 +130,7 @@ public class DomsPlayer {
     //Instance
     private String player;
     private String displayName;
+    private File playerFile;
     
     private String lastIP;
     
@@ -140,6 +164,7 @@ public class DomsPlayer {
         this.lastMoveTime = Base.getNow();
         
         this.registerPlayer();
+        Base.debug("Regitered new DomsPlayer for " + this.player);
     }
     
     private void registerPlayer() {REGISTERED_PLAYERS.put(player, this);}
@@ -160,6 +185,7 @@ public class DomsPlayer {
     public List<Punishment> getPunishments() {return new ArrayList<Punishment>(this.punishments);}
     public List<Home> getHomes() {return new ArrayList<Home>(this.homes);}
     public DomsPlayer getLastMessenger() {return this.lastPrivateMessenger;}
+    public File getPlayerFile() {return this.playerFile;}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
@@ -178,6 +204,7 @@ public class DomsPlayer {
     public void setAFK(boolean i) {this.afk = i;}
     public void setAFKTime(long now) {this.afkTime = now;}
     public void setLastMessenger(DomsPlayer player) {this.lastPrivateMessenger = player;}
+    public void setPlayerFile(File file) {this.playerFile = file;}
     
     @Override public String toString() {return this.getDisplayName();}
     
@@ -192,8 +219,11 @@ public class DomsPlayer {
     public void toggleAFK() {this.afk = !this.afk;}
     
     public boolean hasPermisson(String perm) {return Base.hasPermission(this.getOfflinePlayer(), perm);}
+    public boolean hasPlayedBefore() {return this.getOfflinePlayer().hasPlayedBefore();}
+    
     public boolean canSee(OfflinePlayer t) {return Base.canSee(this.getOfflinePlayer(), t);}
     public boolean canBeSeenBy(OfflinePlayer t) {return Base.canSee(t, this.getOfflinePlayer());}
+    
     public void teleport(DomsLocation to) {this.teleport(to, Base.getConfig().getBoolean("teleport.safe", true));}
     public void sendMessage(Object o) {Base.sendMessage(this, o);}
     
@@ -215,6 +245,7 @@ public class DomsPlayer {
         return this.displayName;
     }
     public DomsLocation getLocation() {
+        if(this.isConsole()) return null;
         if(this.isOnline()) return new DomsLocation(this.getOnlinePlayer().getLocation());
         return this.lastLocation;
     }

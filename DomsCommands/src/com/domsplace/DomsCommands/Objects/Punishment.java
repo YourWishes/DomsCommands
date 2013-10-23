@@ -58,7 +58,10 @@ public class Punishment {
     
     public void setBanner(String n) {this.sender = n;}
     public void setReason(String r) {this.reason = r;}
+    public void setDate(long l) {this.date = l;}
     public void setEndDate(long l) {this.endDate = l;}
+    public void setLocation(DomsLocation location) {this.location = location.copy();}
+    public void setLocation(DomsPlayer player) {if(!player.isConsole()) this.setLocation(player.getLocation());}
     
     public boolean isPermanent() {return (this.endDate <= 0) || (this.endDate <= date);}
     public boolean isActive() {

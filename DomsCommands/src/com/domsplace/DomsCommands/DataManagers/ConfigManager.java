@@ -69,10 +69,10 @@ public class ConfigManager extends DataManager {
         df("messages.firstjoin.broadcast", "&d{DISPLAYNAME} has joined {SERVER} for the first time! Please make them feel welcome!");
         df("messages.firstjoin.message", "&7Please be sure to read the rules, &9{NAME}&7!\n&7And most importantly, have fun!");
         
-        df("messages.login.broadcast", "&e{DISPLAYNAME} has arrived.");
+        df("messages.login.broadcast", "&e{DISPLAYNAME}&e has arrived.");
         df("messages.login.message", "&9Players Online &7{NUMPLAYERS}/{TOTALPLAYERS}:\n&7{PLAYERS}");
-        df("messages.logout.broadcast", "&e{DISPLAYNAME} has departed.");
-        df("messages.kicked.broadcast", "&e{DISPLAYNAME} was kicked.");
+        df("messages.logout.broadcast", "&e{DISPLAYNAME}&e has departed.");
+        df("messages.kicked.broadcast", "&e{DISPLAYNAME}&e was kicked.");
         
         df("messages.shutdown.kickmessage", Bukkit.getServer().getShutdownMessage());
         
@@ -86,8 +86,8 @@ public class ConfigManager extends DataManager {
         
         df("away.autoaway", 300);
         df("away.autokick", 600);
-        df("away.message", "&9{DISPLAYNAME} &7is now AFK.");
-        df("away.messageback", "&9{DISPLAYNAME} &7is no longer AFK.");
+        df("away.message", "&9{DISPLAYNAME} &7is now Away.");
+        df("away.messageback", "&9{DISPLAYNAME} &7has returned.");
         df("away.kickmessage", "Away too long!");
         df("away.commands.cancel", true);
         
@@ -165,11 +165,11 @@ public class ConfigManager extends DataManager {
         msg = msg.replaceAll("\\{TOTALPLAYERS\\}", "" + Bukkit.getServer().getMaxPlayers());
         
         String m = "";
-        List<OfflinePlayer> list = Base.getPlayersList();
+        List<DomsPlayer> list = DomsPlayer.getVisibleOnlinePlayers();
         for(int i = 0; i < list.size(); i++) {
-            OfflinePlayer op = list.get(i);
-            String n = op.getName();
-            if(op.isOnline()) n = op.getPlayer().getDisplayName();
+            DomsPlayer player = list.get(i);
+            String n = player.getDisplayName();
+            if(player.isAFK()) n = ChatDefault + "[Away] " + n;
             m += ChatDefault + n + ChatDefault;
             if(i < (list.size() - 1)) {
                 m += ", ";

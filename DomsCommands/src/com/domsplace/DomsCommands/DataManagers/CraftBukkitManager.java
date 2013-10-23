@@ -35,7 +35,9 @@ public class CraftBukkitManager extends DataManager {
         String cb = getCraftServerClassName();
         try {
             getCraftServerClass();
+            debug("CraftBukkit Available!");
         } catch(ClassNotFoundException e) {
+            debug("Couldn't find CraftBukkit!");
         }
     }
     

@@ -132,6 +132,8 @@ public class DomsLocation {
     public void setWorld(String world) {this.world = world;}
     
     public Location toLocation() {return new Location(this.getBukkitWorld(), this.x, this.y, this.z, this.yaw, this.pitch);}
+
+    public DomsLocation copy() {return DomsLocation.guessLocation(this.toString());}
     
     public DomsLocation getSafeLocation() {
         //Returns the Safest Location

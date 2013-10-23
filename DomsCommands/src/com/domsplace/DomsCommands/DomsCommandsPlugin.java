@@ -43,14 +43,19 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private ShutdownCommand stopCommand;
     
     private AwayCommand awayCommand;
+    private DeleteHomeCommand deleteHomeCommand;
     private GamemodeCommand gamemodeCommand;
+    private HomeCommand homeCommand;
+    private HomesCommand homesCommand;
     private MessageCommand messageCommand;
     private NicknameCommand nicknameCommand;
     private PingCommand pingCommand;
     private ReplyCommand replyCommand;
+    private SetHomeCommand setHomeCommand;
     private TimeCommand timeCommand;
     private WeatherCommand weatherCommand;
     
+    private AddLoresCommand addLoresCommand;
     private ClearInventoryCommand clearInventoryCommand;
     private ClearLoresCommand clearLoresCommand;
     private EnchantCommand enchantCommand;
@@ -115,14 +120,19 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.stopCommand = new ShutdownCommand();
         
         this.awayCommand = new AwayCommand();
+        this.deleteHomeCommand = new DeleteHomeCommand();
         this.gamemodeCommand = new GamemodeCommand();
+        this.homeCommand = new HomeCommand();
+        this.homesCommand = new HomesCommand();
         this.messageCommand = new MessageCommand();
         this.nicknameCommand = new NicknameCommand();
         this.pingCommand = new PingCommand();
         this.replyCommand = new ReplyCommand();
+        this.setHomeCommand = new SetHomeCommand();
         this.timeCommand = new TimeCommand();
         this.weatherCommand = new WeatherCommand();
         
+        this.addLoresCommand = new AddLoresCommand();
         this.clearInventoryCommand = new ClearInventoryCommand();
         this.clearLoresCommand = new ClearLoresCommand();
         this.enchantCommand = new EnchantCommand();

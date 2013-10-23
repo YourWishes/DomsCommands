@@ -21,6 +21,9 @@ package com.domsplace.DomsCommands.Objects;
  * @author Dominic Masters
  */
 public class Home {
+    public static final String HOME_NAME_REGEX = "^[a-zA-Z0-9]*$";
+    
+    //Instance
     private String name;
     private DomsLocation location;
     private DomsPlayer player;
