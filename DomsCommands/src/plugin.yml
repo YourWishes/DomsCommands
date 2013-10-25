@@ -5,7 +5,7 @@ authors: [Dominic, Jordan, Lazy, Kyle]
 website: http://domsplace.com/
 version: '1.00'
 load: POSTWORLD
-softdepend: []
+softdepend: [Vault]
 commands:
    DomsCommands:
       description: Provides basic information about the DomsCommands plugin.
@@ -221,6 +221,11 @@ commands:
       aliases: [delhome, dhome, drhome, deleteh]
       usage: /<command> [home]
       permission: DomsCommands.deletehome
+   server:
+      description: Talk as the server.
+      aliases: [say]
+      usage: /<command> [message]
+      permission: DomsCommands.server
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -233,6 +238,8 @@ permissions:
      description: Allows access to the DomsCommands command.
    DomsCommands.nothing:
      description: Allows access to the donothing command.
+   DomsCommands.server:
+     description: Allows access to the server command.
    DomsCommands.motd:
      description: Allows access to the motd command.
    DomsCommands.motd.set:

@@ -58,11 +58,24 @@ public class DomsLocation {
                     loc.setZ(p2);
                     loc.setWorld(split[2]);
                 }
-            } else if(split.length >= 4) {
+            } else if(split.length == 4) {
                 loc.setX(Base.getDouble(split[0]));
                 loc.setY(Base.getDouble(split[1]));
                 loc.setZ(Base.getDouble(split[2]));
                 loc.setWorld(split[3]);
+            } else if (split.length == 5) {
+                loc.setX(Base.getDouble(split[0]));
+                loc.setY(Base.getDouble(split[1]));
+                loc.setZ(Base.getDouble(split[2]));
+                loc.setPitch(Base.getFloat(split[3]));
+                loc.setYaw(Base.getFloat(split[4]));
+            } else if(split.length >= 6) {
+                loc.setX(Base.getDouble(split[0]));
+                loc.setY(Base.getDouble(split[1]));
+                loc.setZ(Base.getDouble(split[2]));
+                loc.setPitch(Base.getFloat(split[3]));
+                loc.setYaw(Base.getFloat(split[4]));
+                loc.setWorld(split[5]);
             }
         } catch(Exception e) {
             return null;
@@ -129,6 +142,8 @@ public class DomsLocation {
     public void setX(double x) {this.x = x;}
     public void setY(double y) {this.y = y;}
     public void setZ(double z) {this.z = z;}
+    public void setPitch(float p) {this.pitch = p;}
+    public void setYaw(float y) {this.yaw = y;}
     public void setWorld(String world) {this.world = world;}
     
     public Location toLocation() {return new Location(this.getBukkitWorld(), this.x, this.y, this.z, this.yaw, this.pitch);}
@@ -200,7 +215,11 @@ public class DomsLocation {
     
     @Override
     public String toString() {
-        String s = this.x + "," + this.y + "," + this.z + "," + this.world;
+        String s = this.x + "," + this.y + "," + this.z + ",";
+        if(this.pitch != -1.0f && this.yaw != -1.0f) {
+            s += this.pitch + "," + this.yaw + ",";
+        }
+        s += this.world;
         return s;
     }
 }

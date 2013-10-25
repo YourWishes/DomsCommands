@@ -32,6 +32,7 @@ public class DomsCommandsCommand extends BukkitCommand {
     public DomsCommandsCommand() {
         super("DomsCommands");
         this.addSubCommandOption(new SubCommandOption("reload"));
+        this.addSubCommandOption(new SubCommandOption("save"));
     }
     
     @Override
@@ -46,6 +47,17 @@ public class DomsCommandsCommand extends BukkitCommand {
                 } else {
                     sender.sendMessage(ChatError + "Failed to Reload Configuration! Check console for errors.");
                 }
+                return true;
+            }
+            
+            if(args[0].equalsIgnoreCase("save")) {
+                sendMessage(sender, "Saving...");
+                if(DataManager.saveAll()) {
+                    sendMessage(sender, ChatImportant + "Saved!");
+                } else {
+                    sendMessage(sender, ChatError + "Failed to save data! Check console for errors.");
+                }
+                
                 return true;
             }
             

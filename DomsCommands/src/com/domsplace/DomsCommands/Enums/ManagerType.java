@@ -7,6 +7,7 @@ public class ManagerType extends DomsEnum {
     public static final ManagerType PLUGIN = new ManagerType("Plugin");
     public static final ManagerType WARP = new ManagerType("Warp");
     public static final ManagerType PLAYER = new ManagerType("Player");
+    public static final ManagerType CHAT = new ManagerType("Chat");
     public static final ManagerType CRAFT_BUKKIT = new ManagerType("Craftbukkit");
     
     //Instance

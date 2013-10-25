@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -100,6 +100,12 @@ public class ConfigManager extends DataManager {
         commands.add("say");
         commands.add("broadcast");
         df("punishment.mute.blockedcommands", commands);
+        
+        commands = new ArrayList<String>();
+        for(World w : Bukkit.getWorlds()) {
+            commands.add(w.getName());
+        }
+        df("inventory.groups.default", commands);
         
         //Store Values
         Base.DebugMode = this.config.getBoolean("debug", false);

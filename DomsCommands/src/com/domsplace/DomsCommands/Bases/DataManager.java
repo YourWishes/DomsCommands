@@ -33,6 +33,7 @@ public class DataManager extends Base {
     public static final ConfigManager CONFIG_MANAGER = new ConfigManager();
     public static final PlayerManager PLAYER_MANAGER = new PlayerManager();
     public static final WarpManager WARP_MANAGER = new WarpManager();
+    public static final ChatManager CHAT_MANAGER = new ChatManager();
     public static final CraftBukkitManager CRAFT_BUKKIT_MANAGER = new CraftBukkitManager();
     
     private static void registerManager(DataManager manager) {

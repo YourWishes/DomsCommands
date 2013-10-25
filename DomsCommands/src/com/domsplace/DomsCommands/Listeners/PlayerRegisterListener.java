@@ -21,6 +21,7 @@ import com.domsplace.DomsCommands.Bases.DomsListener;
 import com.domsplace.DomsCommands.Events.PlayerFirstJoinedEvent;
 import com.domsplace.DomsCommands.Events.PlayerLeaveGameEvent;
 import com.domsplace.DomsCommands.Events.PlayerPostFirstJoinEvent;
+import com.domsplace.DomsCommands.Objects.DomsInventory;
 import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import org.bukkit.Bukkit;
@@ -29,6 +30,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  * @author      Dominic
@@ -56,6 +58,8 @@ public class PlayerRegisterListener extends DomsListener {
             player.setLastLocation(new DomsLocation(e.getPlayer().getLocation()));
             player.setLastMoveTime(getNow());
             player.setAFKTime(getNow());
+        
+            try {player.getInventory().setToPlayer();} catch(Exception ex) {}
 
             //Fire Event
             PlayerFirstJoinedEvent event = new PlayerFirstJoinedEvent(player);
@@ -71,6 +75,8 @@ public class PlayerRegisterListener extends DomsListener {
         player.setLastMoveTime(getNow());
         player.setAFK(false);
         player.setAFKTime(getNow());
+        
+        try {player.getInventory().setToPlayer();} catch(Exception ex) {}
         
         //Fire event
         PlayerPostFirstJoinEvent event = new PlayerPostFirstJoinEvent(player);
@@ -95,6 +101,30 @@ public class PlayerRegisterListener extends DomsListener {
         player.setLastLocation(player.getLocation());
         player.getDisplayName();
         player.setLastTeleportRequest(null);
+        player.updateDomsInventory();
         DataManager.PLAYER_MANAGER.save();
+    }
+    
+    @EventHandler(priority=EventPriority.HIGHEST)
+    public void changeInventoryOnWorldChange(PlayerTeleportEvent e) {
+        if(e.getTo().getWorld().equals(e.getFrom().getWorld())) return;
+        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        player.updateDomsInventory();
+        
+        DomsInventory inv = player.getInventoryFromWorld(e.getTo().getWorld().getName());
+        if(inv == null) {
+            inv = new DomsInventory(player, DomsInventory.getInventoryGroupFromWorld(e.getTo().getWorld().getName()));
+            player.addInventory(inv);
+        }
+        
+        inv.setToPlayer();
+        
+        inv = player.getEndChestFromWorld(e.getTo().getWorld().getName());
+        if(inv == null) {
+            inv = new DomsInventory(player, DomsInventory.getInventoryGroupFromWorld(e.getTo().getWorld().getName()));
+            player.addEndChest(inv);
+        }
+        
+        inv.setToInventory(e.getPlayer().getEnderChest());
     }
 }

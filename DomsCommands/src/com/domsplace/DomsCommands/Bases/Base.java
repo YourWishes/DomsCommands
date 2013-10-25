@@ -263,6 +263,12 @@ public class Base extends RawBase {
         sendAll(permission, o);
     }
     
+    public static void broadcast(List<DomsPlayer> players, Object o) {
+        for(DomsPlayer p : players) {
+            sendMessage(p, o);
+        }
+    }
+    
     public static void debug(Object o) {
         if(!DebugMode) return;
         broadcast(getDebugPrefix() + o.toString());
@@ -357,10 +363,6 @@ public class Base extends RawBase {
         return Integer.parseInt(o.toString());
     }
     
-    public static double getDouble(Object o) {
-        return Double.parseDouble(o.toString());
-    }
-    
     public static boolean isDouble(Object o) {
         try {
             Double.parseDouble(o.toString());
@@ -368,6 +370,10 @@ public class Base extends RawBase {
         } catch(Exception e) {
             return false;
         }
+    }
+    
+    public static double getDouble(Object o) {
+        return Double.parseDouble(o.toString());
     }
     
     public static boolean isShort(Object o) {
@@ -407,6 +413,19 @@ public class Base extends RawBase {
     
     public static long getLong(Object o) {
         return Long.parseLong(o.toString());
+    }
+    
+    public static boolean isFloat(Object o) {
+        try {
+            Long.parseLong(o.toString());
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+
+    public static float getFloat(Object o) {
+        return Float.parseFloat(o.toString());
     }
     
     public static boolean isIP(Object o) {

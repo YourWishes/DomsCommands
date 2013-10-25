@@ -19,12 +19,15 @@ package com.domsplace.DomsCommands.DataManagers;
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Enums.ManagerType;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
+import com.domsplace.DomsCommands.Objects.DomsInventory;
+import com.domsplace.DomsCommands.Objects.DomsInventoryItem;
 import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Home;
 import com.domsplace.DomsCommands.Objects.Punishment;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -55,7 +58,6 @@ public class PlayerManager extends DataManager {
         for(File f : this.getPlayersDirectory().listFiles()) {
             DomsPlayer player = loadPlayer(f);
             if(player != null) continue;
-            log("Failed to load Player from File \"" + f.getName() + "\".");
         }
     }
     
@@ -111,6 +113,51 @@ public class PlayerManager extends DataManager {
                 }
             }
             
+            if(yml.contains("inventories")) {
+                MemorySection invs = (MemorySection) yml.get("inventories");
+                for(String s : invs.getKeys(false)) {
+                    String key = "inventories." + s + ".";
+                    DomsInventory inv = new DomsInventory(player, yml.getString(key + "group"));
+                    
+                    if(yml.contains(key + "xp")) inv.setExp(Float.parseFloat(yml.getString(key + "xp")));
+                    
+                    if(yml.contains(key + "helmet")) inv.setHelmet(DomsInventoryItem.createFromString(yml.getString(key + "helmet")));
+                    if(yml.contains(key + "chestplate")) inv.setChestPlate(DomsInventoryItem.createFromString(yml.getString(key + "chestplate")));
+                    if(yml.contains(key + "leggings")) inv.setLeggings(DomsInventoryItem.createFromString(yml.getString(key + "leggings")));
+                    if(yml.contains(key + "boots")) inv.setBoots(DomsInventoryItem.createFromString(yml.getString(key + "boots")));
+                    
+                    if(yml.contains(key + "items")) {
+                        MemorySection items = (MemorySection) yml.get(key + "items");
+                        for(String i : items.getKeys(false)) {
+                            int slot = getInt(i.replaceAll("slot", ""));
+                            DomsInventoryItem item = DomsInventoryItem.createFromString(yml.getString(key + "items." + i));
+                            inv.setItem(slot, item);
+                        }
+                    }
+                    
+                    player.addInventory(inv);
+                }
+            }
+            
+            if(yml.contains("endchests")) {
+                MemorySection invs = (MemorySection) yml.get("endchests");
+                for(String s : invs.getKeys(false)) {
+                    String key = "endchests." + s + ".";
+                    DomsInventory inv = new DomsInventory(player, yml.getString(key + "group"));
+                    
+                    if(yml.contains(key + "items")) {
+                        MemorySection items = (MemorySection) yml.get(key + "items");
+                        for(String i : items.getKeys(false)) {
+                            int slot = getInt(i.replaceAll("slot", ""));
+                            DomsInventoryItem item = DomsInventoryItem.createFromString(yml.getString(key + "items." + i));
+                            inv.setItem(slot, item);
+                        }
+                    }
+                    
+                    player.addEndChest(inv);
+                }
+            }
+            
             if(yml.contains("ip")) {
                 player.setLastIP(yml.getString("ip", ""));
             }
@@ -121,11 +168,13 @@ public class PlayerManager extends DataManager {
             
             return player;
         } catch(Exception e) {
+            error("Failed to load Player from File \"" + file.getName() + "\".", e);
             return null;
         }
     }
     
     public void savePlayer(DomsPlayer player) {
+        player.updateDomsInventory();
         try {
             File f = player.getPlayerFile();
             if(f == null) player.setPlayerFile(this.getDefaultPlayerFile(player));
@@ -182,10 +231,39 @@ public class PlayerManager extends DataManager {
                 }
             }
             
-            for(Home h : player.getHomes()) {
-                String key = "home." + h.getName() + ".";
-                yml.set(key + "name", h.getName());
-                yml.set(key + "location", h.getLocation().toString());
+            if(!player.isConsole()) {
+                for(Home h : player.getHomes()) {
+                    String key = "home." + h.getName() + ".";
+                    yml.set(key + "name", h.getName());
+                    yml.set(key + "location", h.getLocation().toString());
+                }
+
+                for(DomsInventory inv : player.getInventories()) {
+                    String key = "inventories." + inv.getInventoryGroup() + ".";
+                    yml.set(key + "group", inv.getInventoryGroup());
+
+                    if(inv.getHelmet() != null) {yml.set(key + "helmet", inv.getHelmet().toString());}
+                    if(inv.getChestPlate() != null) {yml.set(key + "chestplate", inv.getChestPlate().toString());}
+                    if(inv.getLeggings() != null) {yml.set(key + "leggings", inv.getLeggings().toString());}
+                    if(inv.getBoots() != null) {yml.set(key + "boots", inv.getBoots().toString());}
+
+                    Map<Integer, DomsInventoryItem> items = inv.getItems();
+                    for(Integer i : items.keySet()) {
+                        yml.set(key + "items.slot" + i, items.get(i).toString());
+                    }
+
+                    if(inv.getExp() > 0) {yml.set(key + "xp", Float.toString(inv.getExp()));}
+                }
+
+                for(DomsInventory inv : player.getEnderChests()) {
+                    String key = "endchests." + inv.getInventoryGroup() + ".";
+                    yml.set(key + "group", inv.getInventoryGroup());
+
+                    Map<Integer, DomsInventoryItem> items = inv.getItems();
+                    for(Integer i : items.keySet()) {
+                        yml.set(key + "items.slot" + i, items.get(i).toString());
+                    }
+                }
             }
             
             yml.save(f);

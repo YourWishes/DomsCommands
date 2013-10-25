@@ -40,6 +40,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private DoNothingCommand doNothingCommand;
     private DomsCommandsCommand domsCommands;
     private MOTDCommand motdCommand;
+    private ServerCommand serverCommand;
     private ShutdownCommand stopCommand;
     
     private AwayCommand awayCommand;
@@ -94,6 +95,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private EventCommandListener eventCommandListener;
     private PlayerAwayListener playerAwayListener;
     private PunishmentListener punishmentListener;
+    private DomsChatListener domsChatListener;
     
     //Threads
     private ConfigSaveThread configSaveThread;
@@ -117,6 +119,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.doNothingCommand = new DoNothingCommand();
         this.domsCommands = new DomsCommandsCommand();
         this.motdCommand = new MOTDCommand();
+        this.serverCommand = new ServerCommand();
         this.stopCommand = new ShutdownCommand();
         
         this.awayCommand = new AwayCommand();
@@ -171,12 +174,15 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.eventCommandListener = new EventCommandListener();
         this.playerAwayListener = new PlayerAwayListener();
         this.punishmentListener = new PunishmentListener();
+        this.domsChatListener = new DomsChatListener();
         
         //Load Threads
         this.configSaveThread = new ConfigSaveThread();
         this.playerTimeThread = new AddPlayerTimeThread();
         this.playerAwayThread = new PlayerAwayThread();
         this.serverTPSThread = new ServerTPSThread();
+        
+        PluginHook.hookAll();
         
         this.enabled = true;
         Base.log("Finished Loading " + this.getName() + ", " + BukkitCommand.getCommands().size() + " commands registered.");

@@ -16,6 +16,7 @@
 
 package com.domsplace.DomsCommands.Bases;
 
+import com.domsplace.DomsCommands.Hooks.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
@@ -29,7 +30,7 @@ public class PluginHook extends Base{
     //Constants
     private static final List<PluginHook> PLUGIN_HOOKS = new ArrayList<PluginHook>();
     
-    
+    public static final VaultHook VAULT_HOOK = new VaultHook();
     
     //Static
     private static void hookPlugin(PluginHook hook) {

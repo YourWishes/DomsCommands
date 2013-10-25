@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
 import java.io.File;
@@ -30,6 +31,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -128,7 +130,7 @@ public class DomsPlayer {
     public static boolean isPlayerRegistered(String player) {return REGISTERED_PLAYERS.containsKey(player);}
     
     //Instance
-    private String player;
+    private final String player;
     private String displayName;
     private File playerFile;
     
@@ -147,8 +149,11 @@ public class DomsPlayer {
     private DomsLocation lastLocation;
     private long lastMoveTime;
     
-    private List<Punishment> punishments;
-    private List<Home> homes;
+    private final List<Punishment> punishments;
+    private final List<Home> homes;
+    private final List<DomsInventory> inventories;
+    private final List<DomsInventory> enderchest;
+    private Map<String, String> variables;
     
     private TeleportRequest lastRequest;
     
@@ -156,12 +161,16 @@ public class DomsPlayer {
     
     private DomsPlayer(String player) {
         this.player = player;
+        if(this.isConsole()) this.displayName = "&dServer";
         this.displayName = this.getDisplayName();
         this.punishments = new ArrayList<Punishment>();
         this.homes = new ArrayList<Home>();
+        this.inventories = new ArrayList<DomsInventory>();
+        this.enderchest = new ArrayList<DomsInventory>();
         this.afk = false;
         this.afkTime = Base.getNow();
         this.lastMoveTime = Base.getNow();
+        this.variables = new HashMap<String, String>();
         
         this.registerPlayer();
         Base.debug("Regitered new DomsPlayer for " + this.player);
@@ -184,8 +193,15 @@ public class DomsPlayer {
     public DomsLocation getLastLocation() {return this.lastLocation;}
     public List<Punishment> getPunishments() {return new ArrayList<Punishment>(this.punishments);}
     public List<Home> getHomes() {return new ArrayList<Home>(this.homes);}
+    public List<DomsInventory> getInventories() {return new ArrayList<DomsInventory>(this.inventories);}
+    public List<DomsInventory> getEnderChests() {return new ArrayList<DomsInventory>(this.enderchest);}
     public DomsPlayer getLastMessenger() {return this.lastPrivateMessenger;}
     public File getPlayerFile() {return this.playerFile;}
+    public DomsInventory getInventory() {return this.getInventoryFromWorld(this.getWorld());}
+    public String getWorld() {return this.getLocation().getWorld();}
+    public DomsChannel getChannel() {return DomsChannel.getPlayersChannel(this);}
+    public Map<String, String> getVariables() {this.updateVariables(); return new HashMap<String, String>(this.variables);}
+    public String getVariable(String key) {this.updateVariables(); return this.variables.get(key);}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
@@ -205,9 +221,12 @@ public class DomsPlayer {
     public void setAFKTime(long now) {this.afkTime = now;}
     public void setLastMessenger(DomsPlayer player) {this.lastPrivateMessenger = player;}
     public void setPlayerFile(File file) {this.playerFile = file;}
+    public void setVariable(String key, String variable) {this.variables.put(key, variable); this.updateVariables();}
     
     @Override public String toString() {return this.getDisplayName();}
     
+    public void addInventory(DomsInventory inv) {this.inventories.add(inv);}
+    public void addEndChest(DomsInventory inv) {this.enderchest.add(inv);}
     public void addPlayTime(long time) {this.playtime += time;}
     public void addPunishment(Punishment p) {this.punishments.add(p);}
     public void addHome(Home h) {this.homes.add(h);}
@@ -229,6 +248,7 @@ public class DomsPlayer {
     
     //Complex get's
     public final String getDisplayName() {
+        this.updateVariables();
         if(this.isConsole() && this.displayName == null) {
             this.displayName = "Server";
             return this.displayName;
@@ -244,6 +264,7 @@ public class DomsPlayer {
         this.displayName = this.getOnlinePlayer().getDisplayName();
         return this.displayName;
     }
+    
     public DomsLocation getLocation() {
         if(this.isConsole()) return null;
         if(this.isOnline()) return new DomsLocation(this.getOnlinePlayer().getLocation());
@@ -285,6 +306,57 @@ public class DomsPlayer {
         return recent;
     }
     
+    public DomsInventory getInventoryFromGroup(String g) {
+        for(DomsInventory inv : this.inventories) {
+            if(inv.getInventoryGroup().equals(g)) return inv;
+        }
+        return null;
+    }
+    
+    public DomsInventory getInventoryFromWorld(String w) {return this.getInventoryFromGroup(DomsInventory.getInventoryGroupFromWorld(w));}
+    
+    public DomsInventory getEndChestFromGroup(String g) {
+        for(DomsInventory inv : this.enderchest) {
+            if(inv.getInventoryGroup().equals(g)) return inv;
+        }
+        return null;
+    }
+    
+    public DomsInventory getEndChestFromWorld(String w) {return this.getEndChestFromGroup(DomsInventory.getInventoryGroupFromWorld(w));}
+    
+    public String getAbsoluteGroup() {
+        if(PluginHook.VAULT_HOOK.isHooked() && PluginHook.VAULT_HOOK.getPermission() != null) {
+            return PluginHook.VAULT_HOOK.getPermission().getPrimaryGroup(this.getWorld(), this.player);
+        }
+        return null;
+    }
+    
+    public String getGroup() {
+        if(this.getAbsoluteGroup() != null) return this.getAbsoluteGroup();
+        if(this.isConsole()) return "CONSOLE";
+        return this.getOfflinePlayer().isOp() ? "OP" : "NOT_OP";
+    }
+    
+    public String getChatPrefix() {
+        if(PluginHook.VAULT_HOOK.isHooked() && PluginHook.VAULT_HOOK.getChat() != null) {
+            String playerPrefix =  PluginHook.VAULT_HOOK.getChat().getPlayerPrefix(this.getWorld(), this.player);
+            if(playerPrefix != null && !playerPrefix.equals("")) return playerPrefix;
+            String groupPrefix = PluginHook.VAULT_HOOK.getChat().getGroupPrefix(this.getWorld(), this.getAbsoluteGroup());
+            if(groupPrefix != null) return groupPrefix;
+        }
+        return "";
+    }
+    
+    public String getChatSuffix() {
+        if(PluginHook.VAULT_HOOK.isHooked() && PluginHook.VAULT_HOOK.getChat() != null) {
+            String playerSuffix =  PluginHook.VAULT_HOOK.getChat().getPlayerSuffix(this.getWorld(), this.player);
+            if(playerSuffix != null && !playerSuffix.equals("")) return playerSuffix;
+            String groupSuffix = PluginHook.VAULT_HOOK.getChat().getGroupSuffix(this.getWorld(), this.getAbsoluteGroup());
+            if(groupSuffix != null) return groupSuffix;
+        }
+        return "";
+    }
+    
     //Complex set's
     public void setDisplayName(String newName) {
         this.displayName = newName;
@@ -320,10 +392,11 @@ public class DomsPlayer {
     //Complex Functions
     public void teleport(DomsLocation to, boolean useSafe) {
         if(!useSafe) this.getOnlinePlayer().teleport(to.toLocation());
-        else this.getOnlinePlayer().teleport(to.getSafeLocation().toLocation());
+        else this.getOnlinePlayer().teleport(to.getSafeLocation().toLocation(), TeleportCause.COMMAND);
     }
     
     public void kickPlayer(String r) {
+        if(this.isConsole()) return;
         if(!this.isOnline()) return;
         this.getOnlinePlayer().kickPlayer(r);
     }
@@ -355,6 +428,50 @@ public class DomsPlayer {
                 }
             }
         } catch(InvalidItemException e) {
+        }
+    }
+    
+    public final void updateDomsInventory() {
+        if(!this.isOnline()) return;
+        if(this.isConsole()) return;
+        
+        DomsInventory old = this.getInventoryFromWorld(this.getLocation().getWorld());
+        if(old != null) this.inventories.remove(old);
+        DomsInventory inv = DomsInventory.createFromPlayer(this);
+        this.inventories.add(inv);
+        
+        old = this.getEndChestFromWorld(this.getLastLocation().getWorld());
+        if(old != null) this.enderchest.remove(old);
+        inv = DomsInventory.createEndChestFromPlayer(this);
+        this.enderchest.add(inv);
+    }
+    
+    private void updateVariables() {
+        if(this.player == null || this.displayName == null) return;
+        this.variables.put("NAME", this.player);
+        this.variables.put("DISPLAYNAME", this.displayName);
+        
+        if(this.afk) {
+            this.variables.put("AWAY", "Away");
+        } else {
+            this.variables.put("AWAY", "");
+        }
+        
+        if(!this.isConsole()) {
+            this.variables.put("GROUP", this.getGroup());
+            this.variables.put("WORLD", this.getLocation().getWorld());
+            
+            this.variables.put("PREFIX", this.getChatPrefix());
+            this.variables.put("SUFFIX", this.getChatSuffix());
+            this.variables.put("GROUP", this.getGroup());
+        }
+        
+        if(this.isOnline()) {
+            
+        }
+        
+        if(this.isOnline() && !this.isConsole()) {
+            this.variables.put("GAMEMODE", this.getOnlinePlayer().getGameMode().name());
         }
     }
 }
