@@ -20,13 +20,16 @@ import com.domsplace.DomsCommands.Bases.Base;
 import static com.domsplace.DomsCommands.Bases.Base.ChatDefault;
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Enums.ManagerType;
+import com.domsplace.DomsCommands.Objects.DomsItem;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
+import com.domsplace.DomsCommands.Objects.Kit;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -107,12 +110,47 @@ public class ConfigManager extends DataManager {
         }
         df("inventory.groups.default", commands);
         
+        df("joinkit", "default");
+        
+        if(!config.contains("kits")) {
+            df("kits.default.name", "Default");
+            df("kits.default.item.item0", "{size:\"1\"},{id:\"273\"}");
+            df("kits.default.item.item1", "{size:\"1\"},{id:\"274\"}");
+            df("kits.default.item.item2", "{size:\"1\"},{id:\"275\"}");
+            df("kits.default.item.item3", "{size:\"1\"},{id:\"291\"}");
+            df("kits.default.cooldown", 1200);
+        }
+        
+        //De-register old values
+        for(Kit k : Kit.getKits()) {
+            k.deRegister();
+        }
+        
         //Store Values
         Base.DebugMode = this.config.getBoolean("debug", false);
         
         Base.ChatDefault = loadColor("default");
         Base.ChatImportant = loadColor("important");
         Base.ChatError = loadColor("error");
+        
+        for(String s : ((MemorySection) config.get("kits")).getKeys(false)) {
+            String key = "kits." + s + ".";
+            try {
+                String name = config.getString(key + "name");
+                long cooldown = -1;
+                if(config.contains(key + "cooldown")) cooldown = config.getLong(key + "cooldown");
+                
+                Kit kit = new Kit(name);
+                kit.setCooldown(cooldown);
+                
+                for(String i : ((MemorySection) config.get(key + "item")).getKeys(false)) {
+                    List<DomsItem> items = DomsItem.createItems(config.getString(key + "item." + i));
+                    kit.addItems(items);
+                }
+            } catch(Exception e) {
+                error("Failed to load kit \"" + s + "\".", e);
+            }
+        }
         
         //Save Data
         this.trySave();

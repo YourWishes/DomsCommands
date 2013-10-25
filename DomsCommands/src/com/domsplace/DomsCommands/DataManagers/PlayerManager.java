@@ -24,6 +24,7 @@ import com.domsplace.DomsCommands.Objects.DomsInventoryItem;
 import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Home;
+import com.domsplace.DomsCommands.Objects.Kit;
 import com.domsplace.DomsCommands.Objects.Punishment;
 import java.io.File;
 import java.io.IOException;
@@ -158,6 +159,15 @@ public class PlayerManager extends DataManager {
                 }
             }
             
+            if(yml.contains("kitcooldowns")) {
+                for(String s : ((MemorySection) yml.get("kitcooldowns")).getKeys(false)) {
+                    try {
+                        Kit k = Kit.getKit(s);
+                        player.setKitCooldown(k, yml.getLong("kitcooldowns." + s));
+                    } catch(Exception e) {}
+                }
+            }
+            
             if(yml.contains("ip")) {
                 player.setLastIP(yml.getString("ip", ""));
             }
@@ -263,6 +273,12 @@ public class PlayerManager extends DataManager {
                     for(Integer i : items.keySet()) {
                         yml.set(key + "items.slot" + i, items.get(i).toString());
                     }
+                }
+                
+                for(Kit k : Kit.getKits()) {
+                    long l = player.getKitCooldown(k);
+                    if(l <= 0) continue;
+                    yml.set("kitcooldowns." + k.getName(), l);
                 }
             }
             

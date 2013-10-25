@@ -146,6 +146,8 @@ public class DomsLocation {
     public void setYaw(float y) {this.yaw = y;}
     public void setWorld(String world) {this.world = world;}
     
+    public boolean isWorldLoaded() {return this.getBukkitWorld() != null;}
+    
     public Location toLocation() {return new Location(this.getBukkitWorld(), this.x, this.y, this.z, this.yaw, this.pitch);}
 
     public DomsLocation copy() {return DomsLocation.guessLocation(this.toString());}

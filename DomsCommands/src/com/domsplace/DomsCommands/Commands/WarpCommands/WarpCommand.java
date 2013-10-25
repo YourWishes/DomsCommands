@@ -91,6 +91,11 @@ public class WarpCommand extends BukkitCommand {
             return true;
         }
         
+        if(!w.getLocation().isWorldLoaded()) {
+            sendMessage(sender, ChatError + "The target world is no longer available.");
+            return true;
+        }
+        
         DomsPlayer plyr = DomsPlayer.getPlayer(sender);
         plyr.setBackLocation(plyr.getLocation());
         plyr.teleport(w.getLocation());

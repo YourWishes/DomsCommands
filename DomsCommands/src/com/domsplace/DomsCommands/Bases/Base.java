@@ -104,6 +104,24 @@ public class Base extends RawBase {
         return msg;
     }
     
+    public static String removeColors(Object o) {
+        String msg = o.toString();
+        
+        String[] andCodes = {"&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", 
+            "&8", "&9", "&a", "&b", "&c", "&d", "&e", "&f", "&l", "&o", "&n", 
+            "&m", "&k", "&r"};
+        
+        String[] altCodes = {"§0", "§1", "§2", "§3", "§4", "§5", "§6", "§7", 
+            "§8", "§9", "§a", "§b", "§c", "§d", "§e", "§f", "§l", "§o", "§n", 
+            "§m", "§k", "§r"};
+        for(int i = 0; i < andCodes.length; i++) {
+            msg = msg.replaceAll(andCodes[i], "");
+            msg = msg.replaceAll(altCodes[i], "");
+        }
+        
+        return msg;
+    }
+    
     public static String getPermissionMessage() {
         return Base.permissionMessage;
     }
@@ -582,6 +600,8 @@ public class Base extends RawBase {
     }
     
     public static String getTimeDifference(Date late) {return Base.getTimeDifference(new Date(), late);}
+    public static String getTimeDifference(long late) {return Base.getTimeDifference(new Date(), new Date(late));}
+    public static String getTimeDifference(long early, long late) {return Base.getTimeDifference(new Date(early), new Date(late));}
     
     public static String getTimeDifference(Date early, Date late) {
         Long NowInMilli = late.getTime();

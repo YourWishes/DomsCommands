@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Commands.PlayerCommands;
+package com.domsplace.DomsCommands.Commands.PlayerCommands.HomeCommands;
     
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;

@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -43,6 +42,7 @@ public class SubCommandOption extends Base {
     public static final SubCommandOption ENCHANTMENT_OPTION = new SubCommandOption("[ENCHANTS]");
     public static final SubCommandOption MOB_OPTION = new SubCommandOption("[MOB]");
     public static final SubCommandOption ITEM_OPTION = new SubCommandOption("[ITEM]");
+    public static final SubCommandOption KIT_OPTION = new SubCommandOption("[KIT]");
     public static final SubCommandOption POTION_OPTION = new SubCommandOption("[POTION]");
     public static final SubCommandOption WEATHER_OPTION = new SubCommandOption("[WEATHER]");
     public static final SubCommandOption TIME_OPTION = new SubCommandOption("[TIME]");
@@ -111,6 +111,10 @@ public class SubCommandOption extends Base {
                 if(m.equals(Material.AIR)) continue;
                 returnV.add(m.name());
             }
+        } else if(this.compare(SubCommandOption.KIT_OPTION)) {
+            for(Kit k : Kit.getKits(sender)) {
+                returnV.add(k.getName());
+            }
         } else if(this.compare(SubCommandOption.POTION_OPTION)) {
             for(PotionEffectType pet : PotionEffectType.values()) {
                 returnV.add(pet.getName());
@@ -164,6 +168,7 @@ public class SubCommandOption extends Base {
         if(WeatherCommand.getType(s) != null) return SubCommandOption.WEATHER_OPTION.option;
         if(Warp.getWarp(s) != null) return SubCommandOption.WARPS_OPTION.option;
         if(GamemodeCommand.getGameMode(s) != null) return SubCommandOption.GAMEMODE_OPTION.option;
+        if(Kit.getKit(s) != null) return SubCommandOption.KIT_OPTION.option;
         try {if(DomsItem.guessItem(s) != null) return SubCommandOption.ITEM_OPTION.option;} catch(InvalidItemException e){}
         return s;
     }

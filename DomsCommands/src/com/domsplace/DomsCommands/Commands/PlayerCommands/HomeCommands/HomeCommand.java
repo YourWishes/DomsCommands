@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Commands.PlayerCommands;
+package com.domsplace.DomsCommands.Commands.PlayerCommands.HomeCommands;
     
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Home;
-import java.util.ArrayList;
-import java.util.List;
+import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -28,40 +27,40 @@ import org.bukkit.command.CommandSender;
  * @author      Dominic
  * @since       24/10/2013
  */
-public class HomesCommand extends BukkitCommand {
-    public HomesCommand() {
-        super("homes");
+public class HomeCommand extends BukkitCommand {
+    public HomeCommand() {
+        super("home");
+        this.addSubCommandOption(SubCommandOption.HOMES_OPTION);
     }
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!isPlayer(sender) && args.length < 1) {
-            sendMessage(sender, ChatError + "Please enter a player name.");
+        if(!isPlayer(sender)) {
+            sendMessage(sender, ChatError + "Only players can do this.");
             return true;
+        }
+        
+        String name = "home";
+        if(args.length > 0) {
+            name = args[0];
         }
         
         DomsPlayer player = DomsPlayer.getPlayer(sender);
-        if(args.length > 0) {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
-        }
         
-        if(player == null) {
-            sendMessage(sender, ChatError + "Player not found.");
+        Home home = player.getHome(name);
+        if(home == null) {
+            sendMessage(sender, ChatError + "You don't have \"" + name + "\" set.");
             return true;
         }
         
-        List<String> msgs = new ArrayList<String>();
-        msgs.add(ChatImportant + "Homes: (" + player.getHomes().size() + ")");
-        
-        String s = "";
-        List<Home> homes = player.getHomes();
-        for(int i = 0; i < homes.size(); i++) {
-            Home h = homes.get(i);
-            s += h.getName();
-            if(i < (homes.size() -1)) s  += ", ";
+        if(!home.getLocation().isWorldLoaded()) {
+            sendMessage(sender, ChatError + "This world is no longer available.");
+            return true;
         }
-        msgs.add(s);
-        sendMessage(sender, msgs);
+        
+        player.setBackLocation(player.getLocation());
+        player.teleport(home.getLocation());
+        sendMessage(sender, "Going to \"" + ChatImportant + name + ChatDefault + "\".");
         return true;
     }
 }

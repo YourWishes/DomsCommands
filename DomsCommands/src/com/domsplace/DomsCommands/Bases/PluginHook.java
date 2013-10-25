@@ -31,6 +31,7 @@ public class PluginHook extends Base{
     private static final List<PluginHook> PLUGIN_HOOKS = new ArrayList<PluginHook>();
     
     public static final VaultHook VAULT_HOOK = new VaultHook();
+    public static final VillagesHook VILLAGES_HOOK = new VillagesHook();
     
     //Static
     private static void hookPlugin(PluginHook hook) {
@@ -49,8 +50,8 @@ public class PluginHook extends Base{
     public static void hookAll() {
         for(PluginHook plugin : PLUGIN_HOOKS) {
             debug("Try Hoooking " + plugin.getPluginName());
-            if(!plugin.shouldHook()) continue;
-            if(!plugin.hook()) log("Failed to hook into " + plugin.getPluginName());
+            if(plugin.hook()) debug("Successfully hooked!");
+            else debug("Failed to hook!");
         }
     }
     
@@ -74,8 +75,8 @@ public class PluginHook extends Base{
     public String getPluginName() {return this.pluginName;}
     public Plugin getHookedPlugin() {return this.plugin;}
     
-    public void onUnhook() {log("Unhooked from " + this.pluginName);}
-    public void onHook() {log("Hooked into " + this.pluginName);}
+    public void onUnhook() {}
+    public void onHook() {}
     
     public boolean isHooked() {return this.plugin != null;}
     

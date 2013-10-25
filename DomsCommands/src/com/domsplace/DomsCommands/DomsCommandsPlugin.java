@@ -16,6 +16,10 @@
 
 package com.domsplace.DomsCommands;
 
+import com.domsplace.DomsCommands.Commands.PlayerCommands.HomeCommands.DeleteHomeCommand;
+import com.domsplace.DomsCommands.Commands.PlayerCommands.HomeCommands.HomesCommand;
+import com.domsplace.DomsCommands.Commands.PlayerCommands.HomeCommands.HomeCommand;
+import com.domsplace.DomsCommands.Commands.PlayerCommands.HomeCommands.SetHomeCommand;
 import com.domsplace.DomsCommands.Commands.ItemCommands.*;
 import com.domsplace.DomsCommands.Commands.TeleportCommands.*;
 import com.domsplace.DomsCommands.Commands.WarpCommands.*;
@@ -39,6 +43,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private CheckLagCommand checkLagCommand;
     private DoNothingCommand doNothingCommand;
     private DomsCommandsCommand domsCommands;
+    private KitCommand kitCommand;
     private MOTDCommand motdCommand;
     private ServerCommand serverCommand;
     private ShutdownCommand stopCommand;
@@ -96,6 +101,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private PlayerAwayListener playerAwayListener;
     private PunishmentListener punishmentListener;
     private DomsChatListener domsChatListener;
+    private ServerUnloadListener serverUnloadListener;
     
     //Threads
     private ConfigSaveThread configSaveThread;
@@ -118,6 +124,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.checkLagCommand = new CheckLagCommand();
         this.doNothingCommand = new DoNothingCommand();
         this.domsCommands = new DomsCommandsCommand();
+        this.kitCommand = new KitCommand();
         this.motdCommand = new MOTDCommand();
         this.serverCommand = new ServerCommand();
         this.stopCommand = new ShutdownCommand();
@@ -175,6 +182,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.playerAwayListener = new PlayerAwayListener();
         this.punishmentListener = new PunishmentListener();
         this.domsChatListener = new DomsChatListener();
+        this.serverUnloadListener = new ServerUnloadListener();
         
         //Load Threads
         this.configSaveThread = new ConfigSaveThread();

@@ -45,6 +45,11 @@ public class BackCommand extends BukkitCommand {
             return true;
         }
         
+        if(!back.isWorldLoaded()) {
+            sendMessage(sender, ChatError + "This world is no longer available.");
+            return true;
+        }
+        
         sendMessage(sender, ChatDefault + "Going back.");
         plyr.setBackLocation(plyr.getLocation());
         plyr.teleport(back);

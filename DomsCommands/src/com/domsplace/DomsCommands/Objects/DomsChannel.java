@@ -129,6 +129,10 @@ public class DomsChannel {
             msgFormat = msgFormat.replaceAll("\\{" + key + "\\}", Base.colorise(playerVariables.get(key)));
         }
         
+        message = Base.coloriseByPermission(message, player, "DomsCommands.chat.colors.");
+        
+        if(Base.removeColors(message).replaceAll(" ", "").equals("")) return;
+        
         msgFormat = msgFormat.replaceAll("\\{MESSAGE\\}", message);
         if(this.isprivate) {
             Base.broadcast(this.players, msgFormat);

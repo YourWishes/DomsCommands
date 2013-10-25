@@ -226,6 +226,11 @@ commands:
       aliases: [say]
       usage: /<command> [message]
       permission: DomsCommands.server
+   kit:
+      description: Get a kit of items.
+      aliases: [getkit]
+      usage: /<command> [kit]
+      permission: DomsCommands.kit
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -628,3 +633,75 @@ permissions:
      description: Allows access to the homes command.
    DomsCommands.deletehome:
      description: Allows access to the deletehome command.
+   DomsCommands.kit:
+     description: Allows access to the kit command.
+   DomsCommands.kit.cooldown:
+     description: Allows access to bypass the kit cooldown.
+   DomsCommands.chat.colors.*:
+     description: Allows access to use all colors in chat.
+     children:
+         DomsCommands.chat.colors.black: true
+         DomsCommands.chat.colors.darkblue: true
+         DomsCommands.chat.colors.darkgreen: true
+         DomsCommands.chat.colors.cyan: true
+         DomsCommands.chat.colors.darkred: true
+         DomsCommands.chat.colors.purple: true
+         DomsCommands.chat.colors.gold: true
+         DomsCommands.chat.colors.gray: true
+         DomsCommands.chat.colors.darkgray: true
+         DomsCommands.chat.colors.green: true
+         DomsCommands.chat.colors.lightblue: true
+         DomsCommands.chat.colors.red: true
+         DomsCommands.chat.colors.pink: true
+         DomsCommands.chat.colors.yellow: true
+         DomsCommands.chat.colors.white: true
+         DomsCommands.chat.colors.magic: true
+         DomsCommands.chat.colors.bold: true
+         DomsCommands.chat.colors.strike: true
+         DomsCommands.chat.colors.underline: true
+         DomsCommands.chat.colors.italics: true
+         DomsCommands.chat.colors.reset: true
+   DomsCommands.chat.colors.black:
+     description: Allows access to use black in chat.
+   DomsCommands.chat.colors.darkblue:
+     description: Allows access to use darkblue in chat.
+   DomsCommands.chat.colors.darkgreen:
+     description: Allows access to use darkgreen in chat.
+   DomsCommands.chat.colors.cyan:
+     description: Allows access to use cyan in chat.
+   DomsCommands.chat.colors.darkred:
+     description: Allows access to use darkred in chat.
+   DomsCommands.chat.colors.purple:
+     description: Allows access to use purple in chat.
+   DomsCommands.chat.colors.gold:
+     description: Allows access to use gold in chat.
+   DomsCommands.chat.colors.gray:
+     description: Allows access to use gray in chat.
+   DomsCommands.chat.colors.darkgray:
+     description: Allows access to use darkgray in chat.
+   DomsCommands.chat.colors.blue:
+     description: Allows access to use blue in chat.
+   DomsCommands.chat.colors.green:
+     description: Allows access to use green in chat.
+   DomsCommands.chat.colors.lightblue:
+     description: Allows access to use lightblue in chat.
+   DomsCommands.chat.colors.red:
+     description: Allows access to use red in chat.
+   DomsCommands.chat.colors.pink:
+     description: Allows access to use pink in chat.
+   DomsCommands.chat.colors.yellow:
+     description: Allows access to use yellow in chat.
+   DomsCommands.chat.colors.white:
+     description: Allows access to use white in chat.
+   DomsCommands.chat.colors.magic:
+     description: Allows access to use magic in chat.
+   DomsCommands.chat.colors.bold:
+     description: Allows access to use bold in chat.
+   DomsCommands.chat.colors.strike:
+     description: Allows access to use strike in chat.
+   DomsCommands.chat.colors.underline:
+     description: Allows access to use underline in chat.
+   DomsCommands.chat.colors.italics:
+     description: Allows access to use italics in chat.
+   DomsCommands.chat.colors.reset:
+     description: Allows access to use reset in chat.

@@ -20,6 +20,8 @@ import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
+import com.domsplace.Villages.Objects.Resident;
+import com.domsplace.Villages.Objects.Village;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -154,6 +156,7 @@ public class DomsPlayer {
     private final List<DomsInventory> inventories;
     private final List<DomsInventory> enderchest;
     private Map<String, String> variables;
+    private Map<Kit, Long> kitCooldowns;
     
     private TeleportRequest lastRequest;
     
@@ -171,6 +174,7 @@ public class DomsPlayer {
         this.afkTime = Base.getNow();
         this.lastMoveTime = Base.getNow();
         this.variables = new HashMap<String, String>();
+        this.kitCooldowns = new HashMap<Kit, Long>();
         
         this.registerPlayer();
         Base.debug("Regitered new DomsPlayer for " + this.player);
@@ -201,7 +205,9 @@ public class DomsPlayer {
     public String getWorld() {return this.getLocation().getWorld();}
     public DomsChannel getChannel() {return DomsChannel.getPlayersChannel(this);}
     public Map<String, String> getVariables() {this.updateVariables(); return new HashMap<String, String>(this.variables);}
+    public Map<Kit, Long> getKitCooldowns() {return new HashMap<Kit, Long>(this.kitCooldowns);}
     public String getVariable(String key) {this.updateVariables(); return this.variables.get(key);}
+    public long getKitCooldown(Kit k) {try {return this.kitCooldowns.get(k);}catch(Exception e) {return -1;}}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
@@ -222,6 +228,7 @@ public class DomsPlayer {
     public void setLastMessenger(DomsPlayer player) {this.lastPrivateMessenger = player;}
     public void setPlayerFile(File file) {this.playerFile = file;}
     public void setVariable(String key, String variable) {this.variables.put(key, variable); this.updateVariables();}
+    public void setKitCooldown(Kit k, long l) {this.kitCooldowns.put(k, l);}
     
     @Override public String toString() {return this.getDisplayName();}
     
@@ -464,6 +471,14 @@ public class DomsPlayer {
             this.variables.put("PREFIX", this.getChatPrefix());
             this.variables.put("SUFFIX", this.getChatSuffix());
             this.variables.put("GROUP", this.getGroup());
+            
+            if(PluginHook.VILLAGES_HOOK.isHooked()) {
+                String s = com.domsplace.Villages.Bases.Base.Wilderness;
+                Village v = Village.getPlayersVillage(Resident.getResident(this.getOfflinePlayer()));
+                if(v != null) s = v.getName();
+                
+                this.variables.put("VILLAGE", s);
+            }
         }
         
         if(this.isOnline()) {
