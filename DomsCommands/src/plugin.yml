@@ -246,6 +246,16 @@ commands:
       aliases: [seen, lookup]
       usage: /<command>  [player]
       permission: DomsCommands.whois
+   heal:
+      description: Heal a player to max.
+      aliases: [addhealth, fixhealth]
+      usage: /<command> (player)
+      permission: DomsCommands.heal
+   feed:
+      description: Feed a player to max.
+      aliases: [addfood, food]
+      usage: /<command> (player)
+      permission: DomsCommands.feed
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -730,3 +740,7 @@ permissions:
      description: Allows access to the who command.
    DomsCommands.whois:
      description: Allows access to the whois command.
+   DomsCommands.heal:
+     description: Allows access to the heal command.
+   DomsCommands.feed:
+     description: Allows access to the feed command.

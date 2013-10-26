@@ -43,6 +43,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private CheckLagCommand checkLagCommand;
     private DoNothingCommand doNothingCommand;
     private DomsCommandsCommand domsCommands;
+    private FeedCommand feedCommand;
+    private HealCommand healCommand;
     private KitCommand kitCommand;
     private MOTDCommand motdCommand;
     private ServerCommand serverCommand;
@@ -127,6 +129,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.checkLagCommand = new CheckLagCommand();
         this.doNothingCommand = new DoNothingCommand();
         this.domsCommands = new DomsCommandsCommand();
+        this.feedCommand = new FeedCommand();
+        this.healCommand = new HealCommand();
         this.kitCommand = new KitCommand();
         this.motdCommand = new MOTDCommand();
         this.serverCommand = new ServerCommand();

@@ -87,7 +87,8 @@ public class PlayerManager extends DataManager {
             player.setJoinTime(yml.getLong("joined", getNow()));
             player.setLoginTime(yml.getLong("login", getNow()));
             player.setLogoutTime(yml.getLong("logout", getNow()));
-            player.setFlightMode(yml.getBoolean("fly", false));
+            
+            if(yml.contains("fly")) player.setFlightMode(yml.getBoolean("fly"));
             
             if(yml.contains("punishments")) {
                 MemorySection punishments = (MemorySection) yml.get("punishments");

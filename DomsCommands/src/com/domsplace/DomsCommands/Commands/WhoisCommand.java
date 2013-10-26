@@ -103,7 +103,6 @@ public class WhoisCommand extends BukkitCommand {
             messages.add(ChatImportant + "Food: " + ChatDefault + p.getFoodLevel() + "/20");
             messages.add(ChatImportant + "Running: " + ChatDefault + (p.isSprinting() ? "Yes" : "No"));
             messages.add(ChatImportant + "Sneaking: " + ChatDefault + (p.isSneaking() ? "Yes" : "No"));
-            messages.add(ChatImportant + "XP: " + ChatDefault + p.getExp() + "/" + p.getExpToLevel() + "(Level " + p.getLevel() + ")");
         }
         
         if(PluginHook.VILLAGES_HOOK.isHooked()) {

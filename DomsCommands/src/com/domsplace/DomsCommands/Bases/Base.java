@@ -116,7 +116,7 @@ public class Base extends RawBase {
             "underline", "italics", "reset"};
         
         for(int i = 0; i < perms.length; i++) {
-            if(!player.hasPermisson(permissionPrefix + perms[i])) continue;
+            if(!player.hasPermisson(permissionPrefix + perms[i]) && !player.isConsole()) continue;
             msg = msg.replaceAll(andCodes[i], altCodes[i]);
         }
         
