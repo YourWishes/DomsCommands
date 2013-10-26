@@ -13,6 +13,8 @@ import com.domsplace.DomsCommands.Enums.PunishmentType;
  * @since       11/10/2013
  */
 public class Punishment {
+    public static final String DEFAULT_REASON = "An Unknown Reason";
+            
     private DomsPlayer player;
     private PunishmentType type;
     private String reason;
@@ -53,7 +55,7 @@ public class Punishment {
     public long getDate() {return this.date;}
     public long getEndDate() {return this.endDate;}
     public DomsLocation getLocation() {return this.location;}
-    public String getReason() {return this.reason;}
+    public String getReason() {if(this.reason == null) return Punishment.DEFAULT_REASON; return this.reason;}
     public String getBanner() {return this.sender;}
     
     public void setBanner(String n) {this.sender = n;}

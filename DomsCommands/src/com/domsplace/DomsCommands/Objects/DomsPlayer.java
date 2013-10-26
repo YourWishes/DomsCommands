@@ -98,6 +98,26 @@ public class DomsPlayer {
         }
         return list;
     }
+
+    public static DomsPlayer guessExactPlayer(CommandSender sender, String guess, boolean createIfNotExists) {
+        DomsPlayer p = null;
+        for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
+            if(!plyr.getPlayer().equalsIgnoreCase(guess.toLowerCase())) continue;
+            p = plyr;
+            break;
+        }
+        
+        if(p == null) {
+            for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
+                if(!plyr.getDisplayName().equalsIgnoreCase(guess.toLowerCase())) continue;
+                p = plyr;
+                break;
+            }
+        }
+        
+        if(createIfNotExists && p == null) {return getPlayer(guess);}
+        return p;
+    }
     
     public static List<DomsPlayer> getVisibleOnlinePlayers() {
         List<DomsPlayer> list = new ArrayList<DomsPlayer>();
@@ -130,6 +150,16 @@ public class DomsPlayer {
     
     public static boolean isPlayerRegistered(Player player) {return isPlayerRegistered(player.getName());}
     public static boolean isPlayerRegistered(String player) {return REGISTERED_PLAYERS.containsKey(player);}
+
+    public static List<DomsPlayer> getPlayersByIP(String lastIP) {
+        List<DomsPlayer> players = new ArrayList<DomsPlayer>();
+        for(DomsPlayer p : REGISTERED_PLAYERS.values()) {
+            if(p == null) continue;
+            if(p.getLastIP() == null) continue;
+            if(p.getLastIP().equals(lastIP)) players.add(p);
+        }
+        return players;
+    }
     
     //Instance
     private final String player;
@@ -157,6 +187,8 @@ public class DomsPlayer {
     private final List<DomsInventory> enderchest;
     private Map<String, String> variables;
     private Map<Kit, Long> kitCooldowns;
+    
+    private boolean flyMode;
     
     private TeleportRequest lastRequest;
     
@@ -202,12 +234,14 @@ public class DomsPlayer {
     public DomsPlayer getLastMessenger() {return this.lastPrivateMessenger;}
     public File getPlayerFile() {return this.playerFile;}
     public DomsInventory getInventory() {return this.getInventoryFromWorld(this.getWorld());}
-    public String getWorld() {return this.getLocation().getWorld();}
+    public DomsInventory getEnderChest() {return this.getEndChestFromWorld(this.getWorld());}
+    public String getWorld() {if(this.getLocation() == null) return null; return this.getLocation().getWorld();}
     public DomsChannel getChannel() {return DomsChannel.getPlayersChannel(this);}
     public Map<String, String> getVariables() {this.updateVariables(); return new HashMap<String, String>(this.variables);}
     public Map<Kit, Long> getKitCooldowns() {return new HashMap<Kit, Long>(this.kitCooldowns);}
     public String getVariable(String key) {this.updateVariables(); return this.variables.get(key);}
     public long getKitCooldown(Kit k) {try {return this.kitCooldowns.get(k);}catch(Exception e) {return -1;}}
+    public boolean getFlightMode() {return this.flyMode;}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
@@ -229,6 +263,7 @@ public class DomsPlayer {
     public void setPlayerFile(File file) {this.playerFile = file;}
     public void setVariable(String key, String variable) {this.variables.put(key, variable); this.updateVariables();}
     public void setKitCooldown(Kit k, long l) {this.kitCooldowns.put(k, l);}
+    public void setFlightMode(boolean f) {this.flyMode = f;}
     
     @Override public String toString() {return this.getDisplayName();}
     
@@ -312,6 +347,12 @@ public class DomsPlayer {
         }
         return recent;
     }
+
+    public String getLastPunishmentReason(PunishmentType BAN) {
+        Punishment p = this.getMostRecentPunishmentOfType(BAN);
+        if(p != null) return p.getReason();
+        return Punishment.DEFAULT_REASON;
+    }
     
     public DomsInventory getInventoryFromGroup(String g) {
         for(DomsInventory inv : this.inventories) {
@@ -332,7 +373,9 @@ public class DomsPlayer {
     public DomsInventory getEndChestFromWorld(String w) {return this.getEndChestFromGroup(DomsInventory.getInventoryGroupFromWorld(w));}
     
     public String getAbsoluteGroup() {
+        if(this.getWorld() == null) return null;
         if(PluginHook.VAULT_HOOK.isHooked() && PluginHook.VAULT_HOOK.getPermission() != null) {
+            if(this.getWorld() == null) return null;
             return PluginHook.VAULT_HOOK.getPermission().getPrimaryGroup(this.getWorld(), this.player);
         }
         return null;
@@ -345,6 +388,7 @@ public class DomsPlayer {
     }
     
     public String getChatPrefix() {
+        if(this.getWorld() == null) return "";
         if(PluginHook.VAULT_HOOK.isHooked() && PluginHook.VAULT_HOOK.getChat() != null) {
             String playerPrefix =  PluginHook.VAULT_HOOK.getChat().getPlayerPrefix(this.getWorld(), this.player);
             if(playerPrefix != null && !playerPrefix.equals("")) return playerPrefix;
@@ -355,6 +399,7 @@ public class DomsPlayer {
     }
     
     public String getChatSuffix() {
+        if(this.getWorld() == null) return "";
         if(PluginHook.VAULT_HOOK.isHooked() && PluginHook.VAULT_HOOK.getChat() != null) {
             String playerSuffix =  PluginHook.VAULT_HOOK.getChat().getPlayerSuffix(this.getWorld(), this.player);
             if(playerSuffix != null && !playerSuffix.equals("")) return playerSuffix;
@@ -367,7 +412,7 @@ public class DomsPlayer {
     //Complex set's
     public void setDisplayName(String newName) {
         this.displayName = newName;
-        if(this.isOnline() && !this.isConsole()) this.getOnlinePlayer().setDisplayName(newName);
+        if(this.isOnline() && !this.isConsole() && newName != null) this.getOnlinePlayer().setDisplayName(newName);
     }
     
     //Complex is's
@@ -392,6 +437,13 @@ public class DomsPlayer {
             return true;
         }
         return false;
+    }
+    
+    public boolean isFlightMode() {
+        if(this.isOnline() && !this.isConsole()) {
+            this.flyMode = this.getOnlinePlayer().getAllowFlight();
+        }
+        return this.flyMode;
     }
     
     //Complex To's
@@ -446,7 +498,6 @@ public class DomsPlayer {
         if(old != null) this.inventories.remove(old);
         DomsInventory inv = DomsInventory.createFromPlayer(this);
         this.inventories.add(inv);
-        
         old = this.getEndChestFromWorld(this.getLastLocation().getWorld());
         if(old != null) this.enderchest.remove(old);
         inv = DomsInventory.createEndChestFromPlayer(this);
@@ -465,12 +516,11 @@ public class DomsPlayer {
         }
         
         if(!this.isConsole()) {
-            this.variables.put("GROUP", this.getGroup());
-            this.variables.put("WORLD", this.getLocation().getWorld());
+            if(this.getWorld() != null) this.variables.put("WORLD", this.getWorld());
             
-            this.variables.put("PREFIX", this.getChatPrefix());
-            this.variables.put("SUFFIX", this.getChatSuffix());
-            this.variables.put("GROUP", this.getGroup());
+            if(this.getChatPrefix() != null) this.variables.put("PREFIX", this.getChatPrefix());
+            if(this.getChatSuffix() != null) this.variables.put("SUFFIX", this.getChatSuffix());
+            if(this.getGroup() != null) this.variables.put("GROUP", this.getGroup());
             
             if(PluginHook.VILLAGES_HOOK.isHooked()) {
                 String s = com.domsplace.Villages.Bases.Base.Wilderness;

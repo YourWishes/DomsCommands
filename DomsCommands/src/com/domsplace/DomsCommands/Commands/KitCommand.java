@@ -20,6 +20,8 @@ import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Kit;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -40,8 +42,17 @@ public class KitCommand extends BukkitCommand {
             return true;
         }
         
-        if(args.length < 1) {
-            sendMessage(sender, ChatError + "Enter a kit name.");
+        if(args.length < 1 || label.equalsIgnoreCase("kits") || label.equalsIgnoreCase("getkits")) {
+            List<Kit> kits = Kit.getKits(sender);
+            List<String> msgs = new ArrayList<String>();
+            msgs.add(ChatImportant + "Kits you can obtain:");
+            String s = "";
+            for(int i = 0; i < kits.size(); i++) {
+                s += kits.get(i).getName();
+                if(i < kits.size() - 1) s += ", ";
+            }
+            msgs.add(s);
+            sendMessage(sender, msgs);
             return true;
         }
         
@@ -62,7 +73,6 @@ public class KitCommand extends BukkitCommand {
             long now = getNow();
             long diff = now - cooldown;
             long diff2 = now - (cooldown + (k.getCooldown()*1000));
-            debug("DIFF2: " + diff2);
             if(diff2 < 0) {
                 sendMessage(sender, ChatError + "You have to wait " + getTimeDifference(cooldown + k.getCooldown() * 1000) + " to get this kit again.");
                 return true;

@@ -228,9 +228,24 @@ commands:
       permission: DomsCommands.server
    kit:
       description: Get a kit of items.
-      aliases: [getkit]
+      aliases: [getkit, kits, getkits]
       usage: /<command> [kit]
       permission: DomsCommands.kit
+   fly:
+      description: Toggle flight mode.
+      aliases: [togglefly, flymode, flym, modefly]
+      usage: /<command> (player)
+      permission: DomsCommands.fly
+   who:
+      description: Returns a list of online players.
+      aliases: [online, list, players, playerlist, listplayers, onlinelist, onlineplayers, listonlineplayers]
+      usage: /<command>
+      permission: DomsCommands.who
+   whois:
+      description: Lookup a player's information.
+      aliases: [seen, lookup]
+      usage: /<command>  [player]
+      permission: DomsCommands.whois
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -705,3 +720,13 @@ permissions:
      description: Allows access to use italics in chat.
    DomsCommands.chat.colors.reset:
      description: Allows access to use reset in chat.
+   DomsCommands.fly:
+     description: Allows access to the fly command.
+   DomsCommands.fly.others:
+     description: Allows access to toggle others' flight mode.
+   DomsCommands.fly.exempt:
+     description: Allows access to block others' changing your flight mode.
+   DomsCommands.who:
+     description: Allows access to the who command.
+   DomsCommands.whois:
+     description: Allows access to the whois command.

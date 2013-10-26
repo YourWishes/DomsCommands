@@ -37,7 +37,7 @@ public class Kit {
         return null;
     }
 
-    static List<Kit> getKits(CommandSender sender) {
+    public static List<Kit> getKits(CommandSender sender) {
         List<Kit> kits = new ArrayList<Kit>();
         for(Kit k : REGISTERED_KITS) {
             if(!Base.hasPermission(sender, k.getPermission())) continue;

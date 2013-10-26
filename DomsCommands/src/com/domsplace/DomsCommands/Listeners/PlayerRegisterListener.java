@@ -24,6 +24,7 @@ import com.domsplace.DomsCommands.Events.PlayerPostFirstJoinEvent;
 import com.domsplace.DomsCommands.Objects.DomsInventory;
 import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
+import com.domsplace.DomsCommands.Objects.Kit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,15 +53,24 @@ public class PlayerRegisterListener extends DomsListener {
             DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
             
             //Store Changes
-            player.setJoinTime(getNow());
-            player.setLoginTime(getNow());
+            player.setJoinTime(player.getOfflinePlayer().getFirstPlayed() == 0 ? getNow() : player.getOfflinePlayer().getFirstPlayed());
+            player.setLoginTime(player.getOfflinePlayer().getFirstPlayed() == 0 ? getNow() : player.getOfflinePlayer().getFirstPlayed());
+            player.setLogoutTime(player.getOfflinePlayer().getLastPlayed()== 0 ? getNow() : player.getOfflinePlayer().getLastPlayed());
             player.setLastIP(e.getPlayer().getAddress().getAddress().getHostAddress());
             player.setLastLocation(new DomsLocation(e.getPlayer().getLocation()));
             player.setLastMoveTime(getNow());
             player.setAFKTime(getNow());
         
             try {player.getInventory().setToPlayer();} catch(Exception ex) {}
-
+            try {player.getEnderChest().setToInventory(e.getPlayer().getEnderChest());} catch(Exception ex) {}
+            
+            //Award Kit
+            if(getConfig().contains("joinkit")) {
+                Kit k = Kit.getKit(getConfig().getString("joinkit"));
+                if(k != null) player.addItems(k.getItems());
+                player.updateDomsInventory();
+            }
+            
             //Fire Event
             PlayerFirstJoinedEvent event = new PlayerFirstJoinedEvent(player);
             event.fireEvent();
@@ -77,6 +87,11 @@ public class PlayerRegisterListener extends DomsListener {
         player.setAFKTime(getNow());
         
         try {player.getInventory().setToPlayer();} catch(Exception ex) {}
+        try {player.getEnderChest().setToInventory(e.getPlayer().getEnderChest());} catch(Exception ex) {}
+        
+        player.getOnlinePlayer().setAllowFlight(player.getFlightMode());
+        
+        player.updateDomsInventory();
         
         //Fire event
         PlayerPostFirstJoinEvent event = new PlayerPostFirstJoinEvent(player);
@@ -102,6 +117,7 @@ public class PlayerRegisterListener extends DomsListener {
         player.getDisplayName();
         player.setLastTeleportRequest(null);
         player.updateDomsInventory();
+        player.isFlightMode();
         DataManager.PLAYER_MANAGER.save();
     }
     

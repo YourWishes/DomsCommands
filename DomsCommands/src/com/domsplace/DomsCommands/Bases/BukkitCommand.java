@@ -196,7 +196,7 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
 
     private String toFullCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String s = isPlayer(sender) ? "/" : "";
-        s += label + Base.arrayToString(args, " ");
+        s += label + " " + Base.arrayToString(args, " ");
         return s;
     }
 }

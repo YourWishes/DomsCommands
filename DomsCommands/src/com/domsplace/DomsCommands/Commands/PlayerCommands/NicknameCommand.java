@@ -95,6 +95,12 @@ public class NicknameCommand extends BukkitCommand {
             return true;
         }
         
+        if(nickname.equalsIgnoreCase("off")) {
+            target.setDisplayName(target.getPlayer());
+            sendMessage(sender, ChatDefault + "Turned " + ChatImportant + target.getPlayer() + ChatDefault + "'s nickname off.");
+            return true;
+        }
+        
         target.setDisplayName(coloriseByPermission(nickname, DomsPlayer.getPlayer(sender), "DomsCommands.nickname.colors."));
         sendMessage(sender, "The new nickname for " + ChatImportant + target.getPlayer() + ChatDefault + " is " + ChatImportant + target.getDisplayName());
         return true;

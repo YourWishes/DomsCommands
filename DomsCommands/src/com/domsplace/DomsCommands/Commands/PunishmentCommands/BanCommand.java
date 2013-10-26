@@ -75,7 +75,7 @@ public class BanCommand extends BukkitCommand {
             sendMessage(sender, ChatError + "Please type /ipban " + args[0] + " to ban IP Addresses.");
             return true;
         } else {
-            rel = DomsPlayer.guessPlayer(sender, args[0], true);
+            rel = DomsPlayer.guessExactPlayer(sender, args[0], true);
         }
         
         if(rel.isConsole() || rel.hasPermisson("DomsCommands.ban.exempt")) {

@@ -65,18 +65,29 @@ public class PlayerManager extends DataManager {
     public DomsPlayer loadPlayer(File file) {
         try {
             YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-            
+            if(!yml.contains("name")) return null;
             DomsPlayer player = DomsPlayer.getPlayer(yml.getString("name"));
             player.setPlayerFile(file);
             
+            //Clear Old Data
+            for(Punishment p : player.getPunishments()) {
+                player.removePunishment(p);
+            }
+            
+            for(Home home : player.getHomes()) {
+                player.removeHome(home);
+            }
+            
+            //Set new Data
             if(yml.contains("nick")) {
                 player.setDisplayName(yml.getString("nick"));
             }
             
             player.setPlayTime(yml.getLong("playtime", 0L));
             player.setJoinTime(yml.getLong("joined", getNow()));
-            player.setJoinTime(yml.getLong("login", getNow()));
-            player.setJoinTime(yml.getLong("logout", getNow()));
+            player.setLoginTime(yml.getLong("login", getNow()));
+            player.setLogoutTime(yml.getLong("logout", getNow()));
+            player.setFlightMode(yml.getBoolean("fly", false));
             
             if(yml.contains("punishments")) {
                 MemorySection punishments = (MemorySection) yml.get("punishments");
@@ -84,6 +95,10 @@ public class PlayerManager extends DataManager {
                     String key = "punishments." + s + ".";
                     String type = yml.getString(key + "type");
                     PunishmentType t = PunishmentType.getType(type);
+                    if(t == null) {
+                        log("Error loading punishment \"" + s + "\".");
+                        continue;
+                    }
                     Punishment p = new Punishment(player, t);
                     
                     String reason = yml.getString(key + "reason");
@@ -175,7 +190,7 @@ public class PlayerManager extends DataManager {
             if(yml.contains("location")) {
                 player.setLastLocation(DomsLocation.guessLocation(yml.getString("location")));
             }
-            
+            debug("Loaded " + player.getDisplayName());
             return player;
         } catch(Exception e) {
             error("Failed to load Player from File \"" + file.getName() + "\".", e);
@@ -223,6 +238,8 @@ public class PlayerManager extends DataManager {
                 yml.set("location", player.getLocation().toString());
             }
             
+            yml.set("fly", player.isFlightMode());
+            
             int id = 0;
             for(Punishment p : player.getPunishments()) {
                 id++;
@@ -237,7 +254,7 @@ public class PlayerManager extends DataManager {
                 yml.set(key + "date", p.getDate());
                 yml.set(key + "end", p.getEndDate());
                 if(p.getLocation() != null) {
-                    yml.set(key + "location", p.getLocation());
+                    yml.set(key + "location", p.getLocation().toString());
                 }
             }
             

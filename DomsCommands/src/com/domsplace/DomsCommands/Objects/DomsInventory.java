@@ -47,11 +47,9 @@ public class DomsInventory {
     
     public static DomsInventory createFromInventory(String group, Inventory inv, DomsPlayer player) {
         DomsInventory di = new DomsInventory(player, group);
-        
         for(int i = 0; i < inv.getSize(); i++) {
             try {
                 ItemStack is = inv.getItem(i);
-                
                 List<DomsItem> items = DomsItem.itemStackToDomsItems(is);
                 DomsInventoryItem invItem = DomsInventoryItem.createInventoryItem(items);
                 di.setItem(i, invItem);

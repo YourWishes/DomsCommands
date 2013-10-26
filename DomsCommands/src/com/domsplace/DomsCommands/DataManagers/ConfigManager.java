@@ -204,12 +204,12 @@ public class ConfigManager extends DataManager {
     }
     
     public String format(String msg) {
+        List<DomsPlayer> list = DomsPlayer.getVisibleOnlinePlayers();
         msg = msg.replaceAll("\\{SERVER\\}", Bukkit.getServerName());
-        msg = msg.replaceAll("\\{NUMPLAYERS\\}", "" + Base.getPlayersList().size());
+        msg = msg.replaceAll("\\{NUMPLAYERS\\}", "" + list.size());
         msg = msg.replaceAll("\\{TOTALPLAYERS\\}", "" + Bukkit.getServer().getMaxPlayers());
         
         String m = "";
-        List<DomsPlayer> list = DomsPlayer.getVisibleOnlinePlayers();
         for(int i = 0; i < list.size(); i++) {
             DomsPlayer player = list.get(i);
             String n = player.getDisplayName();

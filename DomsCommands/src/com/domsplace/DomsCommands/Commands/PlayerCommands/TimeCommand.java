@@ -16,11 +16,13 @@
 
 package com.domsplace.DomsCommands.Commands.PlayerCommands;
     
+import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Enums.WeatherType;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import org.bukkit.Bukkit;
@@ -93,6 +95,11 @@ public class TimeCommand extends BukkitCommand {
         String ts = "SET";
         World w = null;
         boolean allWorlds = false;
+        
+        if(args.length == 0 && label.equalsIgnoreCase("time")) {
+            sendMessage(sender, "The Server time is " + ChatImportant + Base.getHumanDate(new Date()));
+            return true;
+        }
         
         if(args.length == 0 && !isPlayer(sender)) {
             sendMessage(sender, ChatError + "Please enter a world name.");

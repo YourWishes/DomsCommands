@@ -203,7 +203,7 @@ public class DomsItem {
     }
     
     private static String escape(String s) {
-        return s.replaceAll("\\\"", "&q").replaceAll("\\\\n", "\\n");
+        return Base.decolorise(s.replaceAll("\\\"", "&q").replaceAll("\\\\n", "\\n"));
     }
 
     static List<ItemStack> toItemStackArray(List<DomsItem> items) throws InvalidItemException {
@@ -577,7 +577,8 @@ public class DomsItem {
     }
 
     public String toHumanString() {
-        String s = this.getTypeName();
+        String d = Base.ChatDefault;
+        String s = d + this.getTypeName();
         
         if(this.data != BAD_DATA) {
             s += ", with type of " + this.data;
@@ -588,11 +589,11 @@ public class DomsItem {
         }
         
         if(this.name != null && !this.name.equals("")) {
-            s += ", named " + this.name;
+            s += ", named " + this.name + d;
         }
         
         if(this.enchants != null && this.enchants.size() > 0) {
-            s += ", with the enchantments";
+            s += ", with the enchantment" + ((this.enchants.size() > 1) ? "s" : "");
             for(Enchantment e : this.enchants.keySet()) {
                 if(e == null) continue;
                 s += ", " + Base.capitalizeEachWord(e.getName().replaceAll("_", " ").toLowerCase()) + " at level " + enchants.get(e)    ;
@@ -600,21 +601,21 @@ public class DomsItem {
         }
         
         if(this.lores != null && this.lores.size() > 0) {
-            s += ", with the lores";
+            s += ", with the lore"  + ((this.lores.size() > 1) ? "s" : "");
             for(String l : lores) {
-                s += ", " + l;
+                s += ", " + l + d;
             }
         }
         
         if(this.bookPages != null && this.bookPages.size() > 0) {
-            s += ", and with the pages ";
+            s += ", and with the page" + (this.bookPages.size() > 1 ? "s" : "");
             for(String p : this.bookPages) {
-                s += ", \"" + p + "\"";
+                s += ", \"" + p + d + "\"";
             }
         }
         
         if(this.author != null && !this.author.equals("")) {
-            s += ", written by " + this.author;
+            s += ", written by " + this.author + d;
         }
         
         return s;

@@ -47,8 +47,11 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private MOTDCommand motdCommand;
     private ServerCommand serverCommand;
     private ShutdownCommand stopCommand;
+    private WhoCommand whoCommand;
+    private WhoisCommand whoisCommand;
     
     private AwayCommand awayCommand;
+    private FlyCommand flyCommand;
     private DeleteHomeCommand deleteHomeCommand;
     private GamemodeCommand gamemodeCommand;
     private HomeCommand homeCommand;
@@ -128,8 +131,11 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.motdCommand = new MOTDCommand();
         this.serverCommand = new ServerCommand();
         this.stopCommand = new ShutdownCommand();
+        this.whoCommand = new WhoCommand();
+        this.whoisCommand = new WhoisCommand();
         
         this.awayCommand = new AwayCommand();
+        this.flyCommand = new FlyCommand();
         this.deleteHomeCommand = new DeleteHomeCommand();
         this.gamemodeCommand = new GamemodeCommand();
         this.homeCommand = new HomeCommand();

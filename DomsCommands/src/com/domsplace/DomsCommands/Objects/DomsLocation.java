@@ -215,6 +215,14 @@ public class DomsLocation {
         return new DomsLocation(l);
     }
     
+    public String toHumanString() {
+        String x = "" + ((int) Math.round(this.x));
+        x += ", " + ((int) Math.round(this.y));
+        x += ", " + ((int) Math.round(this.z));
+        x += " in " + this.world;
+        return x;
+    }
+    
     @Override
     public String toString() {
         String s = this.x + "," + this.y + "," + this.z + ",";

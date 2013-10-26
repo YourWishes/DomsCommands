@@ -21,6 +21,7 @@ import com.domsplace.DomsCommands.DomsCommandsPlugin;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.io.File;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -75,6 +76,24 @@ public class Base extends RawBase {
         
         for(int x = 0; x < andCodes.length; x++) {
             msg = msg.replaceAll(andCodes[x], altCodes[x]);
+        }
+        
+        return msg;
+    }
+    
+    public static String decolorise(Object o) {
+        String msg = o.toString();
+        
+        String[] andCodes = {"&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", 
+            "&8", "&9", "&a", "&b", "&c", "&d", "&e", "&f", "&l", "&o", "&n", 
+            "&m", "&k", "&r"};
+        
+        String[] altCodes = {"§0", "§1", "§2", "§3", "§4", "§5", "§6", "§7", 
+            "§8", "§9", "§a", "§b", "§c", "§d", "§e", "§f", "§l", "§o", "§n", 
+            "§m", "§k", "§r"};
+        
+        for(int x = 0; x < andCodes.length; x++) {
+            msg = msg.replaceAll(altCodes[x], andCodes[x]);
         }
         
         return msg;
@@ -471,6 +490,30 @@ public class Base extends RawBase {
         return df.format(x);
     }
     
+    public static String getOrdinal(int i) {
+        int hundredRemainder = i % 100;
+        if(hundredRemainder >= 10 && hundredRemainder <= 20) {
+            return "th";
+        }
+        int tenRemainder = i % 10;
+        switch (tenRemainder) {
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
+        }
+    }
+
+    public static void addArrayToList(List<String> messages, String[] message) {
+        for(String s : message) {
+            messages.add(s);
+        }
+    }
+    
     //Plugin Utils
     public static void setPlugin(DomsCommandsPlugin plugin) {
         Base.plugin = plugin;
@@ -538,7 +581,7 @@ public class Base extends RawBase {
         if(t == null) return true;
         if(!t.isOnline()) return true;
         for(Player p : Bukkit.getOnlinePlayers()) {
-            if(p.getName().equals(t.getName())) continue;
+            if(p.getName().equalsIgnoreCase(t.getName())) continue;
             if(!canSee((CommandSender) p, t)) return false;
         }
         return true;
@@ -604,56 +647,99 @@ public class Base extends RawBase {
     public static String getTimeDifference(long early, long late) {return Base.getTimeDifference(new Date(early), new Date(late));}
     
     public static String getTimeDifference(Date early, Date late) {
-        Long NowInMilli = late.getTime();
-        Long TargetInMilli = early.getTime();
-        Long diffInSeconds = (NowInMilli - TargetInMilli) / 1000;
+        StringBuilder sb = new StringBuilder();
+        long diffInSeconds = (late.getTime() - early.getTime()) / 1000;
 
-        long diff[] = new long[] {0,0,0,0,0};
-        /* sec */diff[4] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
-        /* min */diff[3] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
-        /* hours */diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
-        /* days */diff[1] = (diffInSeconds = (diffInSeconds / 24)) >= 31 ? diffInSeconds % 31: diffInSeconds;
-        /* months */diff[0] = (diffInSeconds = (diffInSeconds / 31));
-        
-        String message = "";
-        
-        if(diff[0] > 0) {
-            message += diff[0] + " month";
-            if(diff[0] > 1) {
-                message += "s";
+        /*long diff[] = new long[]{0, 0, 0, 0};
+        /* sec *  diff[3] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
+        /* min *  diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
+        /* hours *  diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
+        /* days * diff[0] = (diffInSeconds = (diffInSeconds / 24));
+         */
+        long sec = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
+        long min = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
+        long hrs = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
+        long days = (diffInSeconds = (diffInSeconds / 24)) >= 30 ? diffInSeconds % 30 : diffInSeconds;
+        long months = (diffInSeconds = (diffInSeconds / 30)) >= 12 ? diffInSeconds % 12 : diffInSeconds;
+        long years = (diffInSeconds = (diffInSeconds / 12));
+
+        if (years > 0) {
+            if (years == 1) {
+                sb.append("a year");
+            } else {
+                sb.append(years + " years");
             }
-            return message;
-        }
-        if(diff[1] > 0) {
-            message += diff[1] + " day";
-            if(diff[1] > 1) {
-                message += "s";
+            if (years <= 6 && months > 0) {
+                if (months == 1) {
+                    sb.append(" and a month");
+                } else {
+                    sb.append(" and " + months + " months");
+                }
             }
-            return message;
-        }
-        if(diff[2] > 0) {
-            message += diff[2] + " hour";
-            if(diff[2] > 1) {
-                message += "s";
+        } else if (months > 0) {
+            if (months == 1) {
+                sb.append("a month");
+            } else {
+                sb.append(months + " months");
             }
-            return message;
-        }
-        if(diff[3] > 0) {
-            message += diff[3] + " minute";
-            if(diff[3] > 1) {
-                message += "s";
+            if (months <= 6 && days > 0) {
+                if (days == 1) {
+                    sb.append(" and a day");
+                } else {
+                    sb.append(" and " + days + " days");
+                }
             }
-            return message;
-        }
-        if(diff[4] > 0) {
-            message += diff[4] + " second";
-            if(diff[4] > 1) {
-                message += "s";
+        } else if (days > 0) {
+            if (days == 1) {
+                sb.append("a day");
+            } else {
+                sb.append(days + " days");
             }
-            return message;
+            if (days <= 3 && hrs > 0) {
+                if (hrs == 1) {
+                    sb.append(" and an hour");
+                } else {
+                    sb.append(" and " + hrs + " hours");
+                }
+            }
+        } else if (hrs > 0) {
+            if (hrs == 1) {
+                sb.append("an hour");
+            } else {
+                sb.append(hrs + " hours");
+            }
+            if (min > 1) {
+                sb.append(" and " + min + " minutes");
+            }
+        } else if (min > 0) {
+            if (min == 1) {
+                sb.append("a minute");
+            } else {
+                sb.append(min + " minutes");
+            }
+            if (sec > 1) {
+                sb.append(" and " + sec + " seconds");
+            }
+        } else {
+            if (sec <= 1) {
+                sb.append("about a second");
+            } else {
+                sb.append("about " + sec + " seconds");
+            }
         }
-        
-        return "Time Error";
+
+
+        /*String result = new String(String.format(
+        "%d day%s, %d hour%s, %d minute%s, %d second%s ago",
+        diff[0],
+        diff[0] > 1 ? "s" : "",
+        diff[1],
+        diff[1] > 1 ? "s" : "",
+        diff[2],
+        diff[2] > 1 ? "s" : "",
+        diff[3],
+        diff[3] > 1 ? "s" : ""));*/
+        return sb.toString();
     }
     
     public static Date addStringToNow(String input) {
@@ -752,6 +838,21 @@ public class Base extends RawBase {
         }
         now = c.getTime();
         return now;
+    }
+    
+    public static String getHumanDate(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("d");
+        int day = getInt(format.format(date));
+        String ordinal = day + Base.getOrdinal(day);
+        
+        String humanDay = new SimpleDateFormat("EEEE").format(date);
+        String humanMonth = new SimpleDateFormat("MMMM").format(date);
+        String humanYear = new SimpleDateFormat("yyyy").format(date);
+        String time = new SimpleDateFormat("h:m:s a").format(date);
+        
+        String rv = humanDay + ", the " + ordinal + " of " + humanMonth + " " + humanYear + " at " + time;
+        
+        return rv;
     }
 
     public static String getHumanTimeAway(Date unbanDate) {

@@ -36,16 +36,20 @@ import org.bukkit.event.player.PlayerLoginEvent;
  * @author Dominic Masters
  */
 public class PunishmentListener extends DomsListener {
+    
     @EventHandler(priority=EventPriority.LOWEST)
     public void handleMutedChat(AsyncPlayerChatEvent e) {
         DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
         if(player == null || player.isConsole()) return;
         if(!player.isMuted()) return;
+        
+        log(player.getPlayer() + " tried to say \"" + e.getMessage() + "\" but is muted.");
+        
         e.setMessage("");
         e.setFormat("");
         e.setCancelled(true);
-        Punishment pun = player.getMostRecentPunishmentOfType(PunishmentType.MUTE);
-        sendMessage(player, ChatError + "You can't talk, you're muted for \"" + colorise(pun.getReason()) + ChatError + "\".");
+        String reason = player.getLastPunishmentReason(PunishmentType.MUTE);
+        sendMessage(player, ChatError + "You can't talk, you're muted for \"" + colorise(reason) + ChatError + "\".");
     }
     
     @EventHandler(priority=EventPriority.LOWEST)
@@ -57,6 +61,7 @@ public class PunishmentListener extends DomsListener {
         for(String s : cmds) {
             if(!e.willResult(s)) continue;
             player.sendMessage(ChatError + "You can't run this command, you're muted.");
+            log(player.getPlayer() + " tried to run \"" + e.toFullCommand() + "\" but is muted.");
             e.setCancelled(true);
             return;
         }
@@ -67,12 +72,15 @@ public class PunishmentListener extends DomsListener {
         DomsPlayer player = DomsPlayer.guessPlayer(e.getPlayer().getName(), false);
         if(player == null) return;
         if(!player.isBanned()) return;
-        Punishment p = player.getMostRecentPunishmentOfType(PunishmentType.BAN);
+        String reason = Punishment.DEFAULT_REASON;
         String tb = "";
-        if(!p.isPermanent()) tb = " for " + ChatImportant + Base.getHumanTimeAway(new Date(p.getEndDate())) + ChatDefault;
-        String msg = ChatDefault + "You have been banned for " + ChatImportant + colorise(p.getReason()) + ChatDefault + tb + ".";
+        Punishment p = player.getMostRecentPunishmentOfType(PunishmentType.BAN);
+        if(p != null) {
+            if(!p.isPermanent()) tb = " for " + ChatImportant + Base.getHumanTimeAway(new Date(p.getEndDate())) + ChatDefault;
+            reason = p.getReason();
+        }
+        String msg = ChatDefault + "You have been banned for " + ChatImportant + colorise(reason) + ChatDefault + tb + ".";
         e.setKickMessage(msg);
-        e.setResult(PlayerLoginEvent.Result.KICK_BANNED);
         e.disallow(PlayerLoginEvent.Result.KICK_BANNED, msg);
     }
 }
