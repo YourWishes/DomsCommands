@@ -256,6 +256,21 @@ commands:
       aliases: [addfood, food]
       usage: /<command> (player)
       permission: DomsCommands.feed
+   backpack:
+      description: Feed a player to max.
+      aliases: [openpack, bp, pack]
+      usage: /<command>
+      permission: DomsCommands.backpack
+   invmod:
+      description: Feed a player to max.
+      aliases: [invsee, modinv]
+      usage: /<command> [player]
+      permission: DomsCommands.invmod
+   spawnmob:
+      description: Spawn an Entity where a specified player is looking
+      aliases: [mobspawn, summon, spawnmonster, monsterspawn, createmonster]
+      usage: /<command> (player) [mob] (amount)
+      permission: DomsCommands.spawnmob
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -744,3 +759,11 @@ permissions:
      description: Allows access to the heal command.
    DomsCommands.feed:
      description: Allows access to the feed command.
+   DomsCommands.backpack:
+     description: Allows access to the backpack command.
+   DomsCommands.invmod:
+     description: Allows access to the invmod command.
+   DomsCommands.invmod.exempt:
+     description: Allows access to block others' opening your inventory.
+   DomsCommands.spawnmob:
+     description: Allows access to the spawnmob command.

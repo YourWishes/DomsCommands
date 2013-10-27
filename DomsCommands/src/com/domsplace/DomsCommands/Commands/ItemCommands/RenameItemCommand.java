@@ -62,8 +62,9 @@ public class RenameItemCommand extends BukkitCommand {
         
         DomsItem item = DomsItem.createItem(is);
         sendMessage(sender, "Renamed " + ChatImportant + item.toHumanString() + ChatDefault + " to " + ChatImportant + name + ChatDefault + ".");
+        item.setName(name);
         ItemMeta im = is.getItemMeta();
-        im.setDisplayName(name);
+        im.setDisplayName(item.getName());
         is.setItemMeta(im);
         player.getOnlinePlayer().setItemInHand(is);
         return true;

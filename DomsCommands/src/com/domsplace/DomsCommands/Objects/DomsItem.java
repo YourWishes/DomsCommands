@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
 public class DomsItem {
     /*
@@ -74,7 +74,7 @@ public class DomsItem {
             }
             
             int count = 1;
-            int id = 0;
+            String material = null;
             short idata = BAD_DATA;
             short damage = BAD_DATA;
             String author = null;
@@ -85,11 +85,7 @@ public class DomsItem {
             }
             
             if(data.containsKey("id")) {
-                if(Base.isInt(id)) {
-                    id = Base.getInt(data.get("id"));
-                } else {
-                    id = DomsItem.guessID(data.get("id"));
-                }
+                material = DomsItem.guessMaterial(data.get("id"));
             }
             
             if(data.containsKey("data")) {
@@ -110,7 +106,7 @@ public class DomsItem {
             
             List<DomsItem> items = new ArrayList<DomsItem>();
             for(int i = 0; i < count; i++) {
-                DomsItem item = new DomsItem(id, idata);
+                DomsItem item = new DomsItem(material, idata);
                 item.setDamage(damage);
                 item.setPages(pages);
                 item.setLores(lores);
@@ -260,7 +256,7 @@ public class DomsItem {
         
         if(parts.length < 1) throw new InvalidItemException(s);
         
-        int id = DomsItem.guessID(parts[0]);
+        String material = DomsItem.guessMaterial(parts[0]);
         short data = BAD_DATA;
         
         if(parts.length > 1) {
@@ -269,12 +265,12 @@ public class DomsItem {
             }
         }
         
-        if(id < 1) throw new InvalidItemException(s);
+        if(material == null) throw new InvalidItemException(s);
         
-        Material m = Material.getMaterial(id);
+        Material m = Material.getMaterial(material);
         if(m == null) throw new InvalidItemException(s);
         
-        return new DomsItem(id, data);
+        return new DomsItem(material, data);
     }
     
     public static List<DomsItem> multiply(DomsItem item, int amount) {
@@ -285,17 +281,17 @@ public class DomsItem {
         return items;
     }
     
-    public static int guessID(String l) {
-        if(Base.isInt(l)) return Base.getInt(l);
+    public static String guessMaterial(String l) {
+        if(Base.isInt(l)) return Material.getMaterial(Base.getInt(l)).name();
         l = l.toLowerCase().replaceAll(" ", "").replaceAll("_", "");
         for(Material m : Material.values()) {
             String n = m.name().toLowerCase();
             n = n.replaceAll("_", "").replaceAll(" ", "");
-            if(n.startsWith(l)) return m.getId();
-            if(n.contains(l)) return m.getId();
+            if(n.startsWith(l)) return m.name();
+            if(n.contains(l)) return m.name();
         }
         
-        return DomsItem.BAD_DATA;
+        return null;
     }
 
     public static DomsItem createItem(ItemStack is) {
@@ -305,7 +301,7 @@ public class DomsItem {
     private static long NEXT_ID = Long.MIN_VALUE;
     
     //Instance
-    private int id;
+    private String material;
     private short data = BAD_DATA;
     private short damage;
     private Map<Enchantment, Integer> enchants;
@@ -315,8 +311,8 @@ public class DomsItem {
     private List<String> lores;
     private long itemID;
     
-    public DomsItem(int id, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, String name, List<String> lores) {
-        this.id = id;
+    public DomsItem(String material, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, String name, List<String> lores) {
+        this.material = material;
         this.data = data;
         this.damage = damage;
         this.enchants = enchants;
@@ -326,61 +322,61 @@ public class DomsItem {
         this.itemID = NEXT_ID += 1;
     }
     
-    public DomsItem(int id, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, String name) {
-        this(id, data, damage, enchants, pages, name, null);
+    public DomsItem(String material, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, String name) {
+        this(material, data, damage, enchants, pages, name, null);
     }
     
-    public DomsItem(int id, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, List<String> lores) {
-        this(id, data, damage, enchants, pages, null, lores);
+    public DomsItem(String material, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, List<String> lores) {
+        this(material, data, damage, enchants, pages, null, lores);
     }
     
-    public DomsItem(int id, short data, short damage, Map<Enchantment, Integer> enchants, String name, List<String> lores) {
-        this(id, data, damage, enchants, null, name, lores);
+    public DomsItem(String material, short data, short damage, Map<Enchantment, Integer> enchants, String name, List<String> lores) {
+        this(material, data, damage, enchants, null, name, lores);
     }
     
-    public DomsItem(int id, short data, Map<Enchantment, Integer> enchants, String name) {
-        this(id, data, BAD_DATA, enchants, null, name, null);
+    public DomsItem(String material, short data, Map<Enchantment, Integer> enchants, String name) {
+        this(material, data, BAD_DATA, enchants, null, name, null);
     }
     
-    public DomsItem(int id, short data, Map<Enchantment, Integer> enchants, List<String> lores) {
-        this(id, data, BAD_DATA, enchants, null, null, lores);
+    public DomsItem(String material, short data, Map<Enchantment, Integer> enchants, List<String> lores) {
+        this(material, data, BAD_DATA, enchants, null, null, lores);
     }
     
-    public DomsItem(int id, short data, List<String> pages, String name, List<String> lores) {
-        this(id, data, BAD_DATA, null, pages, name, lores);
+    public DomsItem(String material, short data, List<String> pages, String name, List<String> lores) {
+        this(material, data, BAD_DATA, null, pages, name, lores);
     }
     
-    public DomsItem(int id, short data, String name, List<String> lores) {
-        this(id, data, BAD_DATA, null, null, name, lores);
+    public DomsItem(String material, short data, String name, List<String> lores) {
+        this(material, data, BAD_DATA, null, null, name, lores);
     }
     
-    public DomsItem(int id, short data, String name) {
-        this(id, data, name, null);
+    public DomsItem(String material, short data, String name) {
+        this(material, data, name, null);
     }
     
-    public DomsItem(int id, short data, List<String> lores) {
-        this(id, data, BAD_DATA, null, null, null, lores);
+    public DomsItem(String material, short data, List<String> lores) {
+        this(material, data, BAD_DATA, null, null, null, lores);
     }
     
     public DomsItem(Material m, short data) {
-        this(m.getId(), data);
+        this(m.name(), data);
     }
     
-    public DomsItem(int id, short data) {
-        this(id, data, BAD_DATA, null, null, null, null);
+    public DomsItem(String material, short data) {
+        this(material, data, BAD_DATA, null, null, null, null);
     }
     
-    public DomsItem(int id) {
-        this(id, BAD_DATA);
+    public DomsItem(String material) {
+        this(material, BAD_DATA);
     }
     
     public DomsItem(Material m) {
-        this(m.getId());
+        this(m.name());
     }
     
     public DomsItem(ItemStack is) {
         this(
-            is.getType().getId(),
+            is.getType().name(),
             is.getDurability()
         );
         
@@ -406,23 +402,25 @@ public class DomsItem {
         this.enchants = new HashMap<Enchantment, Integer>(is.getEnchantments());
     }
     
-    public int getID() {return this.id;}
+    public String getMaterialName() {return this.material;}
     public short getData() {return this.data;}
     public short getDamage() {return this.damage;}
     public Map<Enchantment, Integer> getEnchantments() {return this.enchants;}
     public List<String> getBookPages() {return this.bookPages;}
     public String getBookAuthor() {return this.author;}
-    public String getName() {return this.name;}
+    public String getName() {String x = this.name; if(this.isMobNameable()) x = Base.trim(x, 64); return x;}
     public List<String> getLores() {return this.lores;}
     public String getTypeName() {return Base.capitalizeEachWord(this.getMaterial().name().replaceAll("_", " ").toLowerCase());}
     public long getItemID() {return this.itemID;}
+    @Deprecated public MaterialData getMaterialData() {return this.getMaterial().getNewData((byte) this.data);}
 
-    public boolean isAir() {return this.getID() < 1;}
+    public boolean isAir() {return this.getMaterial().equals(Material.AIR);}
     public boolean isBook() {return this.getMaterial().equals(Material.BOOK_AND_QUILL) || this.getMaterial().equals(Material.WRITTEN_BOOK);}
+    public boolean isMobNameable() {return this.getMaterial().equals(Material.MONSTER_EGG) || this.getMaterial().equals(Material.MONSTER_EGGS) || this.getMaterial().equals(Material.NAME_TAG);}
 
     public boolean hasData() {return this.data != DomsItem.BAD_DATA;}
     
-    public void setID(int id) {this.id = id;}
+    public void setMaterialName(String material) {this.material = material;}
     public void setData(short data) {this.data = data;}
     public void setDamage(short damage) {this.damage = damage;}
     public void setLores(List<String> lores) {this.lores = lores;}
@@ -433,11 +431,13 @@ public class DomsItem {
 
     public void setPage(int page, String l) {this.bookPages.set(page, l);}
     
-    public Material getMaterial() {return Material.getMaterial(this.id);}
+    public Material getMaterial() {return Material.getMaterial(this.material);}
     public ItemMeta getItemMeta(ItemStack is) {
         ItemMeta im = is.getItemMeta();
         if(this.name != null && !this.name.equals("")) {
-            im.setDisplayName(this.name);
+            String name = this.name;
+            if(this.isMobNameable()) name = Base.trim(name, 64);
+            im.setDisplayName(name);
         }
         
         if(im instanceof BookMeta) {
@@ -460,7 +460,7 @@ public class DomsItem {
     public ItemStack getItemStack() throws InvalidItemException {return getItemStack(64);}
     public ItemStack getItemStack(int amt) throws InvalidItemException {
         try {
-            ItemStack is = new ItemStack(this.id, amt, this.data);
+            ItemStack is = new ItemStack(this.getMaterial(), amt, this.data);
             if(this.damage != BAD_DATA) {
                 is.setDurability(this.damage);
             }
@@ -473,13 +473,9 @@ public class DomsItem {
             throw new InvalidItemException(this.toString());
         }
     }
-    public Block setBlock(Block b) {
-        b.setTypeIdAndData(id, (byte)data, true);
-        return b;
-    }
     
     public boolean compare(DomsItem item) {
-        if(item.id != this.id) return false;
+        if(item.material != this.material) return false;
         if(this.data >= 0 && item.data >= 0) {
             if(this.data != item.data) return false;
         }
@@ -536,7 +532,7 @@ public class DomsItem {
     
     @Override
     public String toString() {
-        String msg = "{id:\"" + this.id + "\"}";
+        String msg = "{id:\"" + this.material + "\"}";
         
         if(this.data != BAD_DATA) {
             msg += ",{data:\"" + Short.toString(this.data) + "\"}";

@@ -93,7 +93,7 @@ public class GetIDCommand extends BukkitCommand {
             info.add(ChatImportant + "Information about " + ChatDefault + item.toHumanString());
         }
         
-        info.add(ChatImportant + "ID: " + ChatDefault + item.getID());
+        info.add(ChatImportant + "Material: " + ChatDefault + item.getMaterialName());
         
         if(item.hasData()) {
             info.add(ChatImportant + "Data: " + ChatDefault + item.getData());

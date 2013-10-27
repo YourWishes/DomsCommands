@@ -104,7 +104,7 @@ public class SubCommandOption extends Base {
         } else if(this.compare(SubCommandOption.MOB_OPTION)) {
             for(EntityType et : EntityType.values()) {
                 if(!et.isAlive()) continue;
-                returnV.add(et.getName());
+                returnV.add(et.name());
             }
         } else if(this.compare(SubCommandOption.ITEM_OPTION)) {
             for(Material m : Material.values()) {
@@ -163,7 +163,7 @@ public class SubCommandOption extends Base {
         if(Bukkit.getPlayer(s) != null) return SubCommandOption.PLAYERS_OPTION.option;
         if(Bukkit.getWorld(s) != null) return SubCommandOption.WORLD_OPTION.option;
         if(Enchantment.getByName(s) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
-        if(EntityType.fromName(s) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
+        if(DomsEntity.craftEntity(s, DomsPlayer.getPlayer(sender)) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
         if(PotionEffectType.getByName(s) != null) return SubCommandOption.POTION_OPTION.option;
         if(WeatherCommand.getType(s) != null) return SubCommandOption.WEATHER_OPTION.option;
         if(Warp.getWarp(s) != null) return SubCommandOption.WARPS_OPTION.option;

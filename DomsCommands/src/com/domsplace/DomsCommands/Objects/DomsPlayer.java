@@ -31,9 +31,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -185,6 +187,7 @@ public class DomsPlayer {
     private final List<Home> homes;
     private final List<DomsInventory> inventories;
     private final List<DomsInventory> enderchest;
+    private Inventory backpack;
     private Map<String, String> variables;
     private Map<Kit, Long> kitCooldowns;
     
@@ -242,6 +245,7 @@ public class DomsPlayer {
     public String getVariable(String key) {this.updateVariables(); return this.variables.get(key);}
     public long getKitCooldown(Kit k) {try {return this.kitCooldowns.get(k);}catch(Exception e) {return -1;}}
     public boolean getFlightMode() {return this.flyMode;}
+    public Inventory getBackpack() {return this.backpack;}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
@@ -264,6 +268,7 @@ public class DomsPlayer {
     public void setVariable(String key, String variable) {this.variables.put(key, variable); this.updateVariables();}
     public void setKitCooldown(Kit k, long l) {this.kitCooldowns.put(k, l);}
     public void setFlightMode(boolean f) {this.flyMode = f;}
+    public Inventory setBackpack(Inventory inventory) {this.backpack = inventory; return this.backpack;}
     
     @Override public String toString() {return this.getDisplayName();}
     
@@ -407,6 +412,16 @@ public class DomsPlayer {
             if(groupSuffix != null) return groupSuffix;
         }
         return "";
+    }
+    
+    public Block getTargetBlock() {return this.getTargetBlock(99);}
+    
+    public Block getTargetBlock(int distance) {
+        if(this.isConsole() || !this.isOnline()) return null;
+        List<Block> blocks = this.getOnlinePlayer().getLineOfSight(null, distance);
+        if(blocks == null) return null;
+        if(blocks.size() < 1) return null;
+        return blocks.get(blocks.size()-1);
     }
     
     //Complex set's

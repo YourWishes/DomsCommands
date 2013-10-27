@@ -94,6 +94,10 @@ public class DomsLocation {
     
     private String world;
     
+    public DomsLocation(Block b) {
+        this(b.getLocation());
+    }
+    
     public DomsLocation(DomsLocation location) {
         this(location.toLocation());
     }

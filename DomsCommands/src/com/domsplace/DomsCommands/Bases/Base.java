@@ -25,12 +25,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -55,6 +58,9 @@ public class Base extends RawBase {
     public static String ChatError = ChatColor.RED.toString();
     
     private static String permissionMessage = "&4You don't have permission to do this!";
+    
+    public static final Pattern SEPERATOR_REGEX = Pattern.compile(",\\s*(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+    public static final String ATTRIBUTE_SEPERATOR_REGEX = "\\{(\\s*)(\\w+)\\:(\\s*)(\".*?(?<!\\\\)(\"))(\\s*)\\}";
     
     //HOOKING OPTIONS
 
@@ -512,6 +518,37 @@ public class Base extends RawBase {
         for(String s : message) {
             messages.add(s);
         }
+    }
+    
+    public static Map<String, String> getDomsJSON(String line) {
+        debug("PARSING: " + line);
+        try {
+            line = line.replaceAll("\\n","\\\\n");
+            String[] parts = line.split(SEPERATOR_REGEX.pattern());
+            
+            Map<String, String> data = new HashMap<String, String>();
+            
+            for(String s : parts) {
+                debug("ADDING: " + s);
+                Matcher m = Pattern.compile(ATTRIBUTE_SEPERATOR_REGEX).matcher(s);
+                m.find();
+                
+                String key = m.group(2).toLowerCase();
+                String value = m.group(4).replaceFirst("\"", "");
+                value = value.substring(0, value.length()-1);
+                value = value.replaceAll("&q", "\"");
+                data.put(key, value);
+            }
+            
+            return data;
+        } catch(Exception e) {return null;}
+    }
+    
+    public static DyeColor getDyeColor(String s) {
+        for(DyeColor color : DyeColor.values()) {
+            if(color.name().equalsIgnoreCase(s)) return color;
+        }
+        return null;
     }
     
     //Plugin Utils

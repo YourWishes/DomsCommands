@@ -29,8 +29,10 @@ import com.domsplace.DomsCommands.Objects.Punishment;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.Inventory;
 
 /**
  * @author      Dominic
@@ -175,6 +177,19 @@ public class PlayerManager extends DataManager {
                 }
             }
             
+            if(yml.contains("backpack")) {
+                MemorySection invs = (MemorySection) yml.get("backpack");
+                DomsInventory bp = new DomsInventory(player, "");
+                for(String s : invs.getKeys(false)) {
+                    int slot = getInt(s.replaceAll("slot", ""));
+                    DomsInventoryItem item = DomsInventoryItem.createFromString(yml.getString("backpack." + s));
+                    bp.setItem(slot, item);
+                }
+                
+                Inventory backpack = player.setBackpack(Bukkit.createInventory(player.getOnlinePlayer(), 54, player.getPlayer() + "'s Backpack."));
+                bp.setToInventory(backpack);
+            }
+            
             if(yml.contains("kitcooldowns")) {
                 for(String s : ((MemorySection) yml.get("kitcooldowns")).getKeys(false)) {
                     try {
@@ -297,6 +312,15 @@ public class PlayerManager extends DataManager {
                     long l = player.getKitCooldown(k);
                     if(l <= 0) continue;
                     yml.set("kitcooldowns." + k.getName(), l);
+                }
+                
+                if(player.getBackpack() != null) {
+                    Inventory in = player.getBackpack();
+                    DomsInventory inv = DomsInventory.createFromInventory("", in, player);
+                    Map<Integer, DomsInventoryItem> items = inv.getItems();
+                    for(Integer i : items.keySet()) {
+                        yml.set("backpack.slot" +  i, items.get(i).toString());
+                    }
                 }
             }
             

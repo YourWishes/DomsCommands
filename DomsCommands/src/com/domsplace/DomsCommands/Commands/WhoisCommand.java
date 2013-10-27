@@ -49,7 +49,7 @@ public class WhoisCommand extends BukkitCommand {
             return false;
         }
         
-        DomsPlayer player = DomsPlayer.guessPlayer(sender, args[0]);
+        DomsPlayer player = DomsPlayer.guessExactPlayer(sender, args[0], false);
         if(player == null || player.isConsole() || !player.hasPlayedBefore()) {
             sendMessage(sender, ChatError + "That player hasn't played before.");
             return true;

@@ -25,7 +25,10 @@ import com.domsplace.DomsCommands.Objects.DomsInventory;
 import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Kit;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -118,6 +121,13 @@ public class PlayerRegisterListener extends DomsListener {
         player.setLastTeleportRequest(null);
         player.updateDomsInventory();
         player.isFlightMode();
+        
+        //Close Anyone invmoding this players inventory
+        List<HumanEntity> ents = new ArrayList<HumanEntity>(player.getOnlinePlayer().getInventory().getViewers());
+        for(HumanEntity h : ents) {
+            h.closeInventory();
+        }
+        
         DataManager.PLAYER_MANAGER.save();
     }
     
