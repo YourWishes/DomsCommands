@@ -271,6 +271,16 @@ commands:
       aliases: [mobspawn, summon, spawnmonster, monsterspawn, createmonster]
       usage: /<command> (player) [mob] (amount)
       permission: DomsCommands.spawnmob
+   spawn:
+      description: Return to the spawnpoint of the world.
+      aliases: [worldspawn, s]
+      usage: /<command> (player)
+      permission: DomsCommands.spawn
+   potioneffect:
+      description: Add a potion effect on to a player.
+      aliases: [effect, addeffect, addpotioneffect, beaconeffect, beacon]
+      usage: /<command> (player)
+      permission: DomsCommands.potioneffect
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -767,3 +777,5 @@ permissions:
      description: Allows access to block others' opening your inventory.
    DomsCommands.spawnmob:
      description: Allows access to the spawnmob command.
+   DomsCommands.spawn:
+     description: Allows access to the spawn command.

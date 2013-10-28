@@ -47,8 +47,10 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private HealCommand healCommand;
     private KitCommand kitCommand;
     private MOTDCommand motdCommand;
+    private PotionEffectCommand potionEffectCommand;
     private ServerCommand serverCommand;
     private ShutdownCommand stopCommand;
+    private SpawnCommand spawnCommand;
     private SpawnMobCommand spawnMobCommand;
     private WhoCommand whoCommand;
     private WhoisCommand whoisCommand;
@@ -136,8 +138,10 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.healCommand = new HealCommand();
         this.kitCommand = new KitCommand();
         this.motdCommand = new MOTDCommand();
+        this.potionEffectCommand = new PotionEffectCommand();
         this.serverCommand = new ServerCommand();
         this.stopCommand = new ShutdownCommand();
+        this.spawnCommand = new SpawnCommand();
         this.spawnMobCommand = new SpawnMobCommand();
         this.whoCommand = new WhoCommand();
         this.whoisCommand = new WhoisCommand();

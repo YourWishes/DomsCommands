@@ -591,6 +591,7 @@ public class Base extends RawBase {
     
     //Player Utils
     public static boolean hasPermission(CommandSender sender, String permission) {
+        if(!isPlayer(sender)) return true;
         if(permission.equals("DomsCommands.none")) return true;
         return sender.hasPermission(permission);
     }

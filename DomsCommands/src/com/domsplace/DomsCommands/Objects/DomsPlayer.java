@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -291,6 +292,7 @@ public class DomsPlayer {
     public boolean canBeSeenBy(OfflinePlayer t) {return Base.canSee(t, this.getOfflinePlayer());}
     
     public void teleport(DomsLocation to) {this.teleport(to, Base.getConfig().getBoolean("teleport.safe", true));}
+    public void teleport(Location location) {this.teleport(new DomsLocation(location));}
     public void sendMessage(Object o) {Base.sendMessage(this, o);}
     
     //Complex get's
