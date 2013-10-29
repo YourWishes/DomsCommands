@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Commands.PlayerCommands.GamemodeCommand;
 import com.domsplace.DomsCommands.Commands.PlayerCommands.TimeCommand;
 import com.domsplace.DomsCommands.Commands.PlayerCommands.WeatherCommand;
@@ -49,6 +50,7 @@ public class SubCommandOption extends Base {
     public static final SubCommandOption WARPS_OPTION = new SubCommandOption("[WARP]");
     public static final SubCommandOption GAMEMODE_OPTION = new SubCommandOption("[GAMEMODE]");
     public static final SubCommandOption CHANNELS_OPTION = new SubCommandOption("[CHANNEL]");
+    public static final SubCommandOption COMMAND_OPTION = new SubCommandOption("[COMMAND]");
     
     //Instance
     private String option;
@@ -160,6 +162,10 @@ public class SubCommandOption extends Base {
             for(DomsChannel c : DomsChannel.getChannels()) {
                 returnV.add(c.getName());
             }
+        } else if(this.compare(SubCommandOption.COMMAND_OPTION)) {
+            for(BukkitCommand bc : BukkitCommand.getCommands()) {
+                returnV.add(bc.getCommand());
+            }
         } else {
             returnV.add(this.option);
         }
@@ -176,6 +182,9 @@ public class SubCommandOption extends Base {
         if(Warp.getWarp(s) != null) return SubCommandOption.WARPS_OPTION.option;
         if(GamemodeCommand.getGameMode(s) != null) return SubCommandOption.GAMEMODE_OPTION.option;
         if(Kit.getKit(s) != null) return SubCommandOption.KIT_OPTION.option;
+        if(DomsChannel.getChannel(s) != null) return SubCommandOption.CHANNELS_OPTION.option;
+        if(DomsChannel.getChannelByCommand(s) != null) return SubCommandOption.CHANNELS_OPTION.option;
+        if(BukkitCommand.getCommandSearchAliases(s) != null) return SubCommandOption.COMMAND_OPTION.option;
         try {if(DomsItem.guessItem(s) != null) return SubCommandOption.ITEM_OPTION.option;} catch(InvalidItemException e){}
         return s;
     }

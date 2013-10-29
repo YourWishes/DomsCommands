@@ -64,6 +64,9 @@ public class ChatManager extends DataManager {
             commands.add("bc");
             yml.set("broadcast.commands", commands);
         }
+        if(!yml.contains("me.format")) {
+            yml.set("me.format", "&r&f* {DISPLAYNAME} &r{MESSAGE}&r *");
+        }
         
         if(n) {
             yml.set("AdminChat.format",

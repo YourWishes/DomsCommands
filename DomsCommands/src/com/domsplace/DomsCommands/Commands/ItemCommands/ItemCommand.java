@@ -67,6 +67,16 @@ public class ItemCommand extends BukkitCommand {
             }
         }
         
+        if(size < 1) {
+            sendMessage(sender, ChatError + "Amount must be at least 1.");
+            return true;
+        }
+        
+        if(size > 2560) {
+            sendMessage(sender, ChatError + "Amount must be below 2560.");
+            return true;
+        }
+        
         String itemStr = "";
         for(int i = 0; i < arrEnd; i++) {
             itemStr += args[i];

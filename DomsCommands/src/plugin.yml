@@ -301,6 +301,26 @@ commands:
       aliases: [bitchslap, slaphard, sl]
       usage: /<command> [player]
       permission: DomsCommands.slap
+   help:
+      description: Get help on a specific command or topic.
+      aliases: [gethelp, ?, showhelp]
+      usage: /<command> (page|topic|command)
+      permission: DomsCommands.help
+   enchantingtable:
+      description: Opens an Enchanting Table.
+      aliases: [et, enchanttable, etablle, enchantingt, enchantinggrid, enctab, ec]
+      usage: /<command> (page|topic|command)
+      permission: DomsCommands.enchantingtable
+   experience:
+      description: Add, Set or Remove a players XP.
+      aliases: [xp, exp]
+      usage: /<command> (player) (add/set/remove) [amount](L)
+      permission: DomsCommands.experience
+   me:
+      description: Emote!
+      aliases: [emote, display, show, about, showoff, my]
+      usage: /<command> [message]
+      permission: DomsCommands.me
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -809,3 +829,11 @@ permissions:
      description: Allows access to the head command.
    DomsCommands.slap:
      description: Allows access to the slap command.
+   DomsCommands.help:
+     description: Allows access to the help command.
+   DomsCommands.enchantingtable:
+     description: Allows access to the enchantingtable command.
+   DomsCommands.experience:
+     description: Allows access to the experience command.
+   DomsCommands.me:
+     description: Allows access to the me command.

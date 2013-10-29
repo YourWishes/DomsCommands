@@ -110,6 +110,8 @@ public class ConfigManager extends DataManager {
         }
         df("inventory.groups.default", commands);
         
+        df("commands.help.usecustom", true);
+        
         df("joinkit", "default");
         
         if(!config.contains("kits")) {

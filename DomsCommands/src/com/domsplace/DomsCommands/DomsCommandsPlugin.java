@@ -45,6 +45,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private DomsCommandsCommand domsCommands;
     private FeedCommand feedCommand;
     private HealCommand healCommand;
+    private HelpCommand helpCommand;
     private KitCommand kitCommand;
     private MOTDCommand motdCommand;
     private PotionEffectCommand potionEffectCommand;
@@ -63,6 +64,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private DeleteHomeCommand deleteHomeCommand;
     private GamemodeCommand gamemodeCommand;
     private InvmodCommand invmodCommand;
+    private MeCommand meCommand;
     private HomeCommand homeCommand;
     private HomesCommand homesCommand;
     private MessageCommand messageCommand;
@@ -78,6 +80,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private ClearInventoryCommand clearInventoryCommand;
     private ClearLoresCommand clearLoresCommand;
     private EnchantCommand enchantCommand;
+    private ExperienceCommand experienceCommand;
+    private EnchantingTableCommand enchantingTableCommand;
     private GiveCommand giveCommand;
     private HeadCommand headCommand;
     private ItemCommand itemCommand;
@@ -140,6 +144,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.domsCommands = new DomsCommandsCommand();
         this.feedCommand = new FeedCommand();
         this.healCommand = new HealCommand();
+        this.helpCommand = new HelpCommand();
         this.kitCommand = new KitCommand();
         this.motdCommand = new MOTDCommand();
         this.potionEffectCommand = new PotionEffectCommand();
@@ -158,6 +163,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.deleteHomeCommand = new DeleteHomeCommand();
         this.gamemodeCommand = new GamemodeCommand();
         this.invmodCommand = new InvmodCommand();
+        this.meCommand = new MeCommand();
         this.homeCommand = new HomeCommand();
         this.homesCommand = new HomesCommand();
         this.messageCommand = new MessageCommand();
@@ -173,6 +179,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.clearInventoryCommand = new ClearInventoryCommand();
         this.clearLoresCommand = new ClearLoresCommand();
         this.enchantCommand = new EnchantCommand();
+        this.enchantingTableCommand = new EnchantingTableCommand();
+        this.experienceCommand = new ExperienceCommand();
         this.giveCommand = new GiveCommand();
         this.headCommand = new HeadCommand();
         this.itemCommand = new ItemCommand();
