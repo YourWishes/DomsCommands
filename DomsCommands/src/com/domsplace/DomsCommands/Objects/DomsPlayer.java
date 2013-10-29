@@ -285,7 +285,7 @@ public class DomsPlayer {
     
     public void toggleAFK() {this.afk = !this.afk;}
     
-    public boolean hasPermisson(String perm) {return Base.hasPermission(this.getOfflinePlayer(), perm);}
+    public boolean hasPermisson(String perm) {if(this.isConsole()) return true; return Base.hasPermission(this.getOfflinePlayer(), perm);}
     public boolean hasPlayedBefore() {return this.getOfflinePlayer().hasPlayedBefore();}
     
     public boolean canSee(OfflinePlayer t) {return Base.canSee(this.getOfflinePlayer(), t);}
@@ -469,6 +469,14 @@ public class DomsPlayer {
     public void teleport(DomsLocation to, boolean useSafe) {
         if(!useSafe) this.getOnlinePlayer().teleport(to.toLocation());
         else this.getOnlinePlayer().teleport(to.getSafeLocation().toLocation(), TeleportCause.COMMAND);
+    }
+
+    public boolean toggleChannel(DomsChannel channel) {
+        DomsChannel current = DomsChannel.getPlayersChannel(this);
+        if(current != null) current.removePlayer(this);
+        if(current != null && current.equals(channel)) return false;
+        channel.addPlayer(this);
+        return true;
     }
     
     public void kickPlayer(String r) {

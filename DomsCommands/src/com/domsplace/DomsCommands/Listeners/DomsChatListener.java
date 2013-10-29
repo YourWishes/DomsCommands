@@ -16,8 +16,11 @@
 
 package com.domsplace.DomsCommands.Listeners;
 
+import com.domsplace.DomsCommands.Bases.Base;
+import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Bases.DomsListener;
 import com.domsplace.DomsCommands.Events.DomsChatEvent;
+import com.domsplace.DomsCommands.Events.PreCommandEvent;
 import com.domsplace.DomsCommands.Objects.DomsChannel;
 import com.domsplace.DomsCommands.Objects.DomsChatFormat;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
@@ -45,5 +48,29 @@ public class DomsChatListener extends DomsListener {
         if(event.isCancelled()) return;
         
         channel.chat(player, event.getFormat(), e.getMessage());
+    }
+    
+    @EventHandler(ignoreCancelled=true, priority=EventPriority.LOWEST)
+    public void handleChannelCommands(PreCommandEvent e) {
+        //Get the ChatChannel this command is responsible for
+        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        DomsChannel channel = DomsChannel.getChannelByCommand(e.getCommand());
+        if(channel == null) return;
+        if(!player.hasPermisson(channel.getChatPermission())) {
+            sendMessage(player, BukkitCommand.getCommands().get(0).getCmd().getPermissionMessage());
+            e.setCancelled(true);
+            return;
+        }        
+        e.setCancelled(true);
+        
+        if(e.getArgs().isEmpty()) {
+            //Togle
+            boolean t = player.toggleChannel(channel);
+            if(t) sendMessage(player, "Joined channel " + ChatImportant + channel.getName());
+            else sendMessage(player, "Left the channel " + ChatImportant + channel.getName());
+        }
+        
+        //Chat
+        channel.chat(player, Base.listToArray(e.getArgs()));
     }
 }

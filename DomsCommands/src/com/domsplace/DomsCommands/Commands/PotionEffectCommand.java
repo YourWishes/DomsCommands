@@ -26,7 +26,7 @@ import org.bukkit.potion.PotionEffectType;
 
 /**
  * @author      Dominic
- * @since       12/10/2013
+ * @since       28/10/2013
  */
 public class PotionEffectCommand extends BukkitCommand {
     public PotionEffectCommand() {
@@ -55,8 +55,18 @@ public class PotionEffectCommand extends BukkitCommand {
         if(args.length == 1) {
             pet = PotionEffectType.getByName(args[0].toUpperCase());
         } else if(args.length == 2) {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
-            pet = PotionEffectType.getByName(args[1].toUpperCase());
+            DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);
+            if(guess != null) {
+                player = guess;
+                pet = PotionEffectType.getByName(args[1].toUpperCase());
+            } else {
+                pet = PotionEffectType.getByName(args[0].toUpperCase());
+                if(!isInt(args[1])) {
+                    sendMessage(sender, ChatError + "Duration must be a number");
+                    return true;
+                }
+                duration = getInt(args[1]);
+            }
         } else if(args.length == 3) {
             DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);            
             if(guess != null) {
@@ -73,7 +83,21 @@ public class PotionEffectCommand extends BukkitCommand {
                 }
                 pet = PotionEffectType.getByName(args[0].toUpperCase());
                 duration = getInt(args[1]);
+                amp = getInt(args[2]);
             }
+        } else if(args.length > 3) {
+            DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);
+            pet = PotionEffectType.getByName(args[1]);
+            if(!isInt(args[2])) {
+                sendMessage(sender, ChatError + "Duration must be a number");
+                return true;
+            }
+            if(!isInt(args[3])) {
+                sendMessage(sender, ChatError + "Amplifier must be a number");
+                return true;
+            }    
+            duration = getInt(args[2]);
+            amp = getInt(args[3]);
         }
         
         if(player == null || !player.isOnline(sender) || player.isConsole()) {
@@ -97,15 +121,16 @@ public class PotionEffectCommand extends BukkitCommand {
         }
         
         PotionEffect pe = new PotionEffect(pet, duration, amp);
+        player.getOnlinePlayer().addPotionEffect(pe, true);
         sendMessage(player, "Got effect " + ChatImportant + pe.getType().getName()
                 + (amp > 1 ? ChatDefault + ", level " + ChatImportant + amp : "")
                 + ChatDefault + " for " + ChatImportant + (duration / 20) + 
-                " seconds" + ChatDefault + ".");
+                " second" + ((duration/20) !=  1 ? "s" : "") + ChatDefault + ".");
         if(!DomsPlayer.getPlayer(sender).equals(player)) {
             sendMessage(sender, "Gave effect" + ChatImportant + pe.getType().getName()
                 + (amp > 1 ? ChatDefault + ", level " + ChatImportant + amp : "")
                 + ChatDefault + " for " + ChatImportant + (duration / 20) + 
-                " seconds" + ChatDefault + " to " + ChatImportant + 
+                " second" + ((duration/20) !=  1 ? "s" : "") + ChatDefault + " to " + ChatImportant + 
                 player.getDisplayName() + ChatDefault + ".");
         }
         return true;

@@ -43,7 +43,7 @@ public class TeleportAcceptCommand extends BukkitCommand {
         DomsPlayer plyr = DomsPlayer.getPlayer(sender);
         TeleportRequest tpr = plyr.getLastTeleporRequest();
         if(tpr == null) {
-            sendMessage(sender, ChatError + "You have not recieved any requests.");
+            sendMessage(sender, ChatError + "You have not received any requests.");
             return true;
         }
         

@@ -57,6 +57,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     
     private AwayCommand awayCommand;
     private BackpackCommand backpackCommand;
+    private ChatChannelCommand chatChannelCommand;
     private FlyCommand flyCommand;
     private DeleteHomeCommand deleteHomeCommand;
     private GamemodeCommand gamemodeCommand;
@@ -148,6 +149,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         
         this.awayCommand = new AwayCommand();
         this.backpackCommand = new BackpackCommand();
+        this.chatChannelCommand = new ChatChannelCommand();
         this.flyCommand = new FlyCommand();
         this.deleteHomeCommand = new DeleteHomeCommand();
         this.gamemodeCommand = new GamemodeCommand();

@@ -48,6 +48,7 @@ public class SubCommandOption extends Base {
     public static final SubCommandOption TIME_OPTION = new SubCommandOption("[TIME]");
     public static final SubCommandOption WARPS_OPTION = new SubCommandOption("[WARP]");
     public static final SubCommandOption GAMEMODE_OPTION = new SubCommandOption("[GAMEMODE]");
+    public static final SubCommandOption CHANNELS_OPTION = new SubCommandOption("[CHANNEL]");
     
     //Instance
     private String option;
@@ -117,6 +118,8 @@ public class SubCommandOption extends Base {
             }
         } else if(this.compare(SubCommandOption.POTION_OPTION)) {
             for(PotionEffectType pet : PotionEffectType.values()) {
+                if(pet == null) continue;
+                if(pet.getName() == null) continue;
                 returnV.add(pet.getName());
             }
         } else if(this.compare(SubCommandOption.WEATHER_OPTION)) {
@@ -152,6 +155,10 @@ public class SubCommandOption extends Base {
             }
             for(String s : GamemodeCommand.toggleCommands) {
                 returnV.add(s);
+            }
+        } else if(this.compare(SubCommandOption.CHANNELS_OPTION)) {
+            for(DomsChannel c : DomsChannel.getChannels()) {
+                returnV.add(c.getName());
             }
         } else {
             returnV.add(this.option);

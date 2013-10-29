@@ -281,6 +281,11 @@ commands:
       aliases: [effect, addeffect, addpotioneffect, beaconeffect, beacon]
       usage: /<command> (player)
       permission: DomsCommands.potioneffect
+   chatchannel:
+      description: Change to a chat channel, or send a message to one.
+      aliases: [channel, ch]
+      usage: /<command> [channel] (name)
+      permission: DomsCommands.chatchannel
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -779,3 +784,7 @@ permissions:
      description: Allows access to the spawnmob command.
    DomsCommands.spawn:
      description: Allows access to the spawn command.
+   DomsCommands.potioneffect:
+     description: Allows access to the potioneffect command.
+   DomsCommands.channel:
+     description: Allows access to the channel command.

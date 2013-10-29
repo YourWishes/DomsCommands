@@ -23,6 +23,8 @@ import com.domsplace.DomsCommands.Objects.DomsChannel;
 import com.domsplace.DomsCommands.Objects.DomsChatFormat;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -54,12 +56,20 @@ public class ChatManager extends DataManager {
         
         if(!yml.contains("server.format")) yml.set("server.format", "&d[{DISPLAYNAME}&d] &d{MESSAGE}");
         
+        if(!yml.contains("broadcast.format")) {
+            yml.set("broadcast.format", "&c[&4Broadcast&c] &6{MESSAGE}");
+            yml.set("broadcast.permission", "DomsCommands.broadcast");
+            List<String> commands = new ArrayList<String>();
+            commands.add("broadcast");
+            commands.add("bc");
+            yml.set("broadcast.commands", commands);
+        }
+        
         if(n) {
-            yml.set("test.format",
-                    "&lTEST ONLY&r{DISPLAYNAME} | {NAME} | {PREFIX} | {GROUP} | {SUFFIX} | "
-                            + "{AWAY} | {WORLD} | {GAMEMODE} | {CHANNEL} | {MESSAGE}");
-            yml.set("test.permission", "DomsCommands.testchat");
-            yml.set("test.private", true);
+            yml.set("AdminChat.format",
+                    "{CHANNEL}[{PREFIX}{GROUP}{SUFFIX}] [{WORLD}|{GAMEMODE}] [{DISPLAYNAME}/{NAME}] SAID:&r {MESSAGE}");
+            yml.set("AdminChat.chatpermission", "DomsCommands.adminchat");
+            yml.set("AdminChat.receivepermission", "DomsCommands.receiveadminchat");
         }
         
         for(DomsChannel channel : DomsChannel.getChannels()) {
@@ -77,12 +87,17 @@ public class ChatManager extends DataManager {
             String permission = "";
             boolean ipriv = false;
             
-            if(yml.contains(s + ".permission")) permission = yml.getString(s + ".permission");
+            if(yml.contains(s + ".chatpermission")) permission = yml.getString(s + ".chatpermission");
             if(yml.contains(s + ".private")) ipriv = yml.getBoolean(s + ".private");
             
             DomsChatFormat dformat = new DomsChatFormat("", format);
             
-            DomsChannel channel = new DomsChannel(s, permission, dformat, ipriv);
+            List<String> commands = new ArrayList<String>();
+            if(yml.contains(s + ".commands")) commands = yml.getStringList(s + ".commands");
+            
+            DomsChannel channel = new DomsChannel(s, permission, dformat, ipriv, commands);
+            
+            if(yml.contains(s + ".receivepermission")) channel.setReceivePermission(yml.getString(s + ".receivepermission"));
             
             if(yml.contains(s + ".groups")) {
                 MemorySection ms = (MemorySection) yml.get(s + ".groups");
