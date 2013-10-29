@@ -286,6 +286,21 @@ commands:
       aliases: [channel, ch]
       usage: /<command> [channel] (name)
       permission: DomsCommands.chatchannel
+   rules:
+      description: View the rules of the server.
+      aliases: [checkrules, getrules, rule]
+      usage: /<command> (page)
+      permission: DomsCommands.rules
+   head:
+      description: Get the head of a specific player.
+      aliases: [gethead, playerhead]
+      usage: /<command> [page]
+      permission: DomsCommands.head
+   slap:
+      description: POW! Right in the kisser!
+      aliases: [bitchslap, slaphard, sl]
+      usage: /<command> [player]
+      permission: DomsCommands.slap
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -786,5 +801,11 @@ permissions:
      description: Allows access to the spawn command.
    DomsCommands.potioneffect:
      description: Allows access to the potioneffect command.
-   DomsCommands.channel:
-     description: Allows access to the channel command.
+   DomsCommands.chatchannel:
+     description: Allows access to the chatchannel command.
+   DomsCommands.rules:
+     description: Allows access to the rules command.
+   DomsCommands.head:
+     description: Allows access to the head command.
+   DomsCommands.slap:
+     description: Allows access to the slap command.

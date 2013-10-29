@@ -35,6 +35,7 @@ public class DataManager extends Base {
     public static final WarpManager WARP_MANAGER = new WarpManager();
     public static final ChatManager CHAT_MANAGER = new ChatManager();
     public static final CraftBukkitManager CRAFT_BUKKIT_MANAGER = new CraftBukkitManager();
+    public static final RulesManager RULES_MANAGER = new RulesManager();
     
     private static void registerManager(DataManager manager) {
         DataManager.MANAGERS.add(manager);

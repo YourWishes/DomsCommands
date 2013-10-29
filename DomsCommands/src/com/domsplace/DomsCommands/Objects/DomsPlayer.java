@@ -278,6 +278,7 @@ public class DomsPlayer {
     public void addPlayTime(long time) {this.playtime += time;}
     public void addPunishment(Punishment p) {this.punishments.add(p);}
     public void addHome(Home h) {this.homes.add(h);}
+    public void addItems(DomsItem held, int amount) {this.addItems(DomsItem.multiply(held, amount));}
     
     public void removePlayTime(long time) {this.playtime -= time;}
     public void removePunishment(Punishment p) {this.punishments.remove(p);}

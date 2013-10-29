@@ -8,12 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 
 public class DomsItem {
@@ -38,6 +41,12 @@ public class DomsItem {
     
     public static DomsItem createItem(String line) throws InvalidItemException {
         return createItems(line).get(0);
+    }
+    
+    public static ItemStack createItem(List<DomsItem> item) {
+        try {
+            return item.get(0).getItemStack(item.size());
+        } catch(Exception e) {return null;}
     }
     
     public static List<DomsItem> createItems(String line) throws InvalidItemException {
@@ -79,6 +88,7 @@ public class DomsItem {
             short damage = BAD_DATA;
             String author = null;
             String name = null;
+            OfflinePlayer head = null;
             
             if(data.containsKey("size")) {
                 count = Base.getInt(data.get("size"));
@@ -104,6 +114,10 @@ public class DomsItem {
                 name = Base.colorise(data.get("name"));
             }
             
+            if(data.containsKey("head")) {
+                head = Bukkit.getOfflinePlayer(data.get("head"));
+            }
+            
             List<DomsItem> items = new ArrayList<DomsItem>();
             for(int i = 0; i < count; i++) {
                 DomsItem item = new DomsItem(material, idata);
@@ -113,6 +127,7 @@ public class DomsItem {
                 item.setEnchantments(enchants);
                 item.setAuthor(author);
                 item.setName(name);
+                item.setPlayerHead(head);
                 
                 items.add(item);
             }
@@ -295,7 +310,10 @@ public class DomsItem {
     }
 
     public static DomsItem createItem(ItemStack is) {
-        return DomsItem.itemStackToDomsItems(is).get(0);
+        if(is == null) return null;
+        List<DomsItem> item = DomsItem.itemStackToDomsItems(is);
+        if(item == null || item.isEmpty()) return null;
+        return item.get(0);
     }
     
     private static long NEXT_ID = Long.MIN_VALUE;
@@ -310,6 +328,7 @@ public class DomsItem {
     private String name;
     private List<String> lores;
     private long itemID;
+    private OfflinePlayer head;
     
     public DomsItem(String material, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, String name, List<String> lores) {
         this.material = material;
@@ -397,6 +416,10 @@ public class DomsItem {
                 this.bookPages = new ArrayList<String>(book.getPages());
                 this.author = book.getAuthor();
             }
+            
+            if(is.getItemMeta() instanceof SkullMeta) {
+                if(((SkullMeta) is.getItemMeta()).getOwner() != null) this.head = Bukkit.getOfflinePlayer(((SkullMeta) is.getItemMeta()).getOwner());
+            }
         }
         
         this.enchants = new HashMap<Enchantment, Integer>(is.getEnchantments());
@@ -412,11 +435,13 @@ public class DomsItem {
     public List<String> getLores() {return this.lores;}
     public String getTypeName() {return Base.capitalizeEachWord(this.getMaterial().name().replaceAll("_", " ").toLowerCase());}
     public long getItemID() {return this.itemID;}
+    public OfflinePlayer getPlayerHead() {return this.head;}
     @Deprecated public MaterialData getMaterialData() {return this.getMaterial().getNewData((byte) this.data);}
 
     public boolean isAir() {return this.getMaterial().equals(Material.AIR);}
     public boolean isBook() {return this.getMaterial().equals(Material.BOOK_AND_QUILL) || this.getMaterial().equals(Material.WRITTEN_BOOK);}
     public boolean isMobNameable() {return this.getMaterial().equals(Material.MONSTER_EGG) || this.getMaterial().equals(Material.MONSTER_EGGS) || this.getMaterial().equals(Material.NAME_TAG);}
+    public boolean isHead() {return this.getMaterial().equals(Material.SKULL) || this.getMaterial().equals(Material.SKULL_ITEM);}
 
     public boolean hasData() {return this.data != DomsItem.BAD_DATA;}
     
@@ -428,6 +453,7 @@ public class DomsItem {
     public void setAuthor(String author) {this.author = author;}
     public void setName(String name) {this.name = name;}
     public void setEnchantments(Map<Enchantment, Integer> e) {this.enchants = e;}
+    public void setPlayerHead(OfflinePlayer player) {this.head = player;}
 
     public void setPage(int page, String l) {this.bookPages.set(page, l);}
     
@@ -449,6 +475,13 @@ public class DomsItem {
             if(this.bookPages != null) {
                 bm.setPages(this.bookPages);
             }
+        }
+        
+        if(im instanceof SkullMeta && this.head != null) {
+            SkullMeta sm = (SkullMeta) im;
+            sm.setOwner(this.head.getName());
+            this.data = 3;
+            is.setDurability(Base.getShort(3));
         }
         
         if(this.lores != null) {
@@ -475,7 +508,7 @@ public class DomsItem {
     }
     
     public boolean compare(DomsItem item) {
-        if(item.material != this.material) return false;
+        if(!item.material.equals(this.material)) return false;
         if(this.data >= 0 && item.data >= 0) {
             if(this.data != item.data) return false;
         }
@@ -567,6 +600,10 @@ public class DomsItem {
                 if(e == null) continue;
                 msg += ",{enchantment:\"" + e.getName() + "*" + this.enchants.get(e) + "\"}";
             }
+        }
+        
+        if(this.head != null) {
+            msg += ",{head:\"" + escape(this.head.getName()) + "\"}";
         }
         
         return msg;

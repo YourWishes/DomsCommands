@@ -48,6 +48,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private KitCommand kitCommand;
     private MOTDCommand motdCommand;
     private PotionEffectCommand potionEffectCommand;
+    private RulesCommand rulesCommand;
     private ServerCommand serverCommand;
     private ShutdownCommand stopCommand;
     private SpawnCommand spawnCommand;
@@ -68,6 +69,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private NicknameCommand nicknameCommand;
     private PingCommand pingCommand;
     private ReplyCommand replyCommand;
+    private SlapCommand slapCommand;
     private SetHomeCommand setHomeCommand;
     private TimeCommand timeCommand;
     private WeatherCommand weatherCommand;
@@ -77,6 +79,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private ClearLoresCommand clearLoresCommand;
     private EnchantCommand enchantCommand;
     private GiveCommand giveCommand;
+    private HeadCommand headCommand;
     private ItemCommand itemCommand;
     private GetIDCommand getIDCommand;
     private MoreCommand moreCommand;
@@ -140,6 +143,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.kitCommand = new KitCommand();
         this.motdCommand = new MOTDCommand();
         this.potionEffectCommand = new PotionEffectCommand();
+        this.rulesCommand = new RulesCommand();
         this.serverCommand = new ServerCommand();
         this.stopCommand = new ShutdownCommand();
         this.spawnCommand = new SpawnCommand();
@@ -160,6 +164,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.nicknameCommand = new NicknameCommand();
         this.pingCommand = new PingCommand();
         this.replyCommand = new ReplyCommand();
+        this.slapCommand = new SlapCommand();
         this.setHomeCommand = new SetHomeCommand();
         this.timeCommand = new TimeCommand();
         this.weatherCommand = new WeatherCommand();
@@ -169,6 +174,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.clearLoresCommand = new ClearLoresCommand();
         this.enchantCommand = new EnchantCommand();
         this.giveCommand = new GiveCommand();
+        this.headCommand = new HeadCommand();
         this.itemCommand = new ItemCommand();
         this.getIDCommand = new GetIDCommand();
         this.moreCommand = new MoreCommand();

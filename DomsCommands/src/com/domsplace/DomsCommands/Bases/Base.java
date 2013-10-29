@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
@@ -386,6 +387,8 @@ public class Base extends RawBase {
     }
     
     public static OfflinePlayer getOfflinePlayer(CommandSender relative, String player) {
+        if(player.length() < 3) return null;
+        if(player.length() > 16) return null;
         OfflinePlayer p = Base.getPlayer(relative, player);
         if(p == null || !p.isOnline()) {
             p = Bukkit.getOfflinePlayer(player);
@@ -512,6 +515,11 @@ public class Base extends RawBase {
             default:
                 return "th";
         }
+    }
+    
+    public double diceDouble(double lower, double higher) {
+        Random r = new Random();
+        return lower+(r.nextDouble()*(higher-lower));
     }
 
     public static void addArrayToList(List<String> messages, String[] message) {

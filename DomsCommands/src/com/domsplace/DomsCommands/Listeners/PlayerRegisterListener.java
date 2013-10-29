@@ -62,6 +62,7 @@ public class PlayerRegisterListener extends DomsListener {
             player.setLastIP(e.getPlayer().getAddress().getAddress().getHostAddress());
             player.setLastLocation(new DomsLocation(e.getPlayer().getLocation()));
             player.setLastMoveTime(getNow());
+            player.setFlightMode(e.getPlayer().getAllowFlight());
             player.setAFKTime(getNow());
         
             try {player.getInventory().setToPlayer();} catch(Exception ex) {}
