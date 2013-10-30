@@ -180,7 +180,7 @@ commands:
       description: Clear all items from your inventory.
       aliases: [ci, clear, cinv, clearinv, cleari]
       usage: /<command> (player)
-      permission: DomsCommands.clearinventory
+      permission: DomsCommands.clear
    enchant:
       description: Enchant an item.
       aliases: [e, ench, enchantment, addenchant, addenchantment]
@@ -321,6 +321,41 @@ commands:
       aliases: [emote, display, show, about, showoff, my]
       usage: /<command> [message]
       permission: DomsCommands.me
+   kill:
+      description: Kill someone, or suicide.
+      aliases: [killplayer]
+      usage: /<command> (player)
+      permission: DomsCommands.kill
+   position:
+      description: Get your, or another players position.
+      aliases: [pos, coord, coords, getpos, getposition]
+      usage: /<command> (player)
+      permission: DomsCommands.position
+   helmet:
+      description: Put the item you're holding on your head.
+      aliases: [hat, helm, wearhat, wearitem, wearblock]
+      usage: /<command>
+      permission: DomsCommands.helmet
+   fixchunk:
+      description: Refresh the chunk you're standing in.
+      aliases: [fixc, reloadchunk, chunkrefresh, refreshchunk, chunkfix]
+      usage: /<command>
+      permission: DomsCommands.fixchunk
+   dump:
+      description: Dump all your items into a chest (if you have one).
+      aliases: [dumpitems, storeitems, createchest, clearintochest]
+      usage: /<command>
+      permission: DomsCommands.dump
+   furnace:
+      description: Set a remote controllable furnace.
+      aliases: [setfurnace]
+      usage: /<command> (set)
+      permission: DomsCommands.furnace
+   workbench:
+      description: Open a workbench.
+      aliases: [wb, workb, bench]
+      usage: /<command>
+      permission: DomsCommands.workbench
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -477,6 +512,8 @@ permissions:
      description: Allows access to use reset in nicknames.
    DomsCommands.gamemode:
      description: Allows access to the gamemode command.
+   DomsCommands.gamemode.others:
+     description: Allows access to change others' gamemode.
    DomsCommands.tell:
      description: Allows access to the tell command.
    DomsCommands.tell.colors.*:
@@ -837,3 +874,19 @@ permissions:
      description: Allows access to the experience command.
    DomsCommands.me:
      description: Allows access to the me command.
+   DomsCommands.kill:
+     description: Allows access to the kill command.
+   DomsCommands.position:
+     description: Allows access to the position command.
+   DomsCommands.position.others:
+     description: Allows access to view others position.
+   DomsCommands.helmet:
+     description: Allows access to the helmet command.
+   DomsCommands.fixchunk:
+     description: Allows access to the fixchunk command.
+   DomsCommands.dump:
+     description: Allows access to the dump command.
+   DomsCommands.furnace:
+     description: Allows access to the furnace command.
+   DomsCommands.workbench:
+     description: Allows access to the workbench command.

@@ -17,36 +17,46 @@
 package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Objects.DomsItem;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
-import com.domsplace.DomsCommands.Objects.SubCommandOption;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author      Dominic
- * @since       27/10/2013
+ * @since       30/10/2013
  */
-public class HealCommand extends BukkitCommand {
-    public HealCommand() {
-        super("heal");
-        this.addSubCommandOption(SubCommandOption.PLAYERS_OPTION);
+public class HelmetCommand extends BukkitCommand {
+    public HelmetCommand() {
+        super("helmet");
     }
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
         DomsPlayer player = DomsPlayer.getPlayer(sender);
-        if(args.length > 0) {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
-        }
-        
         if(player == null || !player.isOnline() || player.isConsole()) {
             sendMessage(sender, ChatError + "Couldn't find player.");
             return true;
         }
         
-        player.getOnlinePlayer().setHealth(player.getOnlinePlayer().getMaxHealth());
-        player.sendMessage("You have been healed!");
-        if(!DomsPlayer.getPlayer(sender).equals(player)) sendMessage(sender, "Healed " + player.getDisplayName());
+        DomsItem current = DomsItem.createItem(player.getOnlinePlayer().getEquipment().getHelmet());
+        if(current != null && !current.isAir()) {
+            sendMessage(sender, ChatError + "Please remove your helmet first.");
+            return true;
+        }
+        
+        DomsItem held = DomsItem.createItem(player.getOnlinePlayer().getItemInHand());
+        if(held == null || held.isAir()) {
+            sendMessage(sender, ChatError + "You must be holding an item.");
+            return true;
+        }
+        
+        player.getOnlinePlayer().getEquipment().setHelmet(player.getOnlinePlayer().getItemInHand());
+        player.getOnlinePlayer().setItemInHand(new ItemStack(Material.AIR));
+        
+        sendMessage(sender, "Set " + ChatImportant + held.toHumanString() + ChatDefault + " as ypur helmet.");
         return true;
     }
 }

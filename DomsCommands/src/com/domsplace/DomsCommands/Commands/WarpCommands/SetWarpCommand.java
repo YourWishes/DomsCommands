@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Commands.WarpCommands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import com.domsplace.DomsCommands.Objects.Warp;
@@ -71,6 +72,7 @@ public class SetWarpCommand extends BukkitCommand {
         //Create this as a warp
         w = new Warp(name, DomsPlayer.getPlayer(sender).getLocation());
         sendMessage(sender, "Set warp " + ChatImportant + w.getName() + ChatDefault + "!");
+        DataManager.WARP_MANAGER.save();    
         return true;
     }
 }

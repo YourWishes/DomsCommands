@@ -26,9 +26,9 @@ import org.bukkit.command.CommandSender;
  * @author      Dominic
  * @since       27/10/2013
  */
-public class HealCommand extends BukkitCommand {
-    public HealCommand() {
-        super("heal");
+public class KillCommand extends BukkitCommand {
+    public KillCommand() {
+        super("kill");
         this.addSubCommandOption(SubCommandOption.PLAYERS_OPTION);
     }
     
@@ -40,13 +40,12 @@ public class HealCommand extends BukkitCommand {
         }
         
         if(player == null || !player.isOnline() || player.isConsole()) {
-            sendMessage(sender, ChatError + "Couldn't find player.");
+            sendMessage(sender, "Couldn't find player.");
             return true;
         }
         
-        player.getOnlinePlayer().setHealth(player.getOnlinePlayer().getMaxHealth());
-        player.sendMessage("You have been healed!");
-        if(!DomsPlayer.getPlayer(sender).equals(player)) sendMessage(sender, "Healed " + player.getDisplayName());
+        player.getOnlinePlayer().setHealth(0.0);
+        sendMessage(sender, "Killed " + ChatImportant + player.getDisplayName() + ChatDefault + "!");
         return true;
     }
 }

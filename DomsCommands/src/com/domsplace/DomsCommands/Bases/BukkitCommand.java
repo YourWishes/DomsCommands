@@ -85,7 +85,6 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
             }
             
             if(!result) return commandFailed(sender, cmd, label, args);
-            DataManager.saveAll();
             return commandSuccess(sender, cmd, label, args);
         }
         

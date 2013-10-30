@@ -82,6 +82,8 @@ public class PlayerRegisterListener extends DomsListener {
         
         DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
         
+        DomsPlayer.REGISTERED_ONLINE_PLAYERS.put(player.getPlayer(), player);
+        
         //Store Changes
         player.setLoginTime(getNow());
         player.setLastIP(e.getPlayer().getAddress().getAddress().getHostAddress());
@@ -101,7 +103,7 @@ public class PlayerRegisterListener extends DomsListener {
         PlayerPostFirstJoinEvent event = new PlayerPostFirstJoinEvent(player);
         event.fireEvent();
         
-        DataManager.PLAYER_MANAGER.save();
+        DataManager.PLAYER_MANAGER.savePlayer(player);
     }
     
     @EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
@@ -129,7 +131,7 @@ public class PlayerRegisterListener extends DomsListener {
             h.closeInventory();
         }
         
-        DataManager.PLAYER_MANAGER.save();
+        DataManager.PLAYER_MANAGER.savePlayer(player);
     }
     
     @EventHandler(priority=EventPriority.HIGHEST)

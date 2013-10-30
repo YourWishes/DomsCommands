@@ -50,7 +50,6 @@ public class ShutdownCommand extends BukkitCommand {
         message = event.getMessage();
         
         log("Saving Players");
-        DataManager.saveAll();
         getPlugin().getServer().savePlayers();
         for(Player p : Bukkit.getOnlinePlayers()) {
             p.kickPlayer(colorise(message));

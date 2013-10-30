@@ -143,6 +143,7 @@ public class DomsItem {
     }
 
     public static List<DomsItem> itemStackToDomsItems(ItemStack is) {
+        if(is == null) return null;
         List<DomsItem> items = new ArrayList<DomsItem>();
         
         DomsItem copy = new DomsItem(is);
@@ -298,6 +299,7 @@ public class DomsItem {
     
     public static String guessMaterial(String l) {
         if(Base.isInt(l)) return Material.getMaterial(Base.getInt(l)).name();
+        if(Material.getMaterial(l.toUpperCase()) != null) return Material.getMaterial(l.toUpperCase()).name();
         l = l.toLowerCase().replaceAll(" ", "").replaceAll("_", "");
         for(Material m : Material.values()) {
             String n = m.name().toLowerCase();
@@ -393,6 +395,11 @@ public class DomsItem {
         this(m.name());
     }
     
+    @Deprecated
+    public DomsItem(int id) {
+        this(Material.getMaterial(id));
+    }
+    
     public DomsItem(ItemStack is) {
         this(
             is.getType().name(),
@@ -433,12 +440,11 @@ public class DomsItem {
     public String getBookAuthor() {return this.author;}
     public String getName() {String x = this.name; if(this.isMobNameable()) x = Base.trim(x, 64); return x;}
     public List<String> getLores() {return this.lores;}
-    public String getTypeName() {return Base.capitalizeEachWord(this.getMaterial().name().replaceAll("_", " ").toLowerCase());}
     public long getItemID() {return this.itemID;}
     public OfflinePlayer getPlayerHead() {return this.head;}
     @Deprecated public MaterialData getMaterialData() {return this.getMaterial().getNewData((byte) this.data);}
 
-    public boolean isAir() {return this.getMaterial().equals(Material.AIR);}
+    public boolean isAir() {return this.getMaterial() == null || this.getMaterial().equals(Material.AIR);}
     public boolean isBook() {return this.getMaterial().equals(Material.BOOK_AND_QUILL) || this.getMaterial().equals(Material.WRITTEN_BOOK);}
     public boolean isMobNameable() {return this.getMaterial().equals(Material.MONSTER_EGG) || this.getMaterial().equals(Material.MONSTER_EGGS) || this.getMaterial().equals(Material.NAME_TAG);}
     public boolean isHead() {return this.getMaterial().equals(Material.SKULL) || this.getMaterial().equals(Material.SKULL_ITEM);}
@@ -507,48 +513,18 @@ public class DomsItem {
         }
     }
     
+    public String getTypeName() {
+        String s = this.getMaterial().name();
+        s = s.replaceAll("_", " ");
+        s = s.toLowerCase();
+        s = Base.capitalizeEachWord(s);
+        s = s.replaceAll(" Item", "");
+        s = s.replaceAll("Tnt", "TNT");
+        return s;
+    }
+    
     public boolean compare(DomsItem item) {
-        if(!item.material.equals(this.material)) return false;
-        if(this.data >= 0 && item.data >= 0) {
-            if(this.data != item.data) return false;
-        }
-        
-        if(this.name != null || item.name != null) {
-            if(this.name == null || item.name == null) return false;
-            if(!this.name.equals(item.name)) return false;
-        }
-        
-        if(this.author != null || item.author != null) {
-            if(this.author == null || item.author == null) return false;
-            if(!this.author.equals(item.author)) return false;
-        }
-        
-        if(this.lores != null || item.lores != null) {
-            if(this.lores == null || item.lores == null) return false;
-            if(this.lores.size() != item.lores.size()) return false;
-            for(String s : this.lores) {
-                if(!item.lores.contains(s)) return false;
-            }
-        }
-        
-        if(this.bookPages != null || item.bookPages != null) {
-            if(this.bookPages == null || item.bookPages == null) return false;
-            if(this.bookPages.size() != item.bookPages.size()) return false;
-            for(String s : this.bookPages) {
-                if(!item.bookPages.contains(s)) return false;
-            }
-        }
-        
-        if(this.enchants != null || item.enchants != null) {
-            if(this.enchants == null || item.enchants == null) return false;
-            if(this.enchants.size() != item.enchants.size()) return false;
-            for(Enchantment e : this.enchants.keySet()) {
-                if(!item.enchants.containsKey(e)) return false;
-                if(item.enchants.get(e) != this.enchants.get(e)) return false;
-            }
-        }
-        
-        return true;
+        return item.toString().equalsIgnoreCase(this.toString());
     }
     
     public void addLore(String l) {this.lores.add(l);}
@@ -567,7 +543,7 @@ public class DomsItem {
     public String toString() {
         String msg = "{id:\"" + this.material + "\"}";
         
-        if(this.data != BAD_DATA) {
+        if(this.data != BAD_DATA && this.data != 0) {
             msg += ",{data:\"" + Short.toString(this.data) + "\"}";
         }
         
@@ -614,7 +590,7 @@ public class DomsItem {
         String s = d + this.getTypeName();
         
         if(this.data != BAD_DATA) {
-            s += ", with type of " + this.data;
+            //s += ", with type of " + this.data;
         }
         
         if(this.damage != BAD_DATA) {

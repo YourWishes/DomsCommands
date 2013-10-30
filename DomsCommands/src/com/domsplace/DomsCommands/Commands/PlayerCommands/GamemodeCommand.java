@@ -158,6 +158,10 @@ public class GamemodeCommand extends BukkitCommand {
             return true;
         }
         
+        if(!player.equals(DomsPlayer.getPlayer(sender)) && !hasPermission(sender, "DomsCommands.gamemode.others")) {
+            return this.noPermission(sender, cmd, label, args);
+        }
+        
         if(gamemode == null) {
             sendMessage(sender, ChatError + "Not a valid GameMode.");
             return true;

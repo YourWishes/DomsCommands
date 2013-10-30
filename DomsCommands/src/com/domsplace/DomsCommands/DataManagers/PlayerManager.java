@@ -71,6 +71,8 @@ public class PlayerManager extends DataManager {
             DomsPlayer player = DomsPlayer.getPlayer(yml.getString("name"));
             player.setPlayerFile(file);
             
+            if(player.isOnline()) DomsPlayer.REGISTERED_ONLINE_PLAYERS.put(player.getPlayer(), player);
+            
             //Clear Old Data
             for(Punishment p : player.getPunishments()) {
                 player.removePunishment(p);
@@ -139,6 +141,7 @@ public class PlayerManager extends DataManager {
                     DomsInventory inv = new DomsInventory(player, yml.getString(key + "group"));
                     
                     if(yml.contains(key + "xp")) inv.setExp(Float.parseFloat(yml.getString(key + "xp")));
+                    if(yml.contains(key + "xplevel")) inv.setExpLevel(yml.getInt(key + "xplevel"));
                     
                     if(yml.contains(key + "helmet")) inv.setHelmet(DomsInventoryItem.createFromString(yml.getString(key + "helmet")));
                     if(yml.contains(key + "chestplate")) inv.setChestPlate(DomsInventoryItem.createFromString(yml.getString(key + "chestplate")));
@@ -189,6 +192,8 @@ public class PlayerManager extends DataManager {
                 Inventory backpack = player.setBackpack(Bukkit.createInventory(player.getOnlinePlayer(), 54, player.getPlayer() + "'s Backpack."));
                 bp.setToInventory(backpack);
             }
+            
+            if(yml.contains("furnace")) player.setFurnaceLocation(DomsLocation.guessLocation(yml.getString("furnace")));
             
             if(yml.contains("kitcooldowns")) {
                 for(String s : ((MemorySection) yml.get("kitcooldowns")).getKeys(false)) {
@@ -292,10 +297,12 @@ public class PlayerManager extends DataManager {
 
                     Map<Integer, DomsInventoryItem> items = inv.getItems();
                     for(Integer i : items.keySet()) {
+                        if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
                         yml.set(key + "items.slot" + i, items.get(i).toString());
                     }
 
                     if(inv.getExp() > 0) {yml.set(key + "xp", Float.toString(inv.getExp()));}
+                    if(inv.getExpLevel() > 0) {yml.set(key + "xplevel", inv.getExpLevel());}
                 }
 
                 for(DomsInventory inv : player.getEnderChests()) {
@@ -304,6 +311,7 @@ public class PlayerManager extends DataManager {
 
                     Map<Integer, DomsInventoryItem> items = inv.getItems();
                     for(Integer i : items.keySet()) {
+                        if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
                         yml.set(key + "items.slot" + i, items.get(i).toString());
                     }
                 }
@@ -319,8 +327,12 @@ public class PlayerManager extends DataManager {
                     DomsInventory inv = DomsInventory.createFromInventory("", in, player);
                     Map<Integer, DomsInventoryItem> items = inv.getItems();
                     for(Integer i : items.keySet()) {
+                        if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
                         yml.set("backpack.slot" +  i, items.get(i).toString());
                     }
+                }
+                if(player.getFurnaceLocation() != null) {
+                    yml.set("furnace", player.getFurnaceLocation().toString());
                 }
             }
             

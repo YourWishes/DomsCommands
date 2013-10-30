@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import org.bukkit.command.Command;
@@ -26,9 +27,9 @@ import org.bukkit.command.CommandSender;
  * @author      Dominic
  * @since       27/10/2013
  */
-public class HealCommand extends BukkitCommand {
-    public HealCommand() {
-        super("heal");
+public class PositionCommand extends BukkitCommand {
+    public PositionCommand() {
+        super("position");
         this.addSubCommandOption(SubCommandOption.PLAYERS_OPTION);
     }
     
@@ -44,9 +45,15 @@ public class HealCommand extends BukkitCommand {
             return true;
         }
         
-        player.getOnlinePlayer().setHealth(player.getOnlinePlayer().getMaxHealth());
-        player.sendMessage("You have been healed!");
-        if(!DomsPlayer.getPlayer(sender).equals(player)) sendMessage(sender, "Healed " + player.getDisplayName());
+        if(!DomsPlayer.getPlayer(sender).equals(player) && !hasPermission(sender, "DomsCommands.position.others")) {
+            return this.noPermission(sender, cmd, label, args);
+        }
+        
+        DomsLocation loc = player.getLocation();
+        sendMessage(sender, new String[] {
+            ChatImportant + player.getDisplayName() + ChatImportant + "'s position:",
+            loc.toHumanString()
+        });
         return true;
     }
 }

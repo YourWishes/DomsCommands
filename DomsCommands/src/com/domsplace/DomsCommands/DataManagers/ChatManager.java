@@ -58,7 +58,7 @@ public class ChatManager extends DataManager {
         
         if(!yml.contains("broadcast.format")) {
             yml.set("broadcast.format", "&c[&4Broadcast&c] &6{MESSAGE}");
-            yml.set("broadcast.permission", "DomsCommands.broadcast");
+            yml.set("broadcast.chatpermission", "DomsCommands.broadcast");
             List<String> commands = new ArrayList<String>();
             commands.add("broadcast");
             commands.add("bc");

@@ -37,6 +37,8 @@ public class DataManager extends Base {
     public static final CraftBukkitManager CRAFT_BUKKIT_MANAGER = new CraftBukkitManager();
     public static final RulesManager RULES_MANAGER = new RulesManager();
     
+    //public static final RoyalCommandsConverter RC = new RoyalCommandsConverter();
+    
     private static void registerManager(DataManager manager) {
         DataManager.MANAGERS.add(manager);
     }
@@ -94,7 +96,7 @@ public class DataManager extends Base {
         try {
             trySave();
             return true;
-        } catch(IOException e) {
+        } catch(Exception e) {
             error("Failed to save " + this.getType().getType(), e);
             return false;
         }

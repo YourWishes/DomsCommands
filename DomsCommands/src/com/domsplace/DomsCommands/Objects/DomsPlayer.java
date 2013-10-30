@@ -33,6 +33,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -45,10 +46,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class DomsPlayer {
     private static final Map<String, DomsPlayer> REGISTERED_PLAYERS = new HashMap<String, DomsPlayer>();
+    public static final Map<String, DomsPlayer> REGISTERED_ONLINE_PLAYERS = new HashMap<String, DomsPlayer>();
     
     public static final DomsPlayer CONSOLE_PLAYER = new DomsPlayer("CONSOLE");
     
     public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#^*&(),\\_\\-\\s]*$";
+    public static final int VIEW_DISTANCE = 5;
     
     //Static
     public static DomsPlayer guessPlayer(CommandSender sender, String guess) {return guessPlayer(sender, guess, false);}
@@ -64,6 +67,14 @@ public class DomsPlayer {
     public static DomsPlayer guessPlayer(String guess) {return guessPlayer(guess, false);}
     public static DomsPlayer guessPlayer(String guess, boolean createIfNotExists) {
         DomsPlayer p = null;
+        
+        for(DomsPlayer plyr : REGISTERED_ONLINE_PLAYERS.values()) {
+            if(!plyr.getPlayer().toLowerCase().contains(guess.toLowerCase())) continue;
+            p = plyr;
+            break;
+        }
+        if(p != null) return p;
+        
         for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
             if(!plyr.getPlayer().toLowerCase().contains(guess.toLowerCase())) continue;
             p = plyr;
@@ -138,6 +149,7 @@ public class DomsPlayer {
     public static DomsPlayer getPlayer(Player p) {return getPlayer(p.getName());}
     public static DomsPlayer getPlayer(OfflinePlayer player) {return getPlayer(player.getName());}
     public static DomsPlayer getPlayer(String player) {
+        if(REGISTERED_ONLINE_PLAYERS.containsKey(player)) return REGISTERED_ONLINE_PLAYERS.get(player);
         if(isPlayerRegistered(player)) return REGISTERED_PLAYERS.get(player);
         return new DomsPlayer(player);
     }
@@ -180,8 +192,9 @@ public class DomsPlayer {
     private long playtime;
     
     private DomsLocation backLocation;
-    
     private DomsLocation lastLocation;
+    private DomsLocation playerFurnace;
+    
     private long lastMoveTime;
     
     private final List<Punishment> punishments;
@@ -247,6 +260,7 @@ public class DomsPlayer {
     public long getKitCooldown(Kit k) {try {return this.kitCooldowns.get(k);}catch(Exception e) {return -1;}}
     public boolean getFlightMode() {return this.flyMode;}
     public Inventory getBackpack() {return this.backpack;}
+    public DomsLocation getFurnaceLocation() {return this.playerFurnace;}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
@@ -269,6 +283,7 @@ public class DomsPlayer {
     public void setVariable(String key, String variable) {this.variables.put(key, variable); this.updateVariables();}
     public void setKitCooldown(Kit k, long l) {this.kitCooldowns.put(k, l);}
     public void setFlightMode(boolean f) {this.flyMode = f;}
+    public void setFurnaceLocation(DomsLocation location) {this.playerFurnace = location.copy();}
     public Inventory setBackpack(Inventory inventory) {this.backpack = inventory; return this.backpack;}
     
     @Override public String toString() {return this.getDisplayName();}
@@ -283,11 +298,13 @@ public class DomsPlayer {
     public void removePlayTime(long time) {this.playtime -= time;}
     public void removePunishment(Punishment p) {this.punishments.remove(p);}
     public void removeHome(Home h) {this.homes.remove(h);}
+    public void removeItem(DomsItem item) {this.removeItem(item, 1);}
     
     public void toggleAFK() {this.afk = !this.afk;}
     
     public boolean hasPermisson(String perm) {if(this.isConsole()) return true; return Base.hasPermission(this.getOfflinePlayer(), perm);}
     public boolean hasPlayedBefore() {return this.getOfflinePlayer().hasPlayedBefore();}
+    public boolean hasItem(DomsItem item) {return this.hasItem(item, 1);}
     
     public boolean canSee(OfflinePlayer t) {return Base.canSee(this.getOfflinePlayer(), t);}
     public boolean canBeSeenBy(OfflinePlayer t) {return Base.canSee(t, this.getOfflinePlayer());}
@@ -364,7 +381,7 @@ public class DomsPlayer {
     
     public DomsInventory getInventoryFromGroup(String g) {
         for(DomsInventory inv : this.inventories) {
-            if(inv.getInventoryGroup().equals(g)) return inv;
+            if(inv.getInventoryGroup().equalsIgnoreCase(g)) return inv;
         }
         return null;
     }
@@ -417,14 +434,33 @@ public class DomsPlayer {
         return "";
     }
     
-    public Block getTargetBlock() {return this.getTargetBlock(99);}
+    public Block getTargetBlock() {return this.getTargetBlock(VIEW_DISTANCE);}
     
     public Block getTargetBlock(int distance) {
         if(this.isConsole() || !this.isOnline()) return null;
-        List<Block> blocks = this.getOnlinePlayer().getLineOfSight(null, distance);
-        if(blocks == null) return null;
-        if(blocks.size() < 1) return null;
-        return blocks.get(blocks.size()-1);
+        Block block = this.getOnlinePlayer().getTargetBlock(null, distance);
+        if(block == null) return null;
+        return block;
+    }
+    
+    public BlockFace getTargetBlockFace() {return this.getTargetBlockFace(VIEW_DISTANCE);}
+    
+    public BlockFace getTargetBlockFace(int distance) {
+        List<Block> blocks = this.getOnlinePlayer().getLastTwoTargetBlocks(null, distance);
+        BlockFace face = null;
+        if (blocks != null && blocks.size() > 1) {
+          face = blocks.get(1).getFace(blocks.get(0));
+        }
+        return face;
+    }
+    
+    public Block getWillPlaceBlock() {return this.getWillPlaceBlock(99);}
+    
+    public Block getWillPlaceBlock(int s) {
+        Block target = this.getTargetBlock(s);
+        BlockFace tFace = this.getTargetBlockFace(s);
+        if(target == null || tFace == null) return null;
+        return target.getRelative(tFace);
     }
     
     //Complex set's
@@ -520,14 +556,16 @@ public class DomsPlayer {
         if(!this.isOnline()) return;
         if(this.isConsole()) return;
         
-        DomsInventory old = this.getInventoryFromWorld(this.getLocation().getWorld());
-        if(old != null) this.inventories.remove(old);
-        DomsInventory inv = DomsInventory.createFromPlayer(this);
-        this.inventories.add(inv);
-        old = this.getEndChestFromWorld(this.getLastLocation().getWorld());
-        if(old != null) this.enderchest.remove(old);
-        inv = DomsInventory.createEndChestFromPlayer(this);
-        this.enderchest.add(inv);
+        try {
+            DomsInventory old = this.getInventoryFromWorld(this.getLocation().getWorld());
+            if(old != null) this.inventories.remove(old);
+            DomsInventory inv = DomsInventory.createFromPlayer(this);
+            this.inventories.add(inv);
+            old = this.getEndChestFromWorld(this.getLastLocation().getWorld());
+            if(old != null) this.enderchest.remove(old);
+            inv = DomsInventory.createEndChestFromPlayer(this);
+            this.enderchest.add(inv);
+        } catch(Exception e) {}
     }
     
     private void updateVariables() {
@@ -564,5 +602,64 @@ public class DomsPlayer {
         if(this.isOnline() && !this.isConsole()) {
             this.variables.put("GAMEMODE", this.getOnlinePlayer().getGameMode().name());
         }
+    }
+
+    public void removeItem(DomsItem item, int amount) {
+        if(!this.isOnline()) {
+            //this.getInventory().removeItem(item, amount);
+            return;
+        }
+        
+        ItemStack[] inventory = this.getOnlinePlayer().getInventory().getContents();
+        for(int i = 0; i < inventory.length; i++) {
+            if(amount <= 0) break;
+            ItemStack is = inventory[i];
+            if(is == null) continue;
+            
+            int size = is.getAmount();
+            DomsItem dItem = DomsItem.createItem(is);
+            if(dItem == null || dItem.isAir()) continue;
+            
+            if(!dItem.compare(item)) continue;
+            
+            //Same Item
+            if(size <= amount) {
+                this.getOnlinePlayer().getInventory().setItem(i, null);
+                is = null;
+                amount -= size;
+                continue;
+            }
+            
+            is.setAmount(size - amount);
+            amount = 0;
+        }
+    }
+
+    public boolean hasItem(DomsItem item, int amount) {
+        if(!this.isOnline()) return false;
+        ItemStack[] inventory = this.getOnlinePlayer().getInventory().getContents();
+        for(int i = 0; i < inventory.length; i++) {
+            if(amount <= 0) return true;
+            ItemStack is = inventory[i];
+            if(is == null) continue;
+            
+            int size = is.getAmount();
+            DomsItem dItem = DomsItem.createItem(is);
+            if(dItem == null || dItem.isAir()) continue;
+            
+            if(!dItem.compare(item)) continue;
+            
+            //Same Item
+            if(size <= amount) {
+                amount -= size;
+                if(amount <= 0) return true;
+                continue;
+            }
+            
+            is.setAmount(size - amount);
+            amount = 0;
+            return true;
+        }
+        return false;
     }
 }

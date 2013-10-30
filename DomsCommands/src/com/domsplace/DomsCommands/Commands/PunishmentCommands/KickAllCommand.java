@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Threads;
+package com.domsplace.DomsCommands.Commands.PunishmentCommands;
 
-import com.domsplace.DomsCommands.Bases.DataManager;
-import com.domsplace.DomsCommands.Bases.DomsThread;
-import com.domsplace.DomsCommands.Objects.DomsPlayer;
+import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 
 /**
  * @author      Dominic
  * @since       13/10/2013
  */
-public class ConfigSaveThread extends DomsThread {
-    public ConfigSaveThread() {
-        super(300, 600);
+public class KickAllCommand extends BukkitCommand {
+    public KickAllCommand() {
+        super("kickall");
     }
     
     @Override
-    public void run() {
-        //log("Saving data...");
-        for(DomsPlayer player : DomsPlayer.getOnlinePlayers()) {
-            DataManager.PLAYER_MANAGER.savePlayer(player);
-        }
+    public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
+        return true;
     }
 }

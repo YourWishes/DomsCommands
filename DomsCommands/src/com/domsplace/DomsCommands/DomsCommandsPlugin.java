@@ -43,11 +43,17 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private CheckLagCommand checkLagCommand;
     private DoNothingCommand doNothingCommand;
     private DomsCommandsCommand domsCommands;
+    private DumpCommand dumpCommand;
     private FeedCommand feedCommand;
+    private FixChunkCommand fixChunkCommand;
+    private FurnaceCommand furnaceCommand;
     private HealCommand healCommand;
+    private HelmetCommand helmetCommand;
     private HelpCommand helpCommand;
+    private KillCommand killCommand;
     private KitCommand kitCommand;
     private MOTDCommand motdCommand;
+    private PositionCommand positionCommand;
     private PotionEffectCommand potionEffectCommand;
     private RulesCommand rulesCommand;
     private ServerCommand serverCommand;
@@ -88,6 +94,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private GetIDCommand getIDCommand;
     private MoreCommand moreCommand;
     private RenameItemCommand renameItemCommand;
+    private WorkbenchCommand workbenchCommand;
     
     private TeleportRequestCommand tpaCommand;
     private TeleportRequestHereCommand tpahCommand;
@@ -142,11 +149,17 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.checkLagCommand = new CheckLagCommand();
         this.doNothingCommand = new DoNothingCommand();
         this.domsCommands = new DomsCommandsCommand();
+        this.dumpCommand = new DumpCommand();
         this.feedCommand = new FeedCommand();
+        this.fixChunkCommand = new FixChunkCommand();
+        this.furnaceCommand = new FurnaceCommand();
         this.healCommand = new HealCommand();
+        this.helmetCommand = new HelmetCommand();
+        this.killCommand = new KillCommand();
         this.helpCommand = new HelpCommand();
         this.kitCommand = new KitCommand();
         this.motdCommand = new MOTDCommand();
+        this.positionCommand = new PositionCommand();
         this.potionEffectCommand = new PotionEffectCommand();
         this.rulesCommand = new RulesCommand();
         this.serverCommand = new ServerCommand();
@@ -187,6 +200,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.getIDCommand = new GetIDCommand();
         this.moreCommand = new MoreCommand();
         this.renameItemCommand = new RenameItemCommand();
+        this.workbenchCommand = new WorkbenchCommand();
         
         this.tpaCommand = new TeleportRequestCommand();
         this.tpahCommand = new TeleportRequestHereCommand();

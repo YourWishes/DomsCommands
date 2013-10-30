@@ -142,6 +142,7 @@ public class DomsLocation {
     public float getYaw() {return this.yaw;}
     public String getWorld() {return this.world;}
     public World getBukkitWorld() {return Bukkit.getWorld(world);}
+    public Block getBlock() {return this.toLocation().getBlock();}
     
     public void setX(double x) {this.x = x;}
     public void setY(double y) {this.y = y;}

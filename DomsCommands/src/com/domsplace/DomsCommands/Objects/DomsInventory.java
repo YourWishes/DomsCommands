@@ -41,6 +41,7 @@ public class DomsInventory {
         try {di.setBoots(DomsInventoryItem.createInventoryItem(DomsItem.itemStackToDomsItems(player.getOnlinePlayer().getInventory().getBoots())));} catch(Exception e) {}
         
         di.setExp(player.getOnlinePlayer().getExp());
+        di.setExpLevel(player.getOnlinePlayer().getLevel());
         
         return di;
     }
@@ -85,6 +86,7 @@ public class DomsInventory {
     
     private final DomsPlayer player;
     private String inventoryGroup;
+    private int level = 0;
     private float xp = -1;
     
     public DomsInventory(DomsPlayer player, String world) {
@@ -115,6 +117,7 @@ public class DomsInventory {
     public DomsInventoryItem getChestPlate() {return this.chestplate;}
     public DomsInventoryItem getLeggings() {return this.leggings;}
     public DomsInventoryItem getBoots() {return this.boots;}
+    public int getExpLevel() {return this.level;}
     public float getExp() {return this.xp;}
     
     public void setInventoryGroup(String world) {this.inventoryGroup = world;}
@@ -122,6 +125,7 @@ public class DomsInventory {
     public void setChestPlate(DomsInventoryItem item) {this.chestplate = item;}
     public void setLeggings(DomsInventoryItem item) {this.leggings = item;}
     public void setBoots(DomsInventoryItem item) {this.boots = item;}
+    public void setExpLevel(int l) {this.level = l;}
     public void setExp(float f) {this.xp = f;}
 
     public void setToPlayer() {
@@ -138,6 +142,7 @@ public class DomsInventory {
         try {this.player.getOnlinePlayer().getEquipment().setBoots(this.boots.toItemStack());} catch(Exception e) {}
         
         this.player.getOnlinePlayer().setExp(this.xp);
+        this.player.getOnlinePlayer().setLevel(this.level);
     }
     
     public void setToInventory(Inventory inv) {

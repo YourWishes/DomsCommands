@@ -38,6 +38,7 @@ public class DomsInventoryItem {
     }
     
     public static DomsInventoryItem createFromDomsItemList(List<DomsItem> items) {
+        if(items == null || items.size() < 1) return null;
         return new DomsInventoryItem(items.size(), items.get(0));
     }
     

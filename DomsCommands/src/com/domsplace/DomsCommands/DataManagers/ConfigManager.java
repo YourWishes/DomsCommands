@@ -222,6 +222,7 @@ public class ConfigManager extends DataManager {
             }
         }
         msg = msg.replaceAll("\\{PLAYERS\\}", m);
+        msg = msg.replaceAll("\\\\n", "\n");
         
         return msg;
     }
