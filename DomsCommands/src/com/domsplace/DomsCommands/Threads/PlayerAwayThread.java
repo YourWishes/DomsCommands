@@ -67,7 +67,7 @@ public class PlayerAwayThread extends DomsThread {
             broadcast(
                 "DomsCommands.kick.notify",
                 ChatImportant + player + ChatDefault + " was kicked " + 
-                " for " + ChatImportant + colorise(p.getReason()) + ChatDefault + "."
+                "for " + ChatImportant + colorise(p.getReason()) + ChatDefault + "."
             );
             player.kickPlayer(ChatDefault + "You have been kicked for " + ChatImportant + colorise(p.getReason()) + ChatDefault + ".");
             player.setAFK(false);

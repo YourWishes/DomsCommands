@@ -35,9 +35,7 @@ public class CraftBukkitManager extends DataManager {
         String cb = getCraftServerClassName();
         try {
             getCraftServerClass();
-            debug("CraftBukkit Available!");
         } catch(ClassNotFoundException e) {
-            debug("Couldn't find CraftBukkit!");
         }
     }
     
@@ -67,7 +65,6 @@ public class CraftBukkitManager extends DataManager {
             String n = getCraftServerClassName();
             n = n.replaceAll("CraftServer", "");
             name = n + name;
-            debug("Fetching CraftClass " + name);
             return Class.forName(name);
         } catch(Exception e) {
             return null;
@@ -80,7 +77,6 @@ public class CraftBukkitManager extends DataManager {
             n = n.replaceAll("org.bukkit.craftbukkit", "net.minecraft.server");
             n = n.replaceAll("CraftServer", "");
             name = n + name;
-            debug("Fetching MineClass " + name);
             return Class.forName(name);
         } catch(Exception e) {
             return null;

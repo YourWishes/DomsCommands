@@ -54,6 +54,7 @@ public class PlayerAwayListener extends DomsListener {
         if(plyr.isVisible()) {
             broadcast(getConfigManager().format(plyr, getConfig().getString("away.messageback", "")));
         }
+        plyr.setLastMoveTime(getNow());
         plyr.setAFK(false);
     }
     
@@ -65,6 +66,7 @@ public class PlayerAwayListener extends DomsListener {
         if(plyr.isVisible()) {
             broadcast(getConfigManager().format(plyr, getConfig().getString("away.messageback", "")));
         }
+        plyr.setLastMoveTime(getNow());
         plyr.setAFK(false);
     }
 }

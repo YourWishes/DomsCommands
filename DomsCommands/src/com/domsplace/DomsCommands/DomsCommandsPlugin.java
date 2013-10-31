@@ -249,7 +249,6 @@ public class DomsCommandsPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         if(!enabled) {
-            Base.debug("Failed to Enable " + this.getName());
             return;
         }
         

@@ -159,14 +159,14 @@ public class DomsLocation {
     
     public DomsLocation getSafeLocation() {
         //Returns the Safest Location
-        int y = 256;
+        int y = (int) this.getY();
         int x = (int) this.x;
         int z = (int) this.z;
         
         Block b = this.getBukkitWorld().getBlockAt(x, y, z);
         Block below;
         Block up;
-        Block d = this.getBukkitWorld().getBlockAt(x, 64, z);
+        Block d = this.getBukkitWorld().getBlockAt(x, (int) this.getY(), z);
         
         boolean look = true;
         

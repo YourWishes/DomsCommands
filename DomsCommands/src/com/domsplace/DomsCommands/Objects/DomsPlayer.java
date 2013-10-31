@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
@@ -115,6 +116,13 @@ public class DomsPlayer {
 
     public static DomsPlayer guessExactPlayer(CommandSender sender, String guess, boolean createIfNotExists) {
         DomsPlayer p = null;
+        for(DomsPlayer plyr : REGISTERED_ONLINE_PLAYERS.values()) {
+            if(!plyr.getPlayer().equalsIgnoreCase(guess.toLowerCase())) continue;
+            p = plyr;
+            break;
+        }
+        if(p != null) return p;
+        
         for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
             if(!plyr.getPlayer().equalsIgnoreCase(guess.toLowerCase())) continue;
             p = plyr;
@@ -226,7 +234,6 @@ public class DomsPlayer {
         this.kitCooldowns = new HashMap<Kit, Long>();
         
         this.registerPlayer();
-        Base.debug("Regitered new DomsPlayer for " + this.player);
     }
     
     private void registerPlayer() {REGISTERED_PLAYERS.put(player, this);}
@@ -261,6 +268,7 @@ public class DomsPlayer {
     public boolean getFlightMode() {return this.flyMode;}
     public Inventory getBackpack() {return this.backpack;}
     public DomsLocation getFurnaceLocation() {return this.playerFurnace;}
+    public String getNickname() {return this.displayName;}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
@@ -565,7 +573,10 @@ public class DomsPlayer {
             if(old != null) this.enderchest.remove(old);
             inv = DomsInventory.createEndChestFromPlayer(this);
             this.enderchest.add(inv);
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            Base.debug("Failed to update " + this.getDisplayName() + "'s inventory.");
+            e.printStackTrace();
+        }
     }
     
     private void updateVariables() {

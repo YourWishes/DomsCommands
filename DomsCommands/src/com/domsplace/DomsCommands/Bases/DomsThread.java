@@ -36,7 +36,6 @@ public class DomsThread extends Base implements Runnable {
     }
     
     public static void registerThread(DomsThread thread) {
-        debug("Thread: " + thread.getClass().getSimpleName() + " :Registered.");
         DomsThread.getThreads().add(thread);
     }
     

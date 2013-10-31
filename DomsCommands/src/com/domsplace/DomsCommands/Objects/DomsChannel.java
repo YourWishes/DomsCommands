@@ -86,7 +86,6 @@ public class DomsChannel {
         
         this.variables.put("CHANNEL", this.name);
         
-        Base.debug("Registered Channel " + this.name);
         REGISTERED_CHANNELS.add(this);
     }
     

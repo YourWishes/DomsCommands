@@ -170,12 +170,10 @@ public class DomsItem {
         List<DomsItem> doesCopy = new ArrayList<DomsItem>(doesThis);
         
         for(DomsItem item : containThis) {
-            Base.debug("Checking if bank contains " + item.toHumanString());
             
             boolean found = false;
             DomsItem remove = null;
             for(DomsItem i : doesCopy) {
-                Base.debug("Bank contains " + i.toHumanString());
                 if(i.compare(item)) found = true;
                 remove = i;
                 if(found) break;

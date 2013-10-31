@@ -61,6 +61,13 @@ public class DomsCommandsCommand extends BukkitCommand {
                 return true;
             }
             
+            if(args[0].equalsIgnoreCase("debug")) {
+                Base.DebugMode = !Base.DebugMode;
+                debug("Debug Mode Enabled!");
+                sendMessage(sender, "Turned Debug Mode " + ChatImportant + (Base.DebugMode ? "On" : "Off"));
+                return true;
+            }
+            
             sender.sendMessage(ChatError + "Unknown Argument " + args[0] + ".");
             return true;
         }

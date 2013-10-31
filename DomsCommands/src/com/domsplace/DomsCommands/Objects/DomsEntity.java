@@ -93,7 +93,6 @@ public class DomsEntity {
     }
     
     public static DomsEntity craftEntity(String line, DomsPlayer tamer) {
-        Base.debug("Creating Entity From: " + line);
         try {
             DomsEntity entity = craftEntityBasic(line, tamer);
             if(entity != null) return entity;

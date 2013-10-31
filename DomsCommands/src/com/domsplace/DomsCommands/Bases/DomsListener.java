@@ -35,7 +35,6 @@ public class DomsListener extends Base implements Listener {
     protected static void regsiterListener(DomsListener listener) {
         Bukkit.getPluginManager().registerEvents(listener, getPlugin());
         DomsListener.getListeners().add(listener);
-        debug("Registered Listener: " + listener.getClass().getSimpleName());
     }
     
     protected static void deRegsiterListener(DomsListener listener) {
@@ -58,7 +57,6 @@ public class DomsListener extends Base implements Listener {
             }
         }
         DomsListener.getListeners().remove(listener);
-        debug("De-Registered Listener: " + listener.getClass().getSimpleName());
     }
     
     public static List<DomsListener> getListeners() {

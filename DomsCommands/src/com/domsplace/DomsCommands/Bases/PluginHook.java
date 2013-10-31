@@ -49,15 +49,12 @@ public class PluginHook extends Base{
     
     public static void hookAll() {
         for(PluginHook plugin : PLUGIN_HOOKS) {
-            debug("Try Hoooking " + plugin.getPluginName());
-            if(plugin.hook()) debug("Successfully hooked!");
-            else debug("Failed to hook!");
+            if(plugin.hook());
         }
     }
     
     public static void unhookAll() {
         for(PluginHook plugin : PLUGIN_HOOKS) {
-            debug("Unhoooking " + plugin.getPluginName());
             plugin.unHook();
         }
     }

@@ -83,7 +83,7 @@ public class PlayerManager extends DataManager {
             }
             
             //Set new Data
-            if(yml.contains("nick")) {
+            if(yml.contains("nick") && !yml.getString("nick").equalsIgnoreCase("off")) {
                 player.setDisplayName(yml.getString("nick"));
             }
             
@@ -211,7 +211,6 @@ public class PlayerManager extends DataManager {
             if(yml.contains("location")) {
                 player.setLastLocation(DomsLocation.guessLocation(yml.getString("location")));
             }
-            debug("Loaded " + player.getDisplayName());
             return player;
         } catch(Exception e) {
             error("Failed to load Player from File \"" + file.getName() + "\".", e);

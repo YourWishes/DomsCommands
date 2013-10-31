@@ -529,7 +529,6 @@ public class Base extends RawBase {
     }
     
     public static Map<String, String> getDomsJSON(String line) {
-        debug("PARSING: " + line);
         try {
             line = line.replaceAll("\\n","\\\\n");
             String[] parts = line.split(SEPERATOR_REGEX.pattern());
@@ -537,7 +536,6 @@ public class Base extends RawBase {
             Map<String, String> data = new HashMap<String, String>();
             
             for(String s : parts) {
-                debug("ADDING: " + s);
                 Matcher m = Pattern.compile(ATTRIBUTE_SEPERATOR_REGEX).matcher(s);
                 m.find();
                 

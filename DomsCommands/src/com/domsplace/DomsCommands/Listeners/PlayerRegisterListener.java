@@ -50,7 +50,6 @@ public class PlayerRegisterListener extends DomsListener {
     
     @EventHandler(priority=EventPriority.LOWEST)
     public void registerOnJoin(PlayerJoinEvent e) {
-        DataManager.PLAYER_MANAGER.load();
         if(!DomsPlayer.isPlayerRegistered(e.getPlayer()) || !DomsPlayer.getPlayer(e.getPlayer()).hasPlayedBefore()) {
             //Create Player
             DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
@@ -79,8 +78,8 @@ public class PlayerRegisterListener extends DomsListener {
             PlayerFirstJoinedEvent event = new PlayerFirstJoinedEvent(player);
             event.fireEvent();
         }
-        
         DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        if(player.getNickname() != null && !player.getNickname().equalsIgnoreCase("off")) player.setDisplayName(player.getNickname());
         
         DomsPlayer.REGISTERED_ONLINE_PLAYERS.put(player.getPlayer(), player);
         
@@ -97,13 +96,16 @@ public class PlayerRegisterListener extends DomsListener {
         
         player.getOnlinePlayer().setAllowFlight(player.getFlightMode());
         
-        player.updateDomsInventory();
-        
         //Fire event
-        PlayerPostFirstJoinEvent event = new PlayerPostFirstJoinEvent(player);
-        event.fireEvent();
-        
-        DataManager.PLAYER_MANAGER.savePlayer(player);
+        try {
+            PlayerPostFirstJoinEvent event = new PlayerPostFirstJoinEvent(player);
+            event.fireEvent();
+            debug("Fired Event");
+            DataManager.PLAYER_MANAGER.savePlayer(player);
+        } catch(Exception ex) {
+            error("Failed to Save new player..", ex);
+        }
+        debug("Saved.");
     }
     
     @EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
@@ -136,22 +138,23 @@ public class PlayerRegisterListener extends DomsListener {
     
     @EventHandler(priority=EventPriority.HIGHEST)
     public void changeInventoryOnWorldChange(PlayerTeleportEvent e) {
-        if(e.getTo().getWorld().equals(e.getFrom().getWorld())) return;
+        try {if(DomsInventory.getInventoryGroupFromWorld(e.getFrom().getWorld().getName()).equals(
+                DomsInventory.getInventoryGroupFromWorld(e.getTo().getWorld().getName())
+        )) return;} catch(Exception ex) {}
+        
         DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
         player.updateDomsInventory();
         
         DomsInventory inv = player.getInventoryFromWorld(e.getTo().getWorld().getName());
         if(inv == null) {
-            inv = new DomsInventory(player, DomsInventory.getInventoryGroupFromWorld(e.getTo().getWorld().getName()));
-            player.addInventory(inv);
+            return;
         }
         
         inv.setToPlayer();
         
         inv = player.getEndChestFromWorld(e.getTo().getWorld().getName());
         if(inv == null) {
-            inv = new DomsInventory(player, DomsInventory.getInventoryGroupFromWorld(e.getTo().getWorld().getName()));
-            player.addEndChest(inv);
+            return;
         }
         
         inv.setToInventory(e.getPlayer().getEnderChest());
