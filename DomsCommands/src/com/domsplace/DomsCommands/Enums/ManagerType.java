@@ -10,6 +10,7 @@ public class ManagerType extends DomsEnum {
     public static final ManagerType CHAT = new ManagerType("Chat");
     public static final ManagerType CRAFT_BUKKIT = new ManagerType("Craftbukkit");
     public static final ManagerType RULES = new ManagerType("Rules");
+    public static final ManagerType HELP = new ManagerType("Help");
     
     //Instance
     private String type;

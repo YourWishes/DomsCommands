@@ -1,0 +1,24 @@
+=====================================================
+=                                   Help                                    =
+=====================================================
+&dPage 1/2
+&2Commands:
+    &6/DomsCommands:
+        &eReload or save the config, get info about
+        &ethe plugin and turn on or off debugging
+        &emode.
+    &6/DoNothing:
+        &eA command that does nothing.  (Used for 
+        &eServer Commands)
+    &6/MOTD:
+        &eSet or Get the servers Message of the Day
+    &6/ShutDown:
+        &eShut down the server, and optionally 
+        &esupply a message.
+###
+=====================================================
+=                                   Help                                    =
+=====================================================
+&dPage 2/2
+&7Need more help? Visit
+\t&9http://dev.bukkit.org/bukkit-plugins/domscommands/

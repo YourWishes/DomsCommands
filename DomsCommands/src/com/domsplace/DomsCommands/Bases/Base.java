@@ -208,6 +208,8 @@ public class Base extends RawBase {
     public static void sendMessage(CommandSender sender, String msg) {
         if(msg.replaceAll(" ", "").equalsIgnoreCase("")) return;
         msg = msg.replaceAll("\\t", TAB);
+        msg = msg.replaceAll("\\\\t", TAB);
+        msg = msg.replaceAll("\t", TAB);
         sender.sendMessage(ChatDefault + msg);
     }
 
