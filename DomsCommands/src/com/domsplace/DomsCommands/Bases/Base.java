@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
@@ -496,6 +497,10 @@ public class Base extends RawBase {
         return m;
     }
     
+    public static String setToString(Set<? extends Object> strings, String seperator) {
+        return listToString(new ArrayList<Object>(strings));
+    }
+    
     public static String twoDecimalPlaces(double x) {
         DecimalFormat df = new DecimalFormat("#.00");
         return df.format(x);
@@ -647,6 +652,15 @@ public class Base extends RawBase {
             rv.add(Bukkit.getOfflinePlayer(p.getName()));
         }
         return rv;
+    }
+    
+    public static List<Player> getOnlinePlayers(CommandSender rel) {
+        List<Player> players = new ArrayList<Player>();
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            if(!canSee(rel, p)) continue;
+            players.add(p);
+        }
+        return players;
     }
     
     //Time Utils

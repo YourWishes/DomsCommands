@@ -36,8 +36,7 @@ public class DomsLocation {
          * x,y,z,world
          */
         
-        int validcoordsfound = 0;
-        
+        if(c.endsWith(",")) c = Base.trim(c, c.length() - 1);
         String[] split = c.split(",");
         if(split.length < 2) return null;
         

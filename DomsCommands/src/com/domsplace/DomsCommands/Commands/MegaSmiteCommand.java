@@ -14,38 +14,38 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Commands.PlayerCommands;
+package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
-import com.domsplace.DomsCommands.Objects.DomsInventory;
+import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
+import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 /**
  * @author      Dominic
- * @since       27/10/2013
+ * @since       30/10/2013
  */
-public class BackpackCommand extends BukkitCommand {
-    public BackpackCommand() {
-        super("backpack");
+public class MegaSmiteCommand extends BukkitCommand {
+    public MegaSmiteCommand() {
+        super("megasmite");
+        this.addSubCommandOption(SubCommandOption.PLAYERS_OPTION);
     }
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
-        return this.noPermission(sender, cmd, label, args);
-        /*
-        if(!isPlayer(sender)) {
-            sendMessage(sender, ChatError + "Only players can do this.");
+        if(!isPlayer(sender) && args.length < 1) {
+            sendMessage(sender, ChatError + "Please enter a player name");
             return true;
         }
         
-        DomsPlayer p = DomsPlayer.getPlayer(sender);
-        DomsInventory backpack = p.getBackpack();
-        if(backpack == null) backpack = p.setBackpack(new DomsInventory(p, ""));
-        
-        //p.getOnlinePlayer().openInventory(backpack.getI);
-        sendMessage(sender, "Opening your backpack.");
-        return true;*/
+        DomsLocation target = null;
+        if(args.length > 0) {
+            DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);
+            if(guess == null || guess.isConsole() || !guess.isOnline(sender)) {
+            }
+        }
+        return true;
     }
 }

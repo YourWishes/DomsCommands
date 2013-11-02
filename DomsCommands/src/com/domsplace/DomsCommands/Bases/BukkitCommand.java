@@ -79,6 +79,7 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
             try {
                 result = this.cmd(sender, cmd, label, args);
             } catch(Exception e) {
+                debug("Exception e:" + e.getMessage());
                 error("Command Execution failed \"" + this.toFullCommand(sender, cmd, label, args) + "\" Show to Plugin Author!", e);
                 sendMessage(sender, ChatError + "A command error occured and the command was not finished successfully, please contact an admin!");
             }

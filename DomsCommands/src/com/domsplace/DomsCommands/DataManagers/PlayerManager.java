@@ -26,13 +26,12 @@ import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Home;
 import com.domsplace.DomsCommands.Objects.Kit;
 import com.domsplace.DomsCommands.Objects.Punishment;
+import com.domsplace.DomsCommands.Bases.Base;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.Inventory;
 
 /**
  * @author      Dominic
@@ -189,8 +188,7 @@ public class PlayerManager extends DataManager {
                     bp.setItem(slot, item);
                 }
                 
-                Inventory backpack = player.setBackpack(Bukkit.createInventory(player.getOnlinePlayer(), 54, player.getPlayer() + "'s Backpack."));
-                bp.setToInventory(backpack);
+                player.setBackpack(bp);
             }
             
             if(yml.contains("furnace")) player.setFurnaceLocation(DomsLocation.guessLocation(yml.getString("furnace")));
@@ -213,6 +211,7 @@ public class PlayerManager extends DataManager {
             }
             return player;
         } catch(Exception e) {
+            Base.DebugMode = true;
             error("Failed to load Player from File \"" + file.getName() + "\".", e);
             return null;
         }
@@ -322,8 +321,7 @@ public class PlayerManager extends DataManager {
                 }
                 
                 if(player.getBackpack() != null) {
-                    Inventory in = player.getBackpack();
-                    DomsInventory inv = DomsInventory.createFromInventory("", in, player);
+                    DomsInventory inv = player.getBackpack();
                     Map<Integer, DomsInventoryItem> items = inv.getItems();
                     for(Integer i : items.keySet()) {
                         if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;

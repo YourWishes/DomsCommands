@@ -40,7 +40,7 @@ public class WorkbenchCommand extends BukkitCommand {
         }
         
         DomsPlayer player = DomsPlayer.getPlayer(sender);
-        player.getOnlinePlayer().openInventory(Bukkit.createInventory(null, InventoryType.WORKBENCH));
+        player.getOnlinePlayer().openInventory(Bukkit.createInventory(player.getOnlinePlayer(), InventoryType.WORKBENCH));
         player.sendMessage("Opening Workbench.");
         return true;
     }

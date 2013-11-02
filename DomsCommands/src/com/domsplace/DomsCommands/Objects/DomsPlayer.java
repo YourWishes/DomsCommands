@@ -209,7 +209,7 @@ public class DomsPlayer {
     private final List<Home> homes;
     private final List<DomsInventory> inventories;
     private final List<DomsInventory> enderchest;
-    private Inventory backpack;
+    private DomsInventory backpack;
     private Map<String, String> variables;
     private Map<Kit, Long> kitCooldowns;
     
@@ -266,7 +266,7 @@ public class DomsPlayer {
     public String getVariable(String key) {this.updateVariables(); return this.variables.get(key);}
     public long getKitCooldown(Kit k) {try {return this.kitCooldowns.get(k);}catch(Exception e) {return -1;}}
     public boolean getFlightMode() {return this.flyMode;}
-    public Inventory getBackpack() {return this.backpack;}
+    public DomsInventory getBackpack() {return this.backpack;}
     public DomsLocation getFurnaceLocation() {return this.playerFurnace;}
     public String getNickname() {return this.displayName;}
     
@@ -292,7 +292,7 @@ public class DomsPlayer {
     public void setKitCooldown(Kit k, long l) {this.kitCooldowns.put(k, l);}
     public void setFlightMode(boolean f) {this.flyMode = f;}
     public void setFurnaceLocation(DomsLocation location) {this.playerFurnace = location.copy();}
-    public Inventory setBackpack(Inventory inventory) {this.backpack = inventory; return this.backpack;}
+    public DomsInventory setBackpack(DomsInventory inventory) {this.backpack = inventory; return this.backpack;}
     
     @Override public String toString() {return this.getDisplayName();}
     

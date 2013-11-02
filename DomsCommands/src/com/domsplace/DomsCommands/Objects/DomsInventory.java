@@ -89,9 +89,9 @@ public class DomsInventory {
     private int level = 0;
     private float xp = -1;
     
-    public DomsInventory(DomsPlayer player, String world) {
+    public DomsInventory(DomsPlayer player, String group) {
         this.player = player;
-        this.inventoryGroup = world;
+        this.inventoryGroup = group;
         this.slots = new HashMap<Integer, DomsInventoryItem>();
     }
     

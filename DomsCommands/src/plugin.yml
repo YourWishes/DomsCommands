@@ -5,7 +5,7 @@ authors: [Dominic, Jordan, Lazy, Kyle]
 website: http://domsplace.com/
 version: '1.00'
 load: POSTWORLD
-softdepend: [Vault]
+softdepend: [Vault, Villages]
 commands:
    DomsCommands:
       description: Provides basic information about the DomsCommands plugin.
@@ -356,6 +356,11 @@ commands:
       aliases: [wb, workb, bench]
       usage: /<command>
       permission: DomsCommands.workbench
+   megasmite:
+      description: Strikes 15 bolts of lightning where the player is looking, or at a target.
+      aliases: [ms, megas, smitemega]
+      usage: /<command> (player)
+      permission: DomsCommands.megasmite
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -890,3 +895,5 @@ permissions:
      description: Allows access to the furnace command.
    DomsCommands.workbench:
      description: Allows access to the workbench command.
+   DomsCommands.megasmite:
+     description: Allows access to the megasmite command.

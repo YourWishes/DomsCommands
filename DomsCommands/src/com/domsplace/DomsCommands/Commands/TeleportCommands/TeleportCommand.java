@@ -20,6 +20,7 @@ import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -37,119 +38,184 @@ public class TeleportCommand extends BukkitCommand {
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
         if(args.length < 1) {
-            sendMessage(sender, ChatError + "Please enter a player name, or coordinates.");
-            return false;
+            sendMessage(sender, ChatError + "Please enter a player or coordinates.");
+            return true;
         }
         
-        DomsLocation dest = null;
-        DomsPlayer plyr = null;
-        
-        if(args.length < 2 && !isPlayer(sender)) {
-            sendMessage(sender, ChatError + "Please enter a player name, or coordinates to teleport to.");
-            return false;
-        } else if(args.length == 1 && isPlayer(sender)) {
-            plyr = DomsPlayer.getPlayer(sender);
-        }
-        
-        DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);
-        if(guess == null) { 
-            if(!isPlayer(sender)) {
-                sendMessage(sender, ChatError + args[0] + " wasn't found.");
+        DomsPlayer player = null;
+        DomsLocation target = null;
+        if(args.length == 1) {
+            target = DomsLocation.guessLocation(args[0]);
+            if(target != null) {
+                if(!hasPermission(sender, "DomsCommands.teleport.coordinates")) {
+                    sendMessage(sender, ChatError + "You don't have permission to TP to Coordinates.");
+                    return this.noPermission(sender, cmd, label, args);
+                }
+                player = DomsPlayer.getPlayer(sender);
+            } else {
+                DomsPlayer found = DomsPlayer.guessPlayer(sender, args[0]);
+                if(found == null || found.isConsole()) {
+                    sendMessage(sender, ChatError + "Couldn't find player.");
+                    return true;
+                }
+                target = found.getLocation();
+                player = DomsPlayer.getPlayer(sender);
+                if(player == null || player.isConsole()) {
+                    sendMessage(sender, ChatError + "You cannot TP.");
+                    return true;
+                }
+                
+                if(found.compare(sender)) {
+                    sendMessage(sender, ChatError + "Can't tp to yourself.");
+                    return true;
+                }
+                
+                player.setBackLocation(player.getLocation());
+                player.teleport(target);
+                sendMessage(sender, "Teleporting you to " + ChatImportant + found.getDisplayName() + ChatDefault + ".");
+                return true;
+            }
+        } else if(args.length == 2) {
+            player = DomsPlayer.guessPlayer(sender, args[0]);
+            if(player == null || !player.isOnline(sender) || player.isConsole()) {
+                sendMessage(sender, ChatError + "Couldn't find player.");
                 return true;
             }
             
-            //Try to get as coords
-            String c = "";
-            for(int i = 0; i < args.length; i++) {
-                if(DomsPlayer.guessPlayer(sender, args[i]) != null) continue;
-                String[] x = args[i].split(",");
-                for(int e = 0; e < x.length; e++) {
-                    String f = x[e].replaceAll(",", "").replaceAll(" ", "");
-                    if(f == null || f.equalsIgnoreCase("")) continue;
-                    c += f + ",";
+            target = DomsLocation.guessLocation(args[1]);
+            if(target == null) {
+                DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[1]);
+                if(guess == null || !guess.isOnline(sender) || guess.isConsole()) {
+                    sendMessage(sender, ChatError + "Couldn't find player.");
+                    return true;
                 }
+                if(guess.equals(player)) {
+                    sendMessage(sender, ChatError + "Can't teleport to same player.");
+                    return true;
+                }
+                
+                if(!player.compare(sender) && !hasPermission(sender, "DomsCommands.teleport.others")) {
+                    sendMessage(sender, ChatError + "You can't teleport other players.");
+                    return true;
+                }
+                
+                target = guess.getLocation();
+                player.setBackLocation(player.getLocation());
+                player.teleport(target);
+                sendMessage(sender, "Teleporting you to " + ChatImportant + guess.getDisplayName() + ChatDefault + ".");
+                if(!player.compare(sender)) {
+                    sendMessage(sender, "Teleporting " + ChatImportant + player.getDisplayName() + ChatDefault + " to " + ChatImportant + guess.getDisplayName() + ChatDefault + ".");
+                }
+                return true;
             }
-            
-            DomsLocation guessLocation = DomsLocation.guessLocation(c);
-            if(guessLocation == null) {
-                sendMessage(sender, ChatError + "Please enter valid coords.");
+                
+            if(!player.compare(sender) && !hasPermission(sender, "DomsCommands.teleport.coordinates.others")) {
+                sendMessage(sender, ChatError + "You can't teleport other players to coordinates.");
                 return true;
             }
             
             if(!hasPermission(sender, "DomsCommands.teleport.coordinates")) {
+                sendMessage(sender, ChatError + "You don't have permission to TP to Coordinates.");
                 return this.noPermission(sender, cmd, label, args);
             }
-            
-            dest = guessLocation;
-            plyr = DomsPlayer.getPlayer(sender);
+            player.setBackLocation(player.getLocation());
+            player.teleport(target);
+            player.sendMessage("Teleporting you to " + ChatImportant + target.toHumanString() + ChatDefault + ".");
+            if(!player.compare(sender)) {
+                sendMessage(sender, "Teleporting " + ChatImportant + player.getDisplayName() + ChatDefault + " to " + ChatImportant + target.toHumanString() + ChatDefault + ".");
+            }
+            return true;
         } else {
-            if(args.length == 1) {
-                if(isPlayer(sender) && guess.equals(DomsPlayer.getPlayer(sender))) {
-                    sendMessage(sender, ChatError + "You can't teleport to yourself");
-                    return true;
+            DomsPlayer guessA = null;
+            DomsPlayer guessB = null;
+            String loc = "";
+            for(String s : args) {
+                if(guessA != null && guessB != null) {
+                    loc += s + ",";
+                    continue;
                 }
-                dest = guess.getLocation();
-            } else {
-                plyr = guess;
+                
+                if(isDouble(s) || isInt(s) || isLong(s) || isFloat(s)) {
+                    loc += s + ",";
+                    continue;
+                }
+                
+                if(Bukkit.getWorld(s) != null) {
+                    loc += s + ",";
+                    continue;
+                }
+                
+                DomsPlayer currentGuess = DomsPlayer.guessPlayer(sender, args[0]);
+                if(currentGuess == null) {
+                    loc += s + ",";
+                    continue;
+                }
+                
+                if(guessA != null) {
+                    guessA = currentGuess;
+                    continue;
+                }
+                
+                guessB = currentGuess;
             }
-        }
-        
-        if(args.length > 1) {
-            DomsPlayer guess2 = DomsPlayer.guessPlayer(sender, args[1]);
-            if(guess2 == null) {
-                //Try to get as coords
-                String c = "";
-                for(int i = 0; i < args.length; i++) {
-                    if(DomsPlayer.guessPlayer(sender, args[i]) != null) continue;
-                    c += args[i].replaceAll(",", "").replaceAll(" ", "") + ",";
-                }
-
-                DomsLocation guessLocation = DomsLocation.guessLocation(c);
-                if(guessLocation == null) {
-                    sendMessage(sender, ChatError + "Please enter valid coords.");
+            
+            DomsLocation guessLoc = DomsLocation.guessLocation(loc);
+            if(guessLoc == null) {
+                DomsPlayer from = (guessA == null ? DomsPlayer.getPlayer(sender) : guessA);
+                if(from == null || from.isConsole()) {
+                    sendMessage(sender, ChatError + "Couldn't find player.");
                     return true;
+                }
+                if(!from.compare(sender) && !hasPermission(sender, "DomsCommands.teleport.others")) {
+                    sendMessage(sender, ChatError + "You can't teleport other players.");
+                    return true;
+                }
+                if(guessB != null && !guessB.isConsole()) {
+                    if(from.equals(guessB)) {
+                        sendMessage(sender, ChatError + "Can't teleport to same player.");
+                        return true;
+                    }
+                    target = guessB.getLocation();
+                }
+            } else {
+                if(!hasPermission(sender, "DomsCommands.teleport.coordinates")) {
+                    sendMessage(sender, ChatError + "You don't have permission to TP to Coordinates.");
+                    return this.noPermission(sender, cmd, label, args);
                 }
             
-                if(!hasPermission(sender, "DomsCommands.teleport.coordinates.others")) {
-                    return this.noPermission(sender, cmd, label, args);
-                }
 
-                dest = guessLocation;
-            } else {
-                if(!hasPermission(sender, "DomsCommands.teleport.others")) {
-                    return this.noPermission(sender, cmd, label, args);
-                }
+                target = guessLoc;
+                player = (guessA == null ? (guessB == null ? DomsPlayer.getPlayer(sender) : guessB) : guessA);
                 
-                if(guess != null && guess2.equals(guess)) {
-                    sendMessage(sender, ChatError + "You can't teleport to the same player.");
+                if(!player.compare(sender) && !hasPermission(sender, "DomsCommands.teleport.coordinates.others")) {
+                    sendMessage(sender, ChatError + "You can't teleport other players to coordinates.");
+                    return true;
                 }
-                
-                dest = guess2.getLocation();
             }
         }
         
-        if(dest == null) {
-            sendMessage(sender, ChatError + "Please enter a valid destination.");
+        if(player == null || player.isConsole() || !player.isOnline(sender)) {
+            sendMessage(sender, ChatError + "Couldn't find player.");
             return true;
         }
         
-        if(plyr == null || !plyr.isOnline(sender) || plyr.isConsole()) {
-            sendMessage(sender, ChatError + "Please enter a player to teleport");
+        if(target == null) {
+            sendMessage(sender, ChatError + "Invalid location.");
+            return true;
+        }
+        if(target.getWorld() == null) target.setWorld(player.getLocation().getWorld());
+        
+        if(!target.isWorldLoaded()) {
+            sendMessage(sender, ChatError + "Invalid location.");
             return true;
         }
         
-        if(dest.getWorld() == null) {
-            dest.setWorld(plyr.getLocation().getWorld());
+        player.setBackLocation(player.getLocation());
+        player.teleport(target);
+        player.sendMessage("Teleporting you to " + ChatImportant + target.toHumanString() + ChatDefault + ".");
+        if(!player.compare(sender)) {
+            sendMessage(sender, "Teleporting " + ChatImportant + player.getDisplayName() + ChatDefault + " to " + ChatImportant + target.toHumanString() + ChatDefault + ".");
         }
-        
-        if(dest.getBukkitWorld() == null) {
-            sendMessage(sender, ChatError + "Invalid world.");
-            return true;
-        }
-        
-        plyr.setBackLocation(plyr.getLocation());
-        plyr.teleport(dest);
-        sendMessage(sender, ChatDefault + "Teleporting...");
         return true;
     }
 }
