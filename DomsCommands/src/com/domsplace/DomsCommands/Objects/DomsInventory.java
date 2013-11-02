@@ -20,6 +20,7 @@ import com.domsplace.DomsCommands.Bases.Base;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -136,10 +137,26 @@ public class DomsInventory {
         this.player.getOnlinePlayer().getEquipment().clear();
         this.setToInventory(inv);
         
-        try {this.player.getOnlinePlayer().getEquipment().setHelmet(this.helmet.toItemStack());} catch(Exception e) {}
-        try {this.player.getOnlinePlayer().getEquipment().setChestplate(this.chestplate.toItemStack());} catch(Exception e) {}
-        try {this.player.getOnlinePlayer().getEquipment().setLeggings(this.leggings.toItemStack());} catch(Exception e) {}
-        try {this.player.getOnlinePlayer().getEquipment().setBoots(this.boots.toItemStack());} catch(Exception e) {}
+        try {this.player.getOnlinePlayer().getEquipment().setHelmet(this.helmet.toItemStack());} catch(Exception e) {
+            try {
+                this.player.getOnlinePlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
+            } catch(Exception ex) {}
+        }
+        try {this.player.getOnlinePlayer().getEquipment().setChestplate(this.chestplate.toItemStack());} catch(Exception e) {
+            try {
+                this.player.getOnlinePlayer().getEquipment().setChestplate(new ItemStack(Material.AIR));
+            } catch(Exception ex) {}
+        }
+        try {this.player.getOnlinePlayer().getEquipment().setLeggings(this.leggings.toItemStack());} catch(Exception e) {
+            try {
+                this.player.getOnlinePlayer().getEquipment().setLeggings(new ItemStack(Material.AIR));
+            } catch(Exception ex) {}
+        }
+        try {this.player.getOnlinePlayer().getEquipment().setBoots(this.boots.toItemStack());} catch(Exception e) {
+            try {
+                this.player.getOnlinePlayer().getEquipment().setBoots(new ItemStack(Material.AIR));
+            } catch(Exception ex) {}
+        }
         
         this.player.getOnlinePlayer().setExp(this.xp);
         this.player.getOnlinePlayer().setLevel(this.level);
