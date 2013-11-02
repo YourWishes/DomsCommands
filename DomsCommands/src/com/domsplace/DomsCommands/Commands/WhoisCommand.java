@@ -105,13 +105,6 @@ public class WhoisCommand extends BukkitCommand {
             messages.add(ChatImportant + "Sneaking: " + ChatDefault + (p.isSneaking() ? "Yes" : "No"));
         }
         
-        if(PluginHook.VILLAGES_HOOK.isHooked()) {
-            String n = com.domsplace.Villages.Bases.Base.Wilderness;
-            Village v = Village.getPlayersVillage(Resident.getResident(player.getPlayer()));
-            if(v != null) n = v.getName();
-            messages.add(ChatImportant + "Village: " + ChatDefault + n);
-        }
-        
         sendMessage(sender, messages);
         return true;
     }

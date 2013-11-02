@@ -20,6 +20,7 @@ import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
+import com.domsplace.DomsCommands.Events.DomsPlayerUpdateVariablesEvent;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
 import com.domsplace.Villages.Objects.Resident;
 import com.domsplace.Villages.Objects.Village;
@@ -596,14 +597,6 @@ public class DomsPlayer {
             if(this.getChatPrefix() != null) this.variables.put("PREFIX", this.getChatPrefix());
             if(this.getChatSuffix() != null) this.variables.put("SUFFIX", this.getChatSuffix());
             if(this.getGroup() != null) this.variables.put("GROUP", this.getGroup());
-            
-            if(PluginHook.VILLAGES_HOOK.isHooked()) {
-                String s = com.domsplace.Villages.Bases.Base.Wilderness;
-                Village v = Village.getPlayersVillage(Resident.getResident(this.getOfflinePlayer()));
-                if(v != null) s = v.getName();
-                
-                this.variables.put("VILLAGE", s);
-            }
         }
         
         if(this.isOnline()) {
@@ -613,6 +606,10 @@ public class DomsPlayer {
         if(this.isOnline() && !this.isConsole()) {
             this.variables.put("GAMEMODE", this.getOnlinePlayer().getGameMode().name());
         }
+        
+        //Finally, fire event
+        DomsPlayerUpdateVariablesEvent event = new DomsPlayerUpdateVariablesEvent(this);
+        event.fireEvent();
     }
 
     public void removeItem(DomsItem item, int amount) {

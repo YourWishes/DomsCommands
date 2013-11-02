@@ -31,7 +31,6 @@ public class PluginHook extends Base{
     private static final List<PluginHook> PLUGIN_HOOKS = new ArrayList<PluginHook>();
     
     public static final VaultHook VAULT_HOOK = new VaultHook();
-    public static final VillagesHook VILLAGES_HOOK = new VillagesHook();
     
     //Static
     private static void hookPlugin(PluginHook hook) {
