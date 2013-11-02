@@ -5,7 +5,7 @@ authors: [Dominic, Jordan, Lazy, Kyle]
 website: http://domsplace.com/
 version: '1.00'
 load: POSTWORLD
-softdepend: [Vault, Villages]
+softdepend: [Vault]
 commands:
    DomsCommands:
       description: Provides basic information about the DomsCommands plugin.
