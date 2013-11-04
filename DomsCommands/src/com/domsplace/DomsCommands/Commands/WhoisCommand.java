@@ -18,13 +18,10 @@ package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
-import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Punishment;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
-import com.domsplace.Villages.Objects.Resident;
-import com.domsplace.Villages.Objects.Village;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;

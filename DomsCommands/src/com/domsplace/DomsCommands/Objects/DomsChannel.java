@@ -137,6 +137,7 @@ public class DomsChannel {
     public void chat(DomsPlayer player, String[] args) {this.chat(player, Base.arrayToString(args, " "));}
     public void chat(DomsPlayer player, String message) {this.chat(player, this.getFormat(player), message);}
     public void chat(DomsPlayer player, DomsChatFormat format, String message) {
+        player.updateVariables();
         String msgFormat = format.getFormat();
         msgFormat = Base.colorise(msgFormat);
         

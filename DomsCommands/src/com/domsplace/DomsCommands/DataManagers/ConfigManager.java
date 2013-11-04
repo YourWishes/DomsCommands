@@ -57,6 +57,7 @@ public class ConfigManager extends DataManager {
         
         /*** GENERATE DEFAULT CONFIG ***/
         df("debug", false);
+        df("onlineupdates", true);
         
         List<String> cmds = new ArrayList<String>();
         cmds.add("kick");

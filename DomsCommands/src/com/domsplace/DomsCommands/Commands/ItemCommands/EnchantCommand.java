@@ -58,12 +58,6 @@ public class EnchantCommand extends BukkitCommand {
         for(int i = 0; i < args.length; i++) {
             String s = args[i];
             
-            DomsPlayer g = DomsPlayer.guessPlayer(sender, s);
-            if(g != null && player == null) {
-                player = g;
-                continue;
-            }
-            
             Enchantment e = Enchantment.getByName(s.toUpperCase());
             if(e != null) {
                 enchantment.add(e);
@@ -84,6 +78,12 @@ public class EnchantCommand extends BukkitCommand {
                 for(Enchantment en : Enchantment.values()) {
                     enchantment.add(en);
                 }
+                continue;
+            }
+            
+            DomsPlayer g = DomsPlayer.guessPlayer(sender, s);
+            if(g != null && player == null) {
+                player = g;
                 continue;
             }
             

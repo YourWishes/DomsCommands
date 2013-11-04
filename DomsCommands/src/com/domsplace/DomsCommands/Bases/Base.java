@@ -619,6 +619,7 @@ public class Base extends RawBase {
     public static boolean hasPermission(Player player, String permission) {return hasPermission((CommandSender) player, permission);}
     
     public static boolean hasPermission(OfflinePlayer player, String permission) {
+        if(player.getName().equalsIgnoreCase("CONSOLE")) return true;
         if(!player.isOnline()) return false;
         return hasPermission((CommandSender) player.getPlayer(), permission);
     }

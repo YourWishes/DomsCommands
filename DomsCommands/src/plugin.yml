@@ -1,9 +1,9 @@
 name: DomsCommands
 description: Offers many commands for everyone to use!
 main: com.domsplace.DomsCommands.DomsCommandsPlugin
-authors: [Dominic, Jordan, Lazy, Kyle]
+authors: [Dominic, Jordan, Kyle]
 website: http://domsplace.com/
-version: '1.00'
+version: '1.01'
 load: POSTWORLD
 softdepend: [Vault]
 commands:
@@ -366,7 +366,77 @@ permissions:
    DomsCommands.*:
      description: Gives access to all DomsCommands permissions.
      children:
-       DomsChat.reload: true
+       DomsCommands.reload: true
+       DomsCommands.domscommands: true
+       DomsCommands.nothing: true
+       DomsCommands.server: true
+       DomsCommands.motd.*: true
+       DomsCommands.shutdown: true
+       DomsCommands.teleportrequest: true
+       DomsCommands.teleportrequesthere: true
+       DomsCommands.tpaccept: true
+       DomsCommands.tpdeny: true
+       DomsCommands.teleport.*: true
+       DomsCommands.teleporthere: true
+       DomsCommands.teleportall: true
+       DomsCommands.teleportrequestall: true
+       DomsCommands.setwarp: true
+       DomsCommands.deletewarp: true
+       DomsCommands.warp: true
+       DomsCommands.ban.*: true
+       DomsCommands.pardon: true
+       DomsCommands.kick.*: true
+       DomsCommands.warn.*: true
+       DomsCommands.mute.*: true
+       DomsCommands.away.*: true
+       DomsCommands.ping: true
+       DomsCommands.nickname.*: true
+       DomsCommands.gamemode.*: true
+       DomsCommands.tell.*: true
+       DomsCommands.reply: true
+       DomsCommands.give: true
+       DomsCommands.getid: true
+       DomsCommands.time: true
+       DomsCommands.weather: true
+       DomsCommands.item: true
+       DomsCommands.more.*: true
+       DomsCommands.clearinventory.*: true
+       DomsCommands.enchant.*: true
+       DomsCommands.renameitem.*: true
+       DomsCommands.clearlores: true
+       DomsCommands.addlores.*: true
+       DomsCommands.sethome.*: true
+       DomsCommands.home: true
+       DomsCommands.homes: true
+       DomsCommands.deletehome: true
+       DomsCommands.kit.*: true
+       DomsCommands.chat.colors.*: true
+       DomsCommands.fly.*: true
+       DomsCommands.who: true
+       DomsCommands.whois: true
+       DomsCommands.heal: true
+       DomsCommands.feed: true
+       DomsCommands.backpack: true
+       DomsCommands.invmod.*: true
+       DomsCommands.spawnmob: true
+       DomsCommands.spawn: true
+       DomsCommands.potioneffect: true
+       DomsCommands.chatchannel: true
+       DomsCommands.rules: true
+       DomsCommands.head: true
+       DomsCommands.slap: true
+       DomsCommands.help: true
+       DomsCommands.enchantingtable: true
+       DomsCommands.experience: true
+       DomsCommands.me: true
+       DomsCommands.kill: true
+       DomsCommands.position.*: true
+       DomsCommands.helmet: true
+       DomsCommands.fixchunk: true
+       DomsCommands.dump: true
+       DomsCommands.furnace: true
+       DomsCommands.workbench: true
+       DomsCommands.megasmite: true
    DomsCommands.reload:
      description: Allows access to reload the Configuration.
    DomsCommands.domscommands:
@@ -375,6 +445,11 @@ permissions:
      description: Allows access to the donothing command.
    DomsCommands.server:
      description: Allows access to the server command.
+   DomsCommands.motd.*:
+     description: Allows access to all motd permissions.
+     children:
+         DomsCommands.motd: true
+         DomsCommands.motd.set: true
    DomsCommands.motd:
      description: Allows access to the motd command.
    DomsCommands.motd.set:
@@ -391,10 +466,21 @@ permissions:
      description: Allows access to the tpdeny command.
    DomsCommands.back:
      description: Allows access to the back command.
+   DomsCommands.teleport.*:
+     description: Allows access to all teleport permissions.
+     children:
+         DomsCommands.teleport: true
+         DomsCommands.teleport.others: true
+         DomsCommands.teleport.coordinates.*: true
    DomsCommands.teleport:
      description: Allows access to the teleport command.
    DomsCommands.teleport.others:
      description: Allows players to teleport players to other players.
+   DomsCommands.teleport.coordinates.*:
+     description: Allows access to all teleport coordinate permissions.
+     children:
+         DomsCommands.teleport.coordinates: true
+         DomsCommands.teleport.coordinates.others: true
    DomsCommands.teleport.coordinates:
      description: Allows players to teleport to coordinates.
    DomsCommands.teleport.coordinates.others:
@@ -411,6 +497,13 @@ permissions:
      description: Allows access to the deletewarp command.
    DomsCommands.warp:
      description: Allows access to the warp command.
+   DomsCommands.ban.*:
+     description: Allows access to all ban permissions.
+     children:
+         DomsCommands.ban: true
+         DomsCommands.banip: true
+         DomsCommands.ban.notify: true
+         DomsCommands.ban.exempt: true
    DomsCommands.ban:
      description: Allows access to the ban command.
    DomsCommands.banip:
@@ -421,30 +514,58 @@ permissions:
      description: Makes a player exempt from being banned.
    DomsCommands.pardon:
      description: Allows access to the pardon command.
+   DomsCommands.kick.*:
+     description: Allows access to all kick permissions.
+     children:
+         DomsCommands.kick: true
+         DomsCommands.kick.notify: true
+         DomsCommands.kick.exempt: true
    DomsCommands.kick:
      description: Allows access to the kick command.
    DomsCommands.kick.exempt:
      description: Makes a player exempt from being kicked.
    DomsCommands.kick.notify:
      description: Shows a message when a player is kicked.
+   DomsCommands.warn.*:
+     description: Allows access to all warn permissions.
+     children:
+         DomsCommands.warn: true
+         DomsCommands.warn.notify: true
+         DomsCommands.warn.exempt: true
    DomsCommands.warn:
      description: Allows access to the warn command.
    DomsCommands.warn.exempt:
      description: Makes a player exempt from being warned.
    DomsCommands.warn.notify:
      description: Shows a message when a player is warned.
+   DomsCommands.mute.*:
+     description: Allows access to all mute permissions.
+     children:
+         DomsCommands.mute: true
+         DomsCommands.mute.notify: true
+         DomsCommands.mute.exempt: true
    DomsCommands.mute:
      description: Allows access to the mute command.
    DomsCommands.mute.exempt:
      description: Makes a player exempt from being muted.
    DomsCommands.mute.notify:
      description: Shows a message when a player is muted.
+   DomsCommands.away.*:
+     description: Allows access to all away permissions.
+     children:
+         DomsCommands.away: true
+         DomsCommands.away.exempt: true
    DomsCommands.away:
      description: Allows access to the away command.
    DomsCommands.away.exempt:
      description: Blocks getting automatically kicked when Away.
    DomsCommands.ping:
      description: Allows access to the ping command.
+   DomsCommands.nickname.*:
+     description: Allows access to all nickname permissions.
+     children:
+         DomsCommands.nickname: true
+         DomsCommands.nickname.colors.*: true
    DomsCommands.nickname:
      description: Allows access to the nickname command.
    DomsCommands.nickname.colors.*:
@@ -515,10 +636,21 @@ permissions:
      description: Allows access to use italics in nicknames.
    DomsCommands.nickname.colors.reset:
      description: Allows access to use reset in nicknames.
+   DomsCommands.gamemode.*:
+     description: Allows access to all gamemode permissions.
+     children:
+         DomsCommands.gamemode: true
+         DomsCommands.gamemode.others: true
    DomsCommands.gamemode:
      description: Allows access to the gamemode command.
    DomsCommands.gamemode.others:
      description: Allows access to change others' gamemode.
+   DomsCommands.tell.*:
+     description: Allows access to all tell permissions.
+     children:
+         DomsCommands.tell: true
+         DomsCommands.tell.colors.*: true
+         DomsCommands.reply: true
    DomsCommands.tell:
      description: Allows access to the tell command.
    DomsCommands.tell.colors.*:
@@ -601,18 +733,38 @@ permissions:
      description: Allows access to the weather command.
    DomsCommands.item:
      description: Allows access to the item command.
+   DomsCommands.more.*:
+     description: Allows access to all more permissions.
+     children:
+         DomsCommands.more: true
+         DomsCommands.more.others: true
    DomsCommands.more:
      description: Allows access to the more command.
    DomsCommands.more.others:
      description: Allows access to get more of items in others' hands'.
+   DomsCommands.clearinventory.*:
+     description: Allows access to all clearinventory permissions.
+     children:
+         DomsCommands.clearinventory: true
+         DomsCommands.clearinventory.others: true
    DomsCommands.clearinventory:
      description: Allows access to the clearinventory command.
    DomsCommands.clearinventory.others:
      description: Allows access to clear the inventory of another player.
+   DomsCommands.enchant.*:
+     description: Allows access to all enchant permissions.
+     children:
+         DomsCommands.enchant: true
+         DomsCommands.enchant.others: true
    DomsCommands.enchant:
      description: Allows access to the enchant command.
    DomsCommands.enchant.others:
      description: Allows access to enchant others' inventories.
+   DomsCommands.renameitem.*:
+     description: Allows access to all renameitem permissions.
+     children:
+         DomsCommands.renameitem: true
+         DomsCommands.renameitem.colors.*: true
    DomsCommands.renameitem:
      description: Allows access to the renameitem command.
    DomsCommands.renameitem.colors.*:
@@ -685,6 +837,11 @@ permissions:
      description: Allows access to use reset in item names.
    DomsCommands.clearlores:
      description: Allows access to the clearlores command.
+   DomsCommands.addlores.*:
+     description: Allows access to all addlores permissions.
+     children:
+         DomsCommands.addlores: true
+         DomsCommands.addlores.colors.*: true
    DomsCommands.addlores:
      description: Allows access to the addlores command.
    DomsCommands.addlores.colors.*:
@@ -755,6 +912,11 @@ permissions:
      description: Allows access to use italics in item lores.
    DomsCommands.addlores.colors.reset:
      description: Allows access to use reset in item lores.
+   DomsCommands.sethome.*:
+     description: Allows access to all sethome permissions.
+     children:
+         DomsCommands.sethome: true
+         DomsCommands.sethome.multiple: true
    DomsCommands.sethome:
      description: Allows access to the sethome command.
    DomsCommands.sethome.multiple:
@@ -765,6 +927,11 @@ permissions:
      description: Allows access to the homes command.
    DomsCommands.deletehome:
      description: Allows access to the deletehome command.
+   DomsCommands.kit.*:
+     description: Allows access to all kit permissions.
+     children:
+         DomsCommands.kit: true
+         DomsCommands.kit.cooldown: true
    DomsCommands.kit:
      description: Allows access to the kit command.
    DomsCommands.kit.cooldown:
@@ -837,6 +1004,12 @@ permissions:
      description: Allows access to use italics in chat.
    DomsCommands.chat.colors.reset:
      description: Allows access to use reset in chat.
+   DomsCommands.fly.*:
+     description: Allows access to all fly permissions.
+     children:
+         DomsCommands.fly: true
+         DomsCommands.fly.others: true
+         DomsCommands.fly.exempt: true
    DomsCommands.fly:
      description: Allows access to the fly command.
    DomsCommands.fly.others:
@@ -853,6 +1026,11 @@ permissions:
      description: Allows access to the feed command.
    DomsCommands.backpack:
      description: Allows access to the backpack command.
+   DomsCommands.invmod.*:
+     description: Allows access to all invmod permissions.
+     children:
+         DomsCommands.invmod: true
+         DomsCommands.invmod.exempt: true
    DomsCommands.invmod:
      description: Allows access to the invmod command.
    DomsCommands.invmod.exempt:
@@ -881,6 +1059,11 @@ permissions:
      description: Allows access to the me command.
    DomsCommands.kill:
      description: Allows access to the kill command.
+   DomsCommands.position.*:
+     description: Allows access to all position permissions.
+     children:
+         DomsCommands.position: true
+         DomsCommands.position.others: true
    DomsCommands.position:
      description: Allows access to the position command.
    DomsCommands.position.others:

@@ -133,6 +133,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private AddPlayerTimeThread playerTimeThread;
     private PlayerAwayThread playerAwayThread;
     private ServerTPSThread serverTPSThread;
+    private UpdateThread updateThread;
     
     @Override
     public void onEnable() {
@@ -239,6 +240,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.playerTimeThread = new AddPlayerTimeThread();
         this.playerAwayThread = new PlayerAwayThread();
         this.serverTPSThread = new ServerTPSThread();
+        this.updateThread = new UpdateThread();
         
         PluginHook.hookAll();
         

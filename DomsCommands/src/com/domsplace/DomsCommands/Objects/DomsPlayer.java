@@ -17,13 +17,10 @@
 package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
-import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Events.DomsPlayerUpdateVariablesEvent;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
-import com.domsplace.Villages.Objects.Resident;
-import com.domsplace.Villages.Objects.Village;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +36,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -262,9 +258,9 @@ public class DomsPlayer {
     public DomsInventory getEnderChest() {return this.getEndChestFromWorld(this.getWorld());}
     public String getWorld() {if(this.getLocation() == null) return null; return this.getLocation().getWorld();}
     public DomsChannel getChannel() {return DomsChannel.getPlayersChannel(this);}
-    public Map<String, String> getVariables() {this.updateVariables(); return new HashMap<String, String>(this.variables);}
+    public Map<String, String> getVariables() {this.updateVariables(false); return new HashMap<String, String>(this.variables);}
     public Map<Kit, Long> getKitCooldowns() {return new HashMap<Kit, Long>(this.kitCooldowns);}
-    public String getVariable(String key) {this.updateVariables(); return this.variables.get(key);}
+    public String getVariable(String key) {this.updateVariables(false); return this.variables.get(key);}
     public long getKitCooldown(Kit k) {try {return this.kitCooldowns.get(k);}catch(Exception e) {return -1;}}
     public boolean getFlightMode() {return this.flyMode;}
     public DomsInventory getBackpack() {return this.backpack;}
@@ -289,7 +285,7 @@ public class DomsPlayer {
     public void setAFKTime(long now) {this.afkTime = now;}
     public void setLastMessenger(DomsPlayer player) {this.lastPrivateMessenger = player;}
     public void setPlayerFile(File file) {this.playerFile = file;}
-    public void setVariable(String key, String variable) {this.variables.put(key, variable); this.updateVariables();}
+    public void setVariable(String key, String variable) {this.variables.put(key, variable); this.updateVariables(false);}
     public void setKitCooldown(Kit k, long l) {this.kitCooldowns.put(k, l);}
     public void setFlightMode(boolean f) {this.flyMode = f;}
     public void setFurnaceLocation(DomsLocation location) {this.playerFurnace = location.copy();}
@@ -324,7 +320,7 @@ public class DomsPlayer {
     
     //Complex get's
     public final String getDisplayName() {
-        this.updateVariables();
+        this.updateVariables(false);
         if(this.isConsole() && this.displayName == null) {
             this.displayName = "Server";
             return this.displayName;
@@ -580,7 +576,9 @@ public class DomsPlayer {
         }
     }
     
-    private void updateVariables() {
+    public void updateVariables() {this.updateVariables(true);}
+    
+    private void updateVariables(boolean fireEvent) {
         if(this.player == null || this.displayName == null) return;
         this.variables.put("NAME", this.player);
         this.variables.put("DISPLAYNAME", this.displayName);
@@ -608,8 +606,10 @@ public class DomsPlayer {
         }
         
         //Finally, fire event
-        DomsPlayerUpdateVariablesEvent event = new DomsPlayerUpdateVariablesEvent(this);
-        event.fireEvent();
+        if(fireEvent) {
+            DomsPlayerUpdateVariablesEvent event = new DomsPlayerUpdateVariablesEvent(this);
+            event.fireEvent();
+        }
     }
 
     public void removeItem(DomsItem item, int amount) {

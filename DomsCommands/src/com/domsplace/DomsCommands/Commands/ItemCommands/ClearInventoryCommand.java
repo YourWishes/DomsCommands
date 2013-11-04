@@ -17,12 +17,10 @@
 package com.domsplace.DomsCommands.Commands.ItemCommands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
-import com.domsplace.DomsCommands.Objects.DomsItem;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.inventory.ItemStack;
 
 /**
  *
