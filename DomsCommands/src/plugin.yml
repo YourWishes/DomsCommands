@@ -357,10 +357,15 @@ commands:
       usage: /<command>
       permission: DomsCommands.workbench
    megasmite:
-      description: Strikes 15 bolts of lightning where the player is looking, or at a target.
+      description: Strikes 15 bolts of lightning where the player is looking, or at a target player.
       aliases: [ms, megas, smitemega]
       usage: /<command> (player)
       permission: DomsCommands.megasmite
+   smite:
+      description: Strike a bolt of lightning where the player is looking, or at a target player.
+      aliases: [strike, lightning, bolt, zap, smote]
+      usage: /<command> (player)
+      permission: DomsCommands.smite
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -437,6 +442,7 @@ permissions:
        DomsCommands.furnace: true
        DomsCommands.workbench: true
        DomsCommands.megasmite: true
+       DomsCommands.smite: true
    DomsCommands.reload:
      description: Allows access to reload the Configuration.
    DomsCommands.domscommands:
@@ -1080,3 +1086,5 @@ permissions:
      description: Allows access to the workbench command.
    DomsCommands.megasmite:
      description: Allows access to the megasmite command.
+   DomsCommands.smite:
+     description: Allows access to the smite command.

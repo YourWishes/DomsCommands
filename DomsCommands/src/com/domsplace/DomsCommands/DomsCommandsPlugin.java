@@ -53,12 +53,14 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private KillCommand killCommand;
     private KitCommand kitCommand;
     private MOTDCommand motdCommand;
+    private MegaSmiteCommand megaSmiteCommand;
     private PositionCommand positionCommand;
     private PotionEffectCommand potionEffectCommand;
     private RulesCommand rulesCommand;
     private ServerCommand serverCommand;
     private ShutdownCommand stopCommand;
     private SpawnCommand spawnCommand;
+    private SmiteCommand smiteCommand;
     private SpawnMobCommand spawnMobCommand;
     private WhoCommand whoCommand;
     private WhoisCommand whoisCommand;
@@ -160,11 +162,13 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.helpCommand = new HelpCommand();
         this.kitCommand = new KitCommand();
         this.motdCommand = new MOTDCommand();
+        this.megaSmiteCommand = new MegaSmiteCommand();
         this.positionCommand = new PositionCommand();
         this.potionEffectCommand = new PotionEffectCommand();
         this.rulesCommand = new RulesCommand();
         this.serverCommand = new ServerCommand();
         this.stopCommand = new ShutdownCommand();
+        this.smiteCommand = new SmiteCommand();
         this.spawnCommand = new SpawnCommand();
         this.spawnMobCommand = new SpawnMobCommand();
         this.whoCommand = new WhoCommand();

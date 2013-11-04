@@ -27,9 +27,9 @@ import org.bukkit.command.CommandSender;
  * @author      Dominic
  * @since       30/10/2013
  */
-public class MegaSmiteCommand extends BukkitCommand {
-    public MegaSmiteCommand() {
-        super("megasmite");
+public class SmiteCommand extends BukkitCommand {
+    public SmiteCommand() {
+        super("smite");
         this.addSubCommandOption(SubCommandOption.PLAYERS_OPTION);
     }
     
@@ -65,9 +65,7 @@ public class MegaSmiteCommand extends BukkitCommand {
                 sendMessage(sender, "Smote " + ChatImportant + targetPlayer.getOnlinePlayer());
             }
         }
-        for(int i = 0; i < 15; i++) {
-            target.getBukkitWorld().strikeLightning(target.toLocation());
-        }
+        target.getBukkitWorld().strikeLightning(target.toLocation());
         return true;
     }
 }

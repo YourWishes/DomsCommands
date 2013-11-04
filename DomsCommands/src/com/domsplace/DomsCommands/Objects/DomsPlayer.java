@@ -439,8 +439,17 @@ public class DomsPlayer {
         return "";
     }
     
+    @Deprecated
+    public DomsLocation getTarget() {
+        Block block = this.getTargetBlock(100);
+        if(block == null) return null;
+        return new DomsLocation(block);
+    }
+    
+    @Deprecated
     public Block getTargetBlock() {return this.getTargetBlock(VIEW_DISTANCE);}
     
+    @Deprecated
     public Block getTargetBlock(int distance) {
         if(this.isConsole() || !this.isOnline()) return null;
         Block block = this.getOnlinePlayer().getTargetBlock(null, distance);
@@ -448,8 +457,10 @@ public class DomsPlayer {
         return block;
     }
     
+    @Deprecated
     public BlockFace getTargetBlockFace() {return this.getTargetBlockFace(VIEW_DISTANCE);}
     
+    @Deprecated
     public BlockFace getTargetBlockFace(int distance) {
         List<Block> blocks = this.getOnlinePlayer().getLastTwoTargetBlocks(null, distance);
         BlockFace face = null;
@@ -459,8 +470,10 @@ public class DomsPlayer {
         return face;
     }
     
+    @Deprecated
     public Block getWillPlaceBlock() {return this.getWillPlaceBlock(99);}
     
+    @Deprecated
     public Block getWillPlaceBlock(int s) {
         Block target = this.getTargetBlock(s);
         BlockFace tFace = this.getTargetBlockFace(s);
