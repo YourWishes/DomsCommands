@@ -48,7 +48,7 @@ public class GetIDCommand extends BukkitCommand {
         DomsItem item;
         
         if(args.length > 0) {
-            DomsPlayer player = DomsPlayer.guessPlayer(sender, args[0]);
+            DomsPlayer player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
             if(player != null) {
                 try {
                     item = DomsItem.itemStackToDomsItems(player.getOnlinePlayer().getItemInHand()).get(0);

@@ -42,10 +42,10 @@ public class HomesCommand extends BukkitCommand {
         
         DomsPlayer player = DomsPlayer.getPlayer(sender);
         if(args.length > 0) {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
+            player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
         }
         
-        if(player == null) {
+        if(player == null || player.isConsole()) {
             sendMessage(sender, ChatError + "Player not found.");
             return true;
         }

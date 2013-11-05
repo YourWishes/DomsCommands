@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Commands;
+package com.domsplace.DomsCommands.Commands.PlayerCommands;
 
+import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -26,27 +28,29 @@ import org.bukkit.command.CommandSender;
  * @author      Dominic
  * @since       27/10/2013
  */
-public class HealCommand extends BukkitCommand {
-    public HealCommand() {
-        super("heal");
+public class KissCommand extends BukkitCommand {
+    public KissCommand() {
+        super("kiss");
         this.addSubCommandOption(SubCommandOption.PLAYERS_OPTION);
     }
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
-        DomsPlayer player = DomsPlayer.getPlayer(sender);
-        if(args.length > 0) {
-            player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
-        }
-        
-        if(player == null || !player.isOnline() || player.isConsole()) {
-            sendMessage(sender, ChatError + "Couldn't find player.");
+        if(args.length < 1) {
+            sendMessage(sender, ChatError + "Please enter a player name.");
             return true;
         }
         
-        player.getOnlinePlayer().setHealth(player.getOnlinePlayer().getMaxHealth());
-        player.sendMessage("You have been healed!");
-        if(!player.compare(sender)) sendMessage(sender, "Healed " + player.getDisplayName());
+        DomsPlayer player = DomsPlayer.getPlayer(sender);
+        DomsPlayer target = DomsPlayer.guessPlayer(sender, args[0]);
+        if(target == null || !target.isOnline(sender)) {
+            sendMessage(sender, ChatError + args[0] + " isn't online.");
+            return true;
+        }
+        
+        broadcast(ChatColor.LIGHT_PURPLE + Base.emoji("<3") + ChatImportant + 
+                player.getDisplayName() + ChatColor.DARK_PURPLE + " Kissed " + 
+                ChatImportant + target.getDisplayName() + ChatColor.LIGHT_PURPLE + Base.emoji("<3"));
         return true;
     }
 }

@@ -44,11 +44,11 @@ public class MoreCommand extends BukkitCommand {
         DomsPlayer player = DomsPlayer.getPlayer(sender);
         
         if(args.length > 0) {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
+            player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
         }
         
         if(player == null || !player.isOnline() || player.isConsole()) {
-            sendMessage(sender, ChatError + player.getDisplayName() + " isn't online.");
+            sendMessage(sender, ChatError + "Target isn't online.");
             return true;
         }
         
@@ -56,7 +56,7 @@ public class MoreCommand extends BukkitCommand {
         is.setAmount(is.getMaxStackSize());
         player.getOnlinePlayer().setItemInHand(is);
         
-        if(DomsPlayer.getPlayer(sender).equals(player)) {
+        if(player.compare(sender)) {
             sendMessage(sender, "You have been given more of the item in your hand.");
             return true;
         }

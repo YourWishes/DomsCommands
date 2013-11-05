@@ -29,6 +29,8 @@ import org.bukkit.command.CommandSender;
  * @since       12/10/2013
  */
 public class SpawnMobCommand extends BukkitCommand {
+    public static final int MAX_SPAWN_CAP = 100;
+    
     public SpawnMobCommand() {
         super("spawnmob");
         this.addSubCommandOption(new SubCommandOption(SubCommandOption.PLAYERS_OPTION, SubCommandOption.MOB_OPTION));
@@ -53,7 +55,7 @@ public class SpawnMobCommand extends BukkitCommand {
                 entity = DomsEntity.craftEntity(args[0], player);
                 amt = getInt(args[1]);
             } else {
-                player = DomsPlayer.guessPlayer(sender, args[0]);
+                player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
                 if(player == null) {
                     sendMessage(sender, ChatError + "Amount must be a number!");
                     return true;
@@ -61,13 +63,27 @@ public class SpawnMobCommand extends BukkitCommand {
                 entity = DomsEntity.craftEntity(args[1], player);
             }
         } else {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
-            entity = DomsEntity.craftEntity(args[1], player);
-            if(!isInt(args[2])) {
-                sendMessage(sender, ChatError + "Amount must be a number.");
-                return true;
+            player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
+            String guess = "";
+            amt = -1;
+            for(String s : args) {
+                if(isInt(s) && amt == -1) {amt = getInt(s); continue;}
+                guess += " " + s;
             }
-            amt = getInt(args[2]);
+            
+            if(guess.startsWith(" ")) guess = guess.replaceFirst(" ", "");
+            if(guess.endsWith(" ")) guess = trim(guess, guess.length() - 1);
+            
+            entity = DomsEntity.craftEntity(guess, player);
+        }
+        
+        if(amt < 1) {
+            sendMessage(sender, ChatError + "Amount must be at least 1.");
+            return true;
+        }
+        
+        if(amt > MAX_SPAWN_CAP) {
+            amt = MAX_SPAWN_CAP;
         }
         
         if(player == null || player.isConsole() || !player.isOnline(sender)) {
@@ -75,7 +91,7 @@ public class SpawnMobCommand extends BukkitCommand {
             return true;
         }
         
-        if(player.getTargetBlock() == null) {
+        if(player.getTargetBlock(100) == null) {
             sendMessage(sender, ChatError + "Can't spawn mobs in air!");
             return true;
         }

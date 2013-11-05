@@ -43,7 +43,7 @@ public class SlapCommand extends BukkitCommand {
         }
         
         DomsPlayer player = DomsPlayer.getPlayer(sender);
-        DomsPlayer target = DomsPlayer.guessPlayer(sender, args[0]);
+        DomsPlayer target = DomsPlayer.guessOnlinePlayer(sender, args[0]);
         if(target == null || !target.isOnline(sender)) {
             sendMessage(sender, ChatError + args[0] + " isn't online.");
             return true;

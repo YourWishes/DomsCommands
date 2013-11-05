@@ -48,7 +48,7 @@ public class GiveCommand extends BukkitCommand {
             return true;
         }
         
-        DomsPlayer player = DomsPlayer.guessPlayer(sender, args[0]);
+        DomsPlayer player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
         if(player == null || player.isConsole() || !player.isOnline(sender)) {
             sendMessage(sender, ChatError + args[0] + ChatError + " cannot take items.");
             return true;
@@ -101,7 +101,7 @@ public class GiveCommand extends BukkitCommand {
         }
         
         player.addItems(DomsItem.multiply(item, size));
-        if(!DomsPlayer.getPlayer(sender).equals(player)) {
+        if(!player.compare(sender)) {
             sendMessage(sender, ChatDefault + "Giving " + ChatImportant + size +
                     ChatDefault + " of " + ChatImportant + item.toHumanString() + 
                     ChatDefault + " to " + ChatImportant + player.getDisplayName()

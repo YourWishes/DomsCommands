@@ -45,7 +45,7 @@ public class PositionCommand extends BukkitCommand {
             return true;
         }
         
-        if(!DomsPlayer.getPlayer(sender).equals(player) && !hasPermission(sender, "DomsCommands.position.others")) {
+        if(!player.compare(sender) && !hasPermission(sender, "DomsCommands.position.others")) {
             return this.noPermission(sender, cmd, label, args);
         }
         

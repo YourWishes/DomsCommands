@@ -205,6 +205,17 @@ public class Base extends RawBase {
         return s.substring(0, length);
     }
     
+    public static String emoji(String s) {
+        s = s.replaceAll("<3", "❤");
+        s = s.replaceAll("(PERSON)", "유");
+        s = s.replaceAll("(PERSONF)", "유");
+        s = s.replaceAll("(PERSONM)", "웃");
+        s = s.replaceAll("(PENCIL)", "✎");
+        s = s.replaceAll("(PLANE)", "✈");
+        s = s.replaceAll("(NOTE)", "♫");
+        return s;
+    }
+    
     //Messaging Utils
     public static void sendMessage(CommandSender sender, String msg) {
         if(msg.replaceAll(" ", "").equalsIgnoreCase("")) return;

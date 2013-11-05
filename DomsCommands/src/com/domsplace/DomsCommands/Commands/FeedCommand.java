@@ -36,7 +36,7 @@ public class FeedCommand extends BukkitCommand {
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
         DomsPlayer player = DomsPlayer.getPlayer(sender);
         if(args.length > 0) {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
+            player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
         }
         
         if(player == null || !player.isOnline() || player.isConsole()) {
@@ -46,7 +46,7 @@ public class FeedCommand extends BukkitCommand {
         
         player.getOnlinePlayer().setFoodLevel(20);
         player.sendMessage("You have been feed!");
-        if(!DomsPlayer.getPlayer(sender).equals(player)) sendMessage(sender, "Fed " + player.getDisplayName());
+        if(!player.compare(sender)) sendMessage(sender, "Fed " + player.getDisplayName());
         return true;
     }
 }

@@ -55,7 +55,7 @@ public class PotionEffectCommand extends BukkitCommand {
         if(args.length == 1) {
             pet = PotionEffectType.getByName(args[0].toUpperCase());
         } else if(args.length == 2) {
-            DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);
+            DomsPlayer guess = DomsPlayer.guessOnlinePlayer(sender, args[0]);
             if(guess != null) {
                 player = guess;
                 pet = PotionEffectType.getByName(args[1].toUpperCase());
@@ -68,7 +68,7 @@ public class PotionEffectCommand extends BukkitCommand {
                 duration = getInt(args[1]);
             }
         } else if(args.length == 3) {
-            DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);            
+            DomsPlayer guess = DomsPlayer.guessOnlinePlayer(sender, args[0]);            
             if(guess != null) {
                 player = guess;
                 pet = PotionEffectType.getByName(args[1].toUpperCase());
@@ -86,7 +86,7 @@ public class PotionEffectCommand extends BukkitCommand {
                 amp = getInt(args[2]);
             }
         } else if(args.length > 3) {
-            DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);
+            DomsPlayer guess = DomsPlayer.guessOnlinePlayer(sender, args[0]);
             pet = PotionEffectType.getByName(args[1]);
             if(!isInt(args[2])) {
                 sendMessage(sender, ChatError + "Duration must be a number");
@@ -120,14 +120,14 @@ public class PotionEffectCommand extends BukkitCommand {
             return true;
         }
         
-        PotionEffect pe = new PotionEffect(pet, duration, amp);
+        PotionEffect pe = new PotionEffect(pet, duration, amp, true);
         player.getOnlinePlayer().addPotionEffect(pe, true);
         sendMessage(player, "Got effect " + ChatImportant + pe.getType().getName()
                 + (amp > 1 ? ChatDefault + ", level " + ChatImportant + amp : "")
                 + ChatDefault + " for " + ChatImportant + (duration / 20) + 
                 " second" + ((duration/20) !=  1 ? "s" : "") + ChatDefault + ".");
-        if(!DomsPlayer.getPlayer(sender).equals(player)) {
-            sendMessage(sender, "Gave effect" + ChatImportant + pe.getType().getName()
+        if(!player.compare(sender)) {
+            sendMessage(sender, "Gave effect " + ChatImportant + pe.getType().getName()
                 + (amp > 1 ? ChatDefault + ", level " + ChatImportant + amp : "")
                 + ChatDefault + " for " + ChatImportant + (duration / 20) + 
                 " second" + ((duration/20) !=  1 ? "s" : "") + ChatDefault + " to " + ChatImportant + 

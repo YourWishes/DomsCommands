@@ -41,7 +41,7 @@ public class SpawnCommand extends BukkitCommand {
         
         DomsPlayer player = DomsPlayer.getPlayer(sender);
         if(args.length > 0) {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
+            player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
         }
         
         if(player == null || !player.isOnline(sender) || player.isConsole()) {
@@ -51,7 +51,7 @@ public class SpawnCommand extends BukkitCommand {
         
         player.teleport(player.getLocation().getBukkitWorld().getSpawnLocation());
         sendMessage(player, "Teleporting you to spawn.");
-        if(!DomsPlayer.getPlayer(sender).equals(player)) {
+        if(!player.compare(sender)) {
             sendMessage(sender, "Teleporting " + ChatImportant + 
                     player.getDisplayName() + ChatDefault + " to spawn of world "
                     + ChatImportant + player.getWorld() + ChatDefault + ".");

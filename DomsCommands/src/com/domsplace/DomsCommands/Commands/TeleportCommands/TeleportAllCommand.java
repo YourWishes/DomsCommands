@@ -46,7 +46,7 @@ public class TeleportAllCommand extends BukkitCommand {
         if(args.length == 0) {
             target = DomsPlayer.getPlayer(sender);
         } else {
-            target = DomsPlayer.guessPlayer(sender, args[0]);
+            target = DomsPlayer.guessOnlinePlayer(sender, args[0]);
             if(target == null || !target.isOnline(sender) || target.isConsole()) {
                 sendMessage(sender, ChatError + args[0] + " isn't online.");
                 return true;

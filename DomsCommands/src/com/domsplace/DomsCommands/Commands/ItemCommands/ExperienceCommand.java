@@ -59,7 +59,7 @@ public class ExperienceCommand extends BukkitCommand {
             amt = getInt(args[0].toUpperCase().replaceAll("L", ""));
             if(args[0].toUpperCase().contains("L")) level = true;
         } else if(args.length == 2) {
-            DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);
+            DomsPlayer guess = DomsPlayer.guessOnlinePlayer(sender, args[0]);
             if(guess != null) {
                 player = guess;
                 if(!isInt(args[1].toUpperCase().replaceAll("L", ""))) {
@@ -78,7 +78,7 @@ public class ExperienceCommand extends BukkitCommand {
                 if(args[1].toUpperCase().contains("L")) level = true;
             }
         } else if(args.length > 2) {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
+            player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
             addSetRemove = args[1].toUpperCase();
             if(!isInt(args[2].toUpperCase().replaceAll("L", ""))) {
                 sendMessage(sender, ChatError + "Amount must be a number.");

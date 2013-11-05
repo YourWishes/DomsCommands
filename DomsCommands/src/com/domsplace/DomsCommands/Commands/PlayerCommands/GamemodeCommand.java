@@ -123,9 +123,9 @@ public class GamemodeCommand extends BukkitCommand {
         }
         
         if(args.length == 1 && !isPlayer(sender)) {
-            player = DomsPlayer.guessPlayer(sender, args[0]);
-            if(!player.isOnline(sender)) {
-                sendMessage(sender, ChatError + player.getDisplayName() + " isn't online.");
+            player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
+            if(player == null || !player.isOnline(sender) || player.isConsole()) {
+                sendMessage(sender, ChatError + "Target isn't online.");
                 return true;
             }
             
@@ -148,13 +148,13 @@ public class GamemodeCommand extends BukkitCommand {
             player = DomsPlayer.getPlayer(sender);
         } else {
             command = args[1];
-            player = DomsPlayer.guessPlayer(sender, args[0]);
+            player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
         }
         
-        gamemode = this.getGameMode(command);
+        gamemode = getGameMode(command);
         
-        if(!player.isOnline(sender)) {
-            sendMessage(sender, ChatError + player.getDisplayName() + " isn't online.");
+        if(player == null || !player.isOnline(sender) || player.isConsole()) {
+            sendMessage(sender, ChatError + "Target isn't online.");
             return true;
         }
         

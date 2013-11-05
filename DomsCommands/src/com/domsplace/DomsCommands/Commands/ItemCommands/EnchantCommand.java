@@ -81,7 +81,7 @@ public class EnchantCommand extends BukkitCommand {
                 continue;
             }
             
-            DomsPlayer g = DomsPlayer.guessPlayer(sender, s);
+            DomsPlayer g = DomsPlayer.guessOnlinePlayer(sender, s);
             if(g != null && player == null) {
                 player = g;
                 continue;

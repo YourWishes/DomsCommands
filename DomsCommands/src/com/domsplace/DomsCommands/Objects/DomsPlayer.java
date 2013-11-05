@@ -62,6 +62,12 @@ public class DomsPlayer {
         }
     }
     
+    public static DomsPlayer guessOnlinePlayer(CommandSender sender, String guess) {
+        Player tryPlayer = Base.getPlayer(sender, guess);
+        if(tryPlayer == null) return null;
+        return getPlayer(tryPlayer);
+    }
+    
     public static DomsPlayer guessPlayer(String guess) {return guessPlayer(guess, false);}
     public static DomsPlayer guessPlayer(String guess, boolean createIfNotExists) {
         DomsPlayer p = null;
@@ -110,25 +116,26 @@ public class DomsPlayer {
         }
         return list;
     }
-
+    
+    public static DomsPlayer guessExactPlayer(CommandSender sender, String guess) {return guessExactPlayer(sender, guess, false);}
     public static DomsPlayer guessExactPlayer(CommandSender sender, String guess, boolean createIfNotExists) {
         DomsPlayer p = null;
         for(DomsPlayer plyr : REGISTERED_ONLINE_PLAYERS.values()) {
-            if(!plyr.getPlayer().equalsIgnoreCase(guess.toLowerCase())) continue;
+            if(!plyr.getPlayer().toLowerCase().startsWith(guess.toLowerCase())) continue;
             p = plyr;
             break;
         }
         if(p != null) return p;
         
         for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
-            if(!plyr.getPlayer().equalsIgnoreCase(guess.toLowerCase())) continue;
+            if(!plyr.getPlayer().toLowerCase().startsWith(guess.toLowerCase())) continue;
             p = plyr;
             break;
         }
         
         if(p == null) {
             for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
-                if(!plyr.getDisplayName().equalsIgnoreCase(guess.toLowerCase())) continue;
+                if(!plyr.getDisplayName().toLowerCase().startsWith(guess.toLowerCase())) continue;
                 p = plyr;
                 break;
             }

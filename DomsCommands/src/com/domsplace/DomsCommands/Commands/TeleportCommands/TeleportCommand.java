@@ -53,7 +53,7 @@ public class TeleportCommand extends BukkitCommand {
                 }
                 player = DomsPlayer.getPlayer(sender);
             } else {
-                DomsPlayer found = DomsPlayer.guessPlayer(sender, args[0]);
+                DomsPlayer found = DomsPlayer.guessExactPlayer(sender, args[0]);
                 if(found == null || found.isConsole()) {
                     sendMessage(sender, ChatError + "Couldn't find player.");
                     return true;
@@ -84,7 +84,7 @@ public class TeleportCommand extends BukkitCommand {
             
             target = DomsLocation.guessLocation(args[1]);
             if(target == null) {
-                DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[1]);
+                DomsPlayer guess = DomsPlayer.guessExactPlayer(sender, args[1]);
                 if(guess == null || !guess.isOnline(sender) || guess.isConsole()) {
                     sendMessage(sender, ChatError + "Couldn't find player.");
                     return true;
@@ -145,7 +145,7 @@ public class TeleportCommand extends BukkitCommand {
                     continue;
                 }
                 
-                DomsPlayer currentGuess = DomsPlayer.guessPlayer(sender, args[0]);
+                DomsPlayer currentGuess = DomsPlayer.guessExactPlayer(sender, args[0]);
                 if(currentGuess == null) {
                     loc += s + ",";
                     continue;

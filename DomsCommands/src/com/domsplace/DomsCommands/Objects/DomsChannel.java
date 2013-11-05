@@ -74,6 +74,10 @@ public class DomsChannel {
     private List<String> commands;
     private Map<String, String> variables;
     
+    private boolean useEmoji = false;
+    private boolean useURLs = false;
+    private boolean useNicknames = false;
+    
     public DomsChannel (String name, String chatPermission, DomsChatFormat format, boolean isp, List<String> commands) {
         this.name = name;
         this.chatPermission = chatPermission;

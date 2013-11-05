@@ -44,8 +44,8 @@ public class InvmodCommand extends BukkitCommand {
             return true;
         }
         
-        DomsPlayer player = DomsPlayer.guessPlayer(sender, args[0]);
-        if(!player.isOnline(sender)) {
+        DomsPlayer player = DomsPlayer.guessOnlinePlayer(sender, args[0]);
+        if(player == null || !player.isOnline(sender) || player.isConsole()) {
             sendMessage(sender, ChatError + "Player is not online.");
             return true;
         }

@@ -45,7 +45,7 @@ public class MessageCommand extends BukkitCommand {
         }
         
         DomsPlayer talker = DomsPlayer.getPlayer(sender);
-        DomsPlayer target = DomsPlayer.guessPlayer(sender, args[0]);
+        DomsPlayer target = DomsPlayer.guessOnlinePlayer(sender, args[0]);
         
         if(talker.isMuted()) {
             sendMessage(sender, ChatError + "You can't message, you're muted.");
@@ -58,7 +58,7 @@ public class MessageCommand extends BukkitCommand {
         }
         
         if(target == null || !target.isOnline(sender)) {
-            sendMessage(sender, ChatError + target.getDisplayName() + ChatError + " isn't online.");
+            sendMessage(sender, ChatError + "Target isn't online.");
             return true;
         }
         

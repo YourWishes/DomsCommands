@@ -42,7 +42,7 @@ public class KickCommand extends BukkitCommand {
             return false;
         }
             
-        DomsPlayer rel = DomsPlayer.guessPlayer(sender, args[0]);
+        DomsPlayer rel = DomsPlayer.guessOnlinePlayer(sender, args[0]);
         if(rel == null) {
             sendMessage(sender, ChatError + args[0] + " isn't online.");
             return true;

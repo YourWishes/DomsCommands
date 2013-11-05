@@ -43,7 +43,7 @@ public class MegaSmiteCommand extends BukkitCommand {
         DomsLocation target = null;
         DomsPlayer targetPlayer = null;
         if(args.length > 0) {
-            DomsPlayer guess = DomsPlayer.guessPlayer(sender, args[0]);
+            DomsPlayer guess = DomsPlayer.guessOnlinePlayer(sender, args[0]);
             if(guess == null || guess.isConsole() || !guess.isOnline(sender)) {
                 sendMessage(sender, ChatError + "Can't smite this player.");
                 return true;
