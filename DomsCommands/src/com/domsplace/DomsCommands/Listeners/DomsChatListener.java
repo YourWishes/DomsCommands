@@ -36,6 +36,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class DomsChatListener extends DomsListener {
     @EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
     public void handleChat(AsyncPlayerChatEvent e) {
+        if(!getConfig().getBoolean("chat.usechat", true)) return;
         e.setCancelled(true);
         Player p = e.getPlayer();
         
@@ -52,6 +53,8 @@ public class DomsChatListener extends DomsListener {
     
     @EventHandler(ignoreCancelled=true, priority=EventPriority.LOWEST)
     public void handleChannelCommands(PreCommandEvent e) {
+        if(!getConfig().getBoolean("chat.usechat", true)) return;
+        
         //Get the ChatChannel this command is responsible for
         DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
         DomsChannel channel = DomsChannel.getChannelByCommand(e.getCommand());

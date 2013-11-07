@@ -366,6 +366,21 @@ commands:
       aliases: [strike, lightning, bolt, zap, smote]
       usage: /<command> (player)
       permission: DomsCommands.smite
+   realname:
+      description: Gets the name of a nicknamed player.
+      aliases: [getname]
+      usage: /<command> [player]
+      permission: DomsCommands.realname
+   setspawn:
+      description: Set the spawn of the world you're in.
+      aliases: [sspawn, spawnset, setspawnpoint]
+      usage: /<command>
+      permission: DomsCommands.setspawn
+   enderchest:
+      description: Open your ender chest anywhere!
+      aliases: [endchest, echest, cheste]
+      usage: /<command>
+      permission: DomsCommands.enderchest
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -443,6 +458,9 @@ permissions:
        DomsCommands.workbench: true
        DomsCommands.megasmite: true
        DomsCommands.smite: true
+       DomsCommands.realname: true
+       DomsCommands.setspawn: true
+       DomsCommands.enderchest: true
    DomsCommands.reload:
      description: Allows access to reload the Configuration.
    DomsCommands.domscommands:
@@ -1088,3 +1106,9 @@ permissions:
      description: Allows access to the megasmite command.
    DomsCommands.smite:
      description: Allows access to the smite command.
+   DomsCommands.realname:
+     description: Allows access to the realname command.
+   DomsCommands.setspawn:
+     description: Allows access to the setspawn command.
+   DomsCommands.enderchest:
+     description: Allows access to the enderchest command.

@@ -18,9 +18,9 @@ package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
-import com.domsplace.DomsCommands.Commands.PlayerCommands.GamemodeCommand;
-import com.domsplace.DomsCommands.Commands.PlayerCommands.TimeCommand;
-import com.domsplace.DomsCommands.Commands.PlayerCommands.WeatherCommand;
+import com.domsplace.DomsCommands.Commands.GamemodeCommand;
+import com.domsplace.DomsCommands.Commands.TimeCommand;
+import com.domsplace.DomsCommands.Commands.WeatherCommand;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
 import java.util.ArrayList;
 import java.util.List;

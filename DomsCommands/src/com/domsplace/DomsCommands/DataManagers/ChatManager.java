@@ -53,6 +53,7 @@ public class ChatManager extends DataManager {
         
         if(!yml.contains("main.format")) yml.set("main.format", "&8{DISPLAYNAME}&7: &f{MESSAGE}");
         if(!yml.contains("main.groups.Admin") && n) yml.set("main.groups.OP", "&4[&c{PREFIX}&c{GROUP}&c{SUFFIX}&4] &8{NAME}&7: &f{MESSAGE}");
+        if(!yml.contains("main.emoji") && n) yml.set("main.emoji", true);
         
         if(!yml.contains("server.format")) yml.set("server.format", "&d[{DISPLAYNAME}&d] &d{MESSAGE}");
         
@@ -100,6 +101,7 @@ public class ChatManager extends DataManager {
             
             DomsChannel channel = new DomsChannel(s, permission, dformat, ipriv, commands);
             
+            if(yml.contains(s + ".emoji") && yml.getBoolean(s + ".emoji", false)) channel.useEmoji(true);
             if(yml.contains(s + ".receivepermission")) channel.setReceivePermission(yml.getString(s + ".receivepermission"));
             
             if(yml.contains(s + ".groups")) {

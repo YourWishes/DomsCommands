@@ -110,6 +110,8 @@ public class DomsChannel {
     
     public boolean isPrivate() {return this.isprivate;}
     
+    public void useEmoji(boolean t) {this.useEmoji = t;}
+    
     public void removePlayer(DomsPlayer player) {if(!this.hasPlayer(player)) return; this.players.remove(player);}
     public void removeVariable(String key) {this.variables.remove(key);}
     
@@ -157,6 +159,9 @@ public class DomsChannel {
         message = Base.coloriseByPermission(message, player, "DomsCommands.chat.colors.");
         
         if(Base.removeColors(message).replaceAll(" ", "").equals("")) return;
+        
+        //Format Message Emoji
+        if(this.useEmoji) message = Base.emoji(message);
         
         msgFormat = msgFormat.replaceAll("\\{MESSAGE\\}", Matcher.quoteReplacement(message));
         if(this.isprivate) {

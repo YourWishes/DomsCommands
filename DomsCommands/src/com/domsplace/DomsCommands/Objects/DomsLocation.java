@@ -19,6 +19,7 @@ package com.domsplace.DomsCommands.Objects;
 import com.domsplace.DomsCommands.Bases.Base;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -158,65 +159,18 @@ public class DomsLocation {
     
     public DomsLocation getSafeLocation() {
         //Returns the Safest Location
-        int y = (int) this.getY();
-        int x = (int) this.x;
-        int z = (int) this.z;
-        
-        Block b = this.getBukkitWorld().getBlockAt(x, y, z);
-        Block below;
-        Block up;
-        Block d = this.getBukkitWorld().getBlockAt(x, (int) this.getY(), z);
-        
-        boolean look = true;
-        
-        while(look) {
-            below = b.getRelative(0, -1, 0);
-            up = b.getRelative(0, 1, 0);            
-            if(below == null) {
-                Location l = d.getLocation();
-                l.setX(this.x);
-                l.setZ(this.z);
-                l.setPitch(this.pitch);
-                l.setYaw(this.yaw);
-                return new DomsLocation(l);
-            }
-            
-            if(up == null) {
-                Location l = d.getLocation();
-                l.setX(this.x);
-                l.setZ(this.z);
-                l.setPitch(this.pitch);
-                l.setYaw(this.yaw);
-                return new DomsLocation(l);
-            }
-            
-            if(below.getY() <= 0) {
-                Location l = d.getLocation();
-                l.setX(this.x);
-                l.setZ(this.z);
-                l.setPitch(this.pitch);
-                l.setYaw(this.yaw);
-                return new DomsLocation(l);
-            }
-            
-            if(Base.isAir(b) && Base.isAir(up) && !Base.isAir(below)) {
-                Location l = b.getLocation();
-                l.setX(this.x);
-                l.setZ(this.z);
-                l.setPitch(this.pitch);
-                l.setYaw(this.yaw);
-                return new DomsLocation(l);
-            }
-            
-            b = b.getRelative(0, -1, 0);
+        int unsafeY = (int) this.y;
+        if (unsafeY < 0) return null;
+        for (int i = unsafeY; i >= 0; i--) {
+            if (i < 0) return null;
+            Block b = this.getBukkitWorld().getBlockAt((int)this.getX(), i, (int)this.getZ());
+            if (b == null) return null;
+            if (b.getType().equals(Material.AIR)) continue;
+            Location bLoc = b.getLocation();
+            double safeY = this.getY() - (unsafeY - i);
+            return new DomsLocation(this.getX(), safeY + 1, this.getZ(), this.getYaw(), this.getPitch(), this.world);
         }
-        
-        Location l = b.getLocation();
-        l.setX(this.x);
-        l.setZ(this.z);
-        l.setPitch(this.pitch);
-        l.setYaw(this.yaw);
-        return new DomsLocation(l);
+        return this.copy();
     }
     
     public String toHumanString() {
