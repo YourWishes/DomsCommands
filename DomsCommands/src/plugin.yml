@@ -111,6 +111,11 @@ commands:
       aliases: [boot]
       usage: /<command> [player] (reason)
       permission: DomsCommands.kick
+   kickall:
+      description: Kicks all online players.
+      aliases: [bootall]
+      usage: /<command> (reason)
+      permission: DomsCommands.kickall
    warn:
       description: Warns a player from the server with an optional reason.
       aliases: [warning, bad]
@@ -405,6 +410,7 @@ permissions:
        DomsCommands.warp: true
        DomsCommands.ban.*: true
        DomsCommands.pardon: true
+       DomsCommands.kickall: true
        DomsCommands.kick.*: true
        DomsCommands.warn.*: true
        DomsCommands.mute.*: true
@@ -538,6 +544,8 @@ permissions:
      description: Makes a player exempt from being banned.
    DomsCommands.pardon:
      description: Allows access to the pardon command.
+   DomsCommands.kickall:
+     description: Allows access to the kickall command.
    DomsCommands.kick.*:
      description: Allows access to all kick permissions.
      children:

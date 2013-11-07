@@ -64,6 +64,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private HomesCommand homesCommand;
     private InvmodCommand invmodCommand;
     private ItemCommand itemCommand;
+    private KickAllCommand kickAllCommand;
     private KickCommand kickCommand;
     private KillCommand killCommand;
     private KitCommand kitCommand;
@@ -171,6 +172,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.homesCommand = new HomesCommand();
         this.invmodCommand = new InvmodCommand();
         this.itemCommand = new ItemCommand();
+        this.kickAllCommand = new KickAllCommand();
         this.kickCommand = new KickCommand();
         this.killCommand = new KillCommand();
         this.kitCommand = new KitCommand();
