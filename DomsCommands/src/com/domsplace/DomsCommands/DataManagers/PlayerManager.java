@@ -158,6 +158,7 @@ public class PlayerManager extends DataManager {
                     
                     player.addInventory(inv);
                 }
+                if(player.isOnline()) player.getInventory().setToPlayer();
             }
             
             if(yml.contains("endchests")) {
@@ -177,6 +178,7 @@ public class PlayerManager extends DataManager {
                     
                     player.addEndChest(inv);
                 }
+                if(player.isOnline()) player.getEnderChest().setToInventory(player.getOnlinePlayer().getEnderChest());
             }
             
             if(yml.contains("backpack")) {
@@ -208,7 +210,7 @@ public class PlayerManager extends DataManager {
             
             if(yml.contains("location")) {
                 player.setLastLocation(DomsLocation.guessLocation(yml.getString("location")));
-            }
+            }   
             return player;
         } catch(Exception e) {
             Base.DebugMode = true;
@@ -285,32 +287,41 @@ public class PlayerManager extends DataManager {
                 }
 
                 for(DomsInventory inv : player.getInventories()) {
-                    String key = "inventories." + inv.getInventoryGroup() + ".";
-                    yml.set(key + "group", inv.getInventoryGroup());
+                    try {
+                        String key = "inventories." + inv.getInventoryGroup() + ".";
+                        yml.set(key + "group", inv.getInventoryGroup());
 
-                    if(inv.getHelmet() != null) {yml.set(key + "helmet", inv.getHelmet().toString());}
-                    if(inv.getChestPlate() != null) {yml.set(key + "chestplate", inv.getChestPlate().toString());}
-                    if(inv.getLeggings() != null) {yml.set(key + "leggings", inv.getLeggings().toString());}
-                    if(inv.getBoots() != null) {yml.set(key + "boots", inv.getBoots().toString());}
+                        if(inv.getHelmet() != null) {yml.set(key + "helmet", inv.getHelmet().toString());}
+                        if(inv.getChestPlate() != null) {yml.set(key + "chestplate", inv.getChestPlate().toString());}
+                        if(inv.getLeggings() != null) {yml.set(key + "leggings", inv.getLeggings().toString());}
+                        if(inv.getBoots() != null) {yml.set(key + "boots", inv.getBoots().toString());}
 
-                    Map<Integer, DomsInventoryItem> items = inv.getItems();
-                    for(Integer i : items.keySet()) {
-                        if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
-                        yml.set(key + "items.slot" + i, items.get(i).toString());
+                        Map<Integer, DomsInventoryItem> items = inv.getItems();
+                        for(Integer i : items.keySet()) {
+                            if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
+                            yml.set(key + "items.slot" + i, items.get(i).toString());
+                        }
+
+                        if(inv.getExp() > 0) {yml.set(key + "xp", Float.toString(inv.getExp()));}
+                        if(inv.getExpLevel() > 0) {yml.set(key + "xplevel", inv.getExpLevel());}
+
+                    } catch(Exception e) {
+                        log("Failed to save " + player.getPlayer() + "'s Inventory \"" + inv.getInventoryGroup() + "\".");
                     }
-
-                    if(inv.getExp() > 0) {yml.set(key + "xp", Float.toString(inv.getExp()));}
-                    if(inv.getExpLevel() > 0) {yml.set(key + "xplevel", inv.getExpLevel());}
                 }
 
                 for(DomsInventory inv : player.getEnderChests()) {
-                    String key = "endchests." + inv.getInventoryGroup() + ".";
-                    yml.set(key + "group", inv.getInventoryGroup());
+                    try {
+                        String key = "endchests." + inv.getInventoryGroup() + ".";
+                        yml.set(key + "group", inv.getInventoryGroup());
 
-                    Map<Integer, DomsInventoryItem> items = inv.getItems();
-                    for(Integer i : items.keySet()) {
-                        if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
-                        yml.set(key + "items.slot" + i, items.get(i).toString());
+                        Map<Integer, DomsInventoryItem> items = inv.getItems();
+                        for(Integer i : items.keySet()) {
+                            if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
+                            yml.set(key + "items.slot" + i, items.get(i).toString());
+                        }
+                    } catch(Exception e) {
+                        log("Failed to save " + player.getPlayer() + "'s Enderchest \"" + inv.getInventoryGroup() + "\".");
                     }
                 }
                 
@@ -321,11 +332,15 @@ public class PlayerManager extends DataManager {
                 }
                 
                 if(player.getBackpack() != null) {
-                    DomsInventory inv = player.getBackpack();
-                    Map<Integer, DomsInventoryItem> items = inv.getItems();
-                    for(Integer i : items.keySet()) {
-                        if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
-                        yml.set("backpack.slot" +  i, items.get(i).toString());
+                    try {
+                        DomsInventory inv = player.getBackpack();
+                        Map<Integer, DomsInventoryItem> items = inv.getItems();
+                        for(Integer i : items.keySet()) {
+                            if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
+                            yml.set("backpack.slot" +  i, items.get(i).toString());
+                        }
+                    } catch(Exception e) {
+                        log("Failed to save " + player.getPlayer() + "'s Backpack \"" + player.getBackpack().getInventoryGroup() + "\".");
                     }
                 }
                 if(player.getFurnaceLocation() != null) {

@@ -128,6 +128,8 @@ public class Base extends RawBase {
             msg = msg.replaceAll(andCodes[i], altCodes[i]);
         }
         
+        if(player.hasPermisson(permissionPrefix + "emoji")) msg = emoji(msg);
+        
         return msg;
     }
     
@@ -207,12 +209,13 @@ public class Base extends RawBase {
     
     public static String emoji(String s) {
         s = s.replaceAll("<3", "❤");
-        s = s.replaceAll("(PERSON)", "유");
-        s = s.replaceAll("(PERSONF)", "유");
-        s = s.replaceAll("(PERSONM)", "웃");
-        s = s.replaceAll("(PENCIL)", "✎");
-        s = s.replaceAll("(PLANE)", "✈");
-        s = s.replaceAll("(NOTE)", "♫");
+        s = s.replaceAll("(?i)\\(PERSONF\\)", "유");
+        s = s.replaceAll("(?i)\\(PERSONM\\)", "웃");
+        s = s.replaceAll("(?i)\\(PERSON\\)", "유");
+        s = s.replaceAll("(?i)\\(PENCIL\\)", "✎");
+        s = s.replaceAll("(?i)\\(PLANE\\)", "✈");
+        s = s.replaceAll("(?i)\\(NOTE\\)", "♫");
+        s = s.replaceAll("(?i)\\(YINGYANG\\)", "☯");
         return s;
     }
     
@@ -927,7 +930,7 @@ public class Base extends RawBase {
         String humanDay = new SimpleDateFormat("EEEE").format(date);
         String humanMonth = new SimpleDateFormat("MMMM").format(date);
         String humanYear = new SimpleDateFormat("yyyy").format(date);
-        String time = new SimpleDateFormat("h:m:s a").format(date);
+        String time = new SimpleDateFormat("h:mm:ss a").format(date);
         
         String rv = humanDay + ", the " + ordinal + " of " + humanMonth + " " + humanYear + " at " + time;
         

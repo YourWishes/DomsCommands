@@ -67,6 +67,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private KickAllCommand kickAllCommand;
     private KickCommand kickCommand;
     private KillCommand killCommand;
+    private KissCommand kissCommand;
     private KitCommand kitCommand;
     private MeCommand meCommand;
     private MegaSmiteCommand megaSmiteCommand;
@@ -175,6 +176,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.kickAllCommand = new KickAllCommand();
         this.kickCommand = new KickCommand();
         this.killCommand = new KillCommand();
+        this.kissCommand = new KissCommand();
         this.kitCommand = new KitCommand();
         this.meCommand = new MeCommand();
         this.megaSmiteCommand = new MegaSmiteCommand();

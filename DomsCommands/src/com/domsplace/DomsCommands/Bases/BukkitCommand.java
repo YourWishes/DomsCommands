@@ -33,12 +33,17 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
     private static final List<BukkitCommand> COMMANDS = new ArrayList<BukkitCommand>();
     
     private static PluginCommand registerCommand(BukkitCommand command) {
-        PluginCommand cmd = getPlugin().getCommand(command.getCommand());
-        cmd.setExecutor(command);
-        cmd.setPermissionMessage(colorise(Base.getPermissionMessage()));
-        cmd.setTabCompleter(command);
-        COMMANDS.add(command);
-        return cmd;
+        try {
+            PluginCommand cmd = getPlugin().getCommand(command.getCommand());
+            cmd.setExecutor(command);
+            cmd.setPermissionMessage(colorise(Base.getPermissionMessage()));
+            cmd.setTabCompleter(command);
+            COMMANDS.add(command);
+            return cmd;
+        } catch(Exception e) {
+            error("Failed to Register Command \"" + command.command + "\"", e);
+            return null;
+        }
     }
     
     public static List<BukkitCommand> getCommands() {return new ArrayList<BukkitCommand>(COMMANDS);}

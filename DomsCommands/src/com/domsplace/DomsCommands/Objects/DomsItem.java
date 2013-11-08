@@ -9,15 +9,23 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class DomsItem {
     /*
@@ -58,6 +66,8 @@ public class DomsItem {
             List<String> lores = new ArrayList<String>();
             List<String> pages = new ArrayList<String>();
             Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
+            Map<Enchantment, Integer> storedEnchants = new HashMap<Enchantment, Integer>();
+            List<PotionEffect> pets = new ArrayList<PotionEffect>();
             
             for(String s : parts) {
                 Matcher m = Pattern.compile(ITEM_META_ATTRIBUTE_SEPERATOR_REGEX).matcher(s);
@@ -77,6 +87,27 @@ public class DomsItem {
                     Enchantment enc = Enchantment.getByName(e[0]);
                     int i = Base.getInt(e[1]);
                     enchants.put(enc, i);
+                } else if(key.equals("storedenchant")) {
+                    String[] e = value.split("\\*");
+                    Enchantment enc = Enchantment.getByName(e[0]);
+                    int i = Base.getInt(e[1]);
+                    storedEnchants.put(enc, i);
+                } else if(key.equals("potionefffect")) {
+                    String[] e = value.split("\\*");
+                    PotionEffectType petype = PotionEffectType.getByName(e[0]);
+                    
+                    int amp = 1;
+                    int duration = 300;
+                    
+                    if(e.length > 1) {
+                        amp = Base.getInt(e[1]);
+                    }
+                    
+                    if(e.length > 2) {
+                        duration = Base.getInt(e[2]);
+                    }
+                    
+                    pets.add(new PotionEffect(petype, duration, amp));
                 }
                 
                 data.put(key, value);
@@ -85,9 +116,10 @@ public class DomsItem {
             int count = 1;
             String material = null;
             short idata = BAD_DATA;
-            short damage = BAD_DATA;
             String author = null;
             String name = null;
+            int color = 0;
+            int repairCost = 0;
             OfflinePlayer head = null;
             
             if(data.containsKey("size")) {
@@ -103,7 +135,7 @@ public class DomsItem {
             }
             
             if(data.containsKey("damage")) {
-                damage = Base.getShort(data.get("damage"));
+                idata = Base.getShort(data.get("damage"));
             }
             
             if(data.containsKey("author")) {
@@ -118,16 +150,32 @@ public class DomsItem {
                 head = Bukkit.getOfflinePlayer(data.get("head"));
             }
             
+            if(data.containsKey("repaircost")) {
+                repairCost = Base.getInt(data.get("repaircost"));
+            }
+            
+            if(data.containsKey("color")) {
+                if(Base.isInt(data.get("color"))) {
+                    color = Base.getInt(data.get("color"));
+                } else {
+                    String h = data.get("color").replaceAll("0x", "").replaceAll("#", "");
+                    color = Integer.parseInt(h, 16);
+                }
+            }
+            
             List<DomsItem> items = new ArrayList<DomsItem>();
             for(int i = 0; i < count; i++) {
                 DomsItem item = new DomsItem(material, idata);
-                item.setDamage(damage);
                 item.setPages(pages);
                 item.setLores(lores);
                 item.setEnchantments(enchants);
                 item.setAuthor(author);
                 item.setName(name);
                 item.setPlayerHead(head);
+                item.setStoredEnchantments(storedEnchants);
+                item.setColor(color);
+                item.setRepairCost(repairCost);
+                item.setPotionEffects(pets);
                 
                 items.add(item);
             }
@@ -321,52 +369,55 @@ public class DomsItem {
     //Instance
     private String material;
     private short data = BAD_DATA;
-    private short damage;
     private Map<Enchantment, Integer> enchants;
+    private Map<Enchantment, Integer> storedEnchants;
+    private List<PotionEffect> potionEffects;
     private List<String> bookPages;
     private String author;
     private String name;
     private List<String> lores;
     private long itemID;
     private OfflinePlayer head;
+    private int color;
+    private int repairCost;
     
-    public DomsItem(String material, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, String name, List<String> lores) {
+    public DomsItem(String material, short data, Map<Enchantment, Integer> enchants, Map<Enchantment, Integer> storedEnchants, List<String> pages, String name, List<String> lores) {
         this.material = material;
         this.data = data;
-        this.damage = damage;
         this.enchants = enchants;
+        this.storedEnchants = storedEnchants;
         this.bookPages = pages;
         this.name = name;
         this.lores = lores;
         this.itemID = NEXT_ID += 1;
     }
     
-    public DomsItem(String material, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, String name) {
-        this(material, data, damage, enchants, pages, name, null);
+    public DomsItem(String material, short data, Map<Enchantment, Integer> enchants, Map<Enchantment, Integer> storedEnchants, List<String> pages, String name) {
+        this(material, data, enchants, storedEnchants, pages, name, null);
     }
     
     public DomsItem(String material, short data, short damage, Map<Enchantment, Integer> enchants, List<String> pages, List<String> lores) {
-        this(material, data, damage, enchants, pages, null, lores);
+        this(material, data, enchants, null, pages, null, lores);
     }
     
     public DomsItem(String material, short data, short damage, Map<Enchantment, Integer> enchants, String name, List<String> lores) {
-        this(material, data, damage, enchants, null, name, lores);
+        this(material, data, enchants, null, null, name, lores);
     }
     
     public DomsItem(String material, short data, Map<Enchantment, Integer> enchants, String name) {
-        this(material, data, BAD_DATA, enchants, null, name, null);
+        this(material, data, enchants, null, null, name, null);
     }
     
     public DomsItem(String material, short data, Map<Enchantment, Integer> enchants, List<String> lores) {
-        this(material, data, BAD_DATA, enchants, null, null, lores);
+        this(material, data, enchants, null, null, null, lores);
     }
     
     public DomsItem(String material, short data, List<String> pages, String name, List<String> lores) {
-        this(material, data, BAD_DATA, null, pages, name, lores);
+        this(material, data, null, null, pages, name, lores);
     }
     
     public DomsItem(String material, short data, String name, List<String> lores) {
-        this(material, data, BAD_DATA, null, null, name, lores);
+        this(material, data, null, null, null, name, lores);
     }
     
     public DomsItem(String material, short data, String name) {
@@ -374,7 +425,7 @@ public class DomsItem {
     }
     
     public DomsItem(String material, short data, List<String> lores) {
-        this(material, data, BAD_DATA, null, null, null, lores);
+        this(material, data, null, null, null, null, lores);
     }
     
     public DomsItem(Material m, short data) {
@@ -382,7 +433,7 @@ public class DomsItem {
     }
     
     public DomsItem(String material, short data) {
-        this(material, data, BAD_DATA, null, null, null, null);
+        this(material, data, null, null, null, null);
     }
     
     public DomsItem(String material) {
@@ -425,6 +476,22 @@ public class DomsItem {
             if(is.getItemMeta() instanceof SkullMeta) {
                 if(((SkullMeta) is.getItemMeta()).getOwner() != null) this.head = Bukkit.getOfflinePlayer(((SkullMeta) is.getItemMeta()).getOwner());
             }
+            
+            if(is.getItemMeta() instanceof EnchantmentStorageMeta) {
+                this.storedEnchants = new HashMap<Enchantment, Integer>(((EnchantmentStorageMeta) is.getItemMeta()).getStoredEnchants());
+            }
+            
+            if(is.getItemMeta() instanceof LeatherArmorMeta) {
+                this.color = ((LeatherArmorMeta) is.getItemMeta()).getColor().asRGB();
+            }
+            
+            if(is.getItemMeta() instanceof Repairable) {
+                this.repairCost = ((Repairable) is.getItemMeta()).getRepairCost();
+            }
+            
+            if(is.getItemMeta() instanceof PotionMeta) {
+                this.potionEffects = new ArrayList<PotionEffect>(((PotionMeta) is.getItemMeta()).getCustomEffects());
+            }
         }
         
         this.enchants = new HashMap<Enchantment, Integer>(is.getEnchantments());
@@ -432,13 +499,16 @@ public class DomsItem {
     
     public String getMaterialName() {return this.material;}
     public short getData() {return this.data;}
-    public short getDamage() {return this.damage;}
     public Map<Enchantment, Integer> getEnchantments() {return this.enchants;}
+    public Map<Enchantment, Integer> getStoredEnchantments() {return this.storedEnchants;}
+    public List<PotionEffect> getPotionEffects() {return this.potionEffects;}
     public List<String> getBookPages() {return this.bookPages;}
     public String getBookAuthor() {return this.author;}
     public String getName() {String x = this.name; if(this.isMobNameable()) x = Base.trim(x, 64); return x;}
     public List<String> getLores() {return this.lores;}
     public long getItemID() {return this.itemID;}
+    public int getColor() {return this.color;}
+    public int getRepairCost() {return this.repairCost;}
     public OfflinePlayer getPlayerHead() {return this.head;}
     @Deprecated public MaterialData getMaterialData() {return this.getMaterial().getNewData((byte) this.data);}
 
@@ -451,15 +521,22 @@ public class DomsItem {
     
     public void setMaterialName(String material) {this.material = material;}
     public void setData(short data) {this.data = data;}
-    public void setDamage(short damage) {this.damage = damage;}
     public void setLores(List<String> lores) {this.lores = lores;}
     public void setPages(List<String> pages) {this.bookPages = pages;}
     public void setAuthor(String author) {this.author = author;}
     public void setName(String name) {this.name = name;}
     public void setEnchantments(Map<Enchantment, Integer> e) {this.enchants = e;}
+    public void setStoredEnchantments(Map<Enchantment, Integer> e) {this.storedEnchants = e;}
     public void setPlayerHead(OfflinePlayer player) {this.head = player;}
+    public void setColor(int color) {this.color = color;}
+    public void setRepairCost(int cost) {this.repairCost = cost;}
+    public void setPotionEffects(List<PotionEffect> effects) {this.potionEffects = effects;}
 
     public void setPage(int page, String l) {this.bookPages.set(page, l);}
+    
+    public void addLore(String l) {this.lores.add(l);}
+    public void addEnchantment(Enchantment byId, int lvl) {this.enchants.put(byId, lvl);}
+    public void addPage(String l) {this.bookPages.add(l);}
     
     public Material getMaterial() {return Material.getMaterial(this.material);}
     public ItemMeta getItemMeta(ItemStack is) {
@@ -481,11 +558,34 @@ public class DomsItem {
             }
         }
         
+        if(im instanceof EnchantmentStorageMeta && this.storedEnchants != null) {
+            EnchantmentStorageMeta em = (EnchantmentStorageMeta) im;
+            for(Enchantment e : this.storedEnchants.keySet()) {
+                if(e == null) continue;
+                em.addStoredEnchant(e, this.storedEnchants.get(e), true);
+            }
+        }
+        
         if(im instanceof SkullMeta && this.head != null) {
             SkullMeta sm = (SkullMeta) im;
             sm.setOwner(this.head.getName());
             this.data = 3;
             is.setDurability(Base.getShort(3));
+        }
+        
+        if(im instanceof LeatherArmorMeta && this.color > 0) {
+            LeatherArmorMeta la = (LeatherArmorMeta) im;
+            la.setColor(Color.fromRGB(this.color));
+        }
+        
+        if(im instanceof Repairable && this.repairCost > 0) {
+            Repairable re = (Repairable) im;
+            re.setRepairCost(this.repairCost);
+        }
+        
+        if(im instanceof PotionMeta) {
+            PotionMeta pm = (PotionMeta) im;
+            this.potionEffects = new ArrayList<PotionEffect>(this.potionEffects);
         }
         
         if(this.lores != null) {
@@ -497,10 +597,9 @@ public class DomsItem {
     public ItemStack getItemStack() throws InvalidItemException {return getItemStack(64);}
     public ItemStack getItemStack(int amt) throws InvalidItemException {
         try {
-            ItemStack is = new ItemStack(this.getMaterial(), amt, this.data);
-            if(this.damage != BAD_DATA) {
-                is.setDurability(this.damage);
-            }
+            ItemStack is = new ItemStack(this.getMaterial(), amt);
+            is.setDurability(this.data);
+            if(this.data  == BAD_DATA) is.setDurability(new Short("0"));
             is.setItemMeta(this.getItemMeta(is));
             if(this.enchants != null && this.enchants.size() > 0) {
                 is.addUnsafeEnchantments(enchants);
@@ -525,10 +624,6 @@ public class DomsItem {
         return item.toString().equalsIgnoreCase(this.toString());
     }
     
-    public void addLore(String l) {this.lores.add(l);}
-    public void addEnchantment(Enchantment byId, int lvl) {this.enchants.put(byId, lvl);}
-    public void addPage(String l) {this.bookPages.add(l);}
-    
     public DomsItem copy() {
         try {
             return DomsItem.copy(this);
@@ -542,11 +637,7 @@ public class DomsItem {
         String msg = "{id:\"" + this.material + "\"}";
         
         if(this.data != BAD_DATA && this.data != 0) {
-            msg += ",{data:\"" + Short.toString(this.data) + "\"}";
-        }
-        
-        if(this.damage != BAD_DATA) {
-            msg += ",{damage:\"" + Short.toString(this.damage) + "\"}";
+            msg += ",{data:\"" + this.data + "\"}";
         }
         
         if(this.lores != null) {
@@ -576,8 +667,30 @@ public class DomsItem {
             }
         }
         
+        if(this.storedEnchants != null) {
+            for(Enchantment e : this.storedEnchants.keySet()) {
+                if(e == null) continue;
+                msg += ",{storedenchant:\"" + e.getName() + "*" + this.storedEnchants.get(e) + "\"}";
+            }
+        }
+        
+        if(this.potionEffects != null) {
+            for(PotionEffect pe : this.potionEffects) {
+                if(pe == null) continue;
+                msg += ",{potionefffect:\"" + pe.getType().getName() + "*" + pe.getDuration() + "*" + pe.getAmplifier() + "\"}";
+            }
+        }
+        
         if(this.head != null) {
             msg += ",{head:\"" + escape(this.head.getName()) + "\"}";
+        }
+        
+        if(this.color > 0) {
+            msg += ",{color:\"" + this.color + "\"}";
+        }
+        
+        if(this.repairCost > 0) {
+            msg += ",{repaircost:\"" + this.repairCost + "\"}";
         }
         
         return msg;
@@ -591,10 +704,6 @@ public class DomsItem {
             //s += ", with type of " + this.data;
         }
         
-        if(this.damage != BAD_DATA) {
-            s += ", with " + this.damage + " damage";
-        }
-        
         if(this.name != null && !this.name.equals("")) {
             s += ", named " + this.name + d;
         }
@@ -604,6 +713,14 @@ public class DomsItem {
             for(Enchantment e : this.enchants.keySet()) {
                 if(e == null) continue;
                 s += ", " + Base.capitalizeEachWord(e.getName().replaceAll("_", " ").toLowerCase()) + " at level " + enchants.get(e)    ;
+            }
+        }
+        
+        if(this.storedEnchants != null && this.storedEnchants.size() > 0) {
+            s += ", with the stored enchantment" + ((this.storedEnchants.size() > 1) ? "s" : "");
+            for(Enchantment e : this.storedEnchants.keySet()) {
+                if(e == null) continue;
+                s += ", " + Base.capitalizeEachWord(e.getName().replaceAll("_", " ").toLowerCase()) + " at level " + storedEnchants.get(e)    ;
             }
         }
         
@@ -625,6 +742,34 @@ public class DomsItem {
             s += ", written by " + this.author + d;
         }
         
+        if(this.color > 0) {
+            s += ", colored " + Integer.toHexString(this.color);
+        }
+        
+        if(this.repairCost > 0) {
+            s += ", with a repair cost of " + this.repairCost;
+        }
+        
+        if(this.potionEffects != null && this.potionEffects.size() > 0) {
+            s += ", with the potion effect" + (this.potionEffects.size() > 1 ? "s" : "");
+            for(PotionEffect pe : this.potionEffects) {
+                s += ", " + pe.getType().getName() + " level " + pe.getAmplifier() + " for " + (pe.getDuration()/20) + " seconds";
+            }
+        }
+        
         return s;
+    }
+    
+    public void giveToPlayer(Player player) throws InvalidItemException {
+        //TODO: Smarter logic, checking for non full stack sizes etc.
+        Inventory in = player.getInventory();
+        if(DomsItem.isInventoryFull(in)) {
+            //Inventory is Full, drop the item instead
+            ItemStack is = this.getItemStack(1);
+            player.getWorld().dropItemNaturally(player.getLocation(), is);
+            return;
+        }
+        //Inventory not full, just give to player
+        player.getInventory().addItem(this.getItemStack(1));
     }
 }

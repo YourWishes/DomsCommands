@@ -42,6 +42,11 @@ public class KickAllCommand extends BukkitCommand {
             reason = Base.arrayToString(args, " ");
         }
         
+        if(Base.getOnlinePlayers(sender).size() < (isPlayer(sender) ? 2 : 1)) {
+            sendMessage(sender, ChatError + "There are no other players online.");
+            return true;
+        }
+        
         DomsPlayer s = DomsPlayer.getPlayer(sender);
         for(DomsPlayer p : DomsPlayer.getOnlinePlayers()) {
             if(p.compare(sender)) continue;

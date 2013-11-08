@@ -3,7 +3,7 @@ description: Offers many commands for everyone to use!
 main: com.domsplace.DomsCommands.DomsCommandsPlugin
 authors: [Dominic, Jordan, Kyle]
 website: http://domsplace.com/
-version: '1.03'
+version: '1.04'
 load: POSTWORLD
 softdepend: [Vault]
 commands:
@@ -386,6 +386,10 @@ commands:
       aliases: [endchest, echest, cheste]
       usage: /<command>
       permission: DomsCommands.enderchest
+   kiss:
+      description: MWA!
+      usage: /<command> [player]
+      permission: DomsCommands.kiss
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -467,6 +471,7 @@ permissions:
        DomsCommands.realname: true
        DomsCommands.setspawn: true
        DomsCommands.enderchest: true
+       DomsCommands.kiss: true
    DomsCommands.reload:
      description: Allows access to reload the Configuration.
    DomsCommands.domscommands:
@@ -1120,3 +1125,5 @@ permissions:
      description: Allows access to the setspawn command.
    DomsCommands.enderchest:
      description: Allows access to the enderchest command.
+   DomsCommands.kiss:
+     description: Allows access to the kiss command.
