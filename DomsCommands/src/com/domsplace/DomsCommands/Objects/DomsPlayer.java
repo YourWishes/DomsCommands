@@ -38,6 +38,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 /**
  * @author      Dominic
@@ -511,8 +512,12 @@ public class DomsPlayer {
     
     //Complex Functions
     public void teleport(DomsLocation to, boolean useSafe) {
-        if(!useSafe) this.getOnlinePlayer().teleport(to.toLocation());
-        else this.getOnlinePlayer().teleport(to.getSafeLocation().toLocation(), TeleportCause.COMMAND);
+        if(!useSafe) {
+            this.getOnlinePlayer().teleport(to.toLocation());
+        } else {
+            this.getOnlinePlayer().teleport(to.getSafeLocation().toLocation(), TeleportCause.COMMAND);
+            this.getOnlinePlayer().setVelocity(new Vector(0, 0, 0));
+        }
     }
 
     public boolean toggleChannel(DomsChannel channel) {
