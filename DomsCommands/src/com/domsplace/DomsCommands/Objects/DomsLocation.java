@@ -168,7 +168,7 @@ public class DomsLocation {
             if (b.getType().equals(Material.AIR)) continue;
             Location bLoc = b.getLocation();
             double safeY = this.getY() - (unsafeY - i);
-            return new DomsLocation(this.getX(), safeY + 1, this.getZ(), this.getYaw(), this.getPitch(), this.world);
+            return new DomsLocation(this.getX(), safeY + 1, this.getZ(), this.getPitch(), this.getYaw(), this.world);
         }
         return this.copy();
     }

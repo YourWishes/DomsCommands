@@ -125,6 +125,13 @@ public class ConfigManager extends DataManager {
             df("kits.default.cooldown", 1200);
         }
         
+        if(!config.contains("votifier.commands")) {
+            cmds = new ArrayList<String>();
+            cmds.add("give {PLAYER} {id:\"IRON_INGOT\"} 50");
+            cmds.add("broadcast Thank you to {PLAYER} for Voting!");
+            df("votifier.commands", cmds);
+        }
+        
         //De-register old values
         for(Kit k : Kit.getKits()) {
             k.deRegister();

@@ -64,7 +64,7 @@ public class HelpCommand extends BukkitCommand {
         }
         
         page = page - 1;
-        sendMessage(sender, colorise(pages[page]));
+        sendMessage(sender, colorise(pages[page]).split("\n"));
         return true;
     }
     

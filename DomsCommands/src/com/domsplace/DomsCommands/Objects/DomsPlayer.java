@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Events.DomsPlayerUpdateVariablesEvent;
@@ -119,30 +120,9 @@ public class DomsPlayer {
     
     public static DomsPlayer guessExactPlayer(CommandSender sender, String guess) {return guessExactPlayer(sender, guess, false);}
     public static DomsPlayer guessExactPlayer(CommandSender sender, String guess, boolean createIfNotExists) {
-        DomsPlayer p = null;
-        for(DomsPlayer plyr : REGISTERED_ONLINE_PLAYERS.values()) {
-            if(!plyr.getPlayer().toLowerCase().startsWith(guess.toLowerCase())) continue;
-            p = plyr;
-            break;
-        }
-        if(p != null) return p;
-        
-        for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
-            if(!plyr.getPlayer().toLowerCase().startsWith(guess.toLowerCase())) continue;
-            p = plyr;
-            break;
-        }
-        
-        if(p == null) {
-            for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
-                if(!plyr.getDisplayName().toLowerCase().startsWith(guess.toLowerCase())) continue;
-                p = plyr;
-                break;
-            }
-        }
-        
-        if(createIfNotExists && p == null) {return getPlayer(guess);}
-        return p;
+        OfflinePlayer p = Base.getOfflinePlayer(sender, guess);
+        if(p == null && !createIfNotExists) return null;
+        return DomsPlayer.getPlayer((p == null ? Base.getOfflinePlayer(guess) : p));
     }
     
     public static List<DomsPlayer> getVisibleOnlinePlayers() {
@@ -324,6 +304,7 @@ public class DomsPlayer {
     public void teleport(DomsLocation to) {this.teleport(to, Base.getConfig().getBoolean("teleport.safe", true));}
     public void teleport(Location location) {this.teleport(new DomsLocation(location));}
     public void sendMessage(Object o) {Base.sendMessage(this, o);}
+    public void save() {DataManager.PLAYER_MANAGER.savePlayer(this);}
     
     //Complex get's
     public final String getDisplayName() {
@@ -491,6 +472,7 @@ public class DomsPlayer {
     //Complex set's
     public void setDisplayName(String newName) {
         this.displayName = newName;
+        Base.debug("Dn: " + this.displayName);
         if(this.isOnline() && !this.isConsole() && newName != null) this.getOnlinePlayer().setDisplayName(newName);
     }
     
@@ -560,20 +542,23 @@ public class DomsPlayer {
     }
     
     public void addItems(List<DomsItem> items) {
-        if(this.isConsole() || !this.isOnline()) return;
-        try {
-            List<ItemStack> itemStacks = DomsItem.toItemStackArray(items);
-            for(ItemStack is : itemStacks) {
-                if(is == null) continue;
-                if(is.getType() == null) continue;
-                if(is.getType().equals(Material.AIR)) continue;
-                if(DomsItem.isInventoryFull(this.getOnlinePlayer().getInventory())) {
-                    this.getOnlinePlayer().getWorld().dropItemNaturally(this.getLocation().toLocation(), is);
-                } else {
-                    this.getOnlinePlayer().getInventory().addItem(is);
+        if(this.isConsole()) return;
+        if(this.isOnline()) {
+            try {
+                List<ItemStack> itemStacks = DomsItem.toItemStackArray(items);
+                for(ItemStack is : itemStacks) {
+                    if(is == null) continue;
+                    if(is.getType() == null) continue;
+                    if(is.getType().equals(Material.AIR)) continue;
+                    if(DomsItem.isInventoryFull(this.getOnlinePlayer().getInventory())) {
+                        this.getOnlinePlayer().getWorld().dropItemNaturally(this.getLocation().toLocation(), is);
+                    } else {
+                        this.getOnlinePlayer().getInventory().addItem(is);
+                    }
                 }
+            } catch(InvalidItemException e) {
             }
-        } catch(InvalidItemException e) {
+        } else {
         }
     }
     

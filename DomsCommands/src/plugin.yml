@@ -5,7 +5,7 @@ authors: [Dominic, Jordan, Kyle]
 website: http://domsplace.com/
 version: '1.04'
 load: POSTWORLD
-softdepend: [Vault]
+softdepend: [Vault, Votifier]
 commands:
    DomsCommands:
       description: Provides basic information about the DomsCommands plugin.
@@ -96,11 +96,21 @@ commands:
       aliases: [banish, ipban, banip, baniship, ipbanish]
       usage: /<command> [player|ip] (time) (reason)
       permission: DomsCommands.ban
+   bans:
+      description: Lookup a player's bans
+      aliases: [lookupbans, banslookup, findbans, banwhois, banreason, breason]
+      usage: /<command> [player|id]
+      permission: DomsCommands.ban.lookup
    mute:
       description: Mutes a player.
       aliases: [unmute, pardonmute, silence, slient, quiet, shush, InstallWindowsVistaKeyboardDrivers]
       usage: /<command> [player] (time) (reason)
       permission: DomsCommands.mute
+   mutes:
+      description: Lookup a player's mutes
+      aliases: [lookupmutes, muteslookup, findmutes, mutewhois, mutereason, mreason]
+      usage: /<command> [player|id]
+      permission: DomsCommands.mute.lookup
    pardon:
       description: Unban a player and allow them back on the server.
       aliases: [unban, unbanish, pardonip, pardon-ip, ippardon, ip-pardon]
@@ -111,6 +121,11 @@ commands:
       aliases: [boot]
       usage: /<command> [player] (reason)
       permission: DomsCommands.kick
+   kicks:
+      description: Lookup a player's kicks
+      aliases: [lookupkicks, kickslookup, findkicks, kickwhois, kickreason, kreason]
+      usage: /<command> [player|id]
+      permission: DomsCommands.kick.lookup
    kickall:
       description: Kicks all online players.
       aliases: [bootall]
@@ -390,6 +405,10 @@ commands:
       description: MWA!
       usage: /<command> [player]
       permission: DomsCommands.kiss
+   hug:
+      description: Show the love.
+      usage: /<command> [player]
+      permission: DomsCommands.hug
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -472,6 +491,8 @@ permissions:
        DomsCommands.setspawn: true
        DomsCommands.enderchest: true
        DomsCommands.kiss: true
+       DomsCommands.hug: true
+       DomsCommands.sign.colors.*: true
    DomsCommands.reload:
      description: Allows access to reload the Configuration.
    DomsCommands.domscommands:
@@ -539,6 +560,7 @@ permissions:
          DomsCommands.banip: true
          DomsCommands.ban.notify: true
          DomsCommands.ban.exempt: true
+         DomsCommands.ban.lookup: true
    DomsCommands.ban:
      description: Allows access to the ban command.
    DomsCommands.banip:
@@ -547,6 +569,8 @@ permissions:
      description: Shows a message when a player is banned.
    DomsCommands.ban.exempt:
      description: Makes a player exempt from being banned.
+   DomsCommands.ban.lookup:
+     description: Allows a player to lookup people's bans.
    DomsCommands.pardon:
      description: Allows access to the pardon command.
    DomsCommands.kickall:
@@ -557,36 +581,45 @@ permissions:
          DomsCommands.kick: true
          DomsCommands.kick.notify: true
          DomsCommands.kick.exempt: true
+         DomsCommands.kick.lookup: true
    DomsCommands.kick:
      description: Allows access to the kick command.
    DomsCommands.kick.exempt:
      description: Makes a player exempt from being kicked.
    DomsCommands.kick.notify:
      description: Shows a message when a player is kicked.
+   DomsCommands.kick.lookup:
+     description: Allows a player to lookup people's kicks.
    DomsCommands.warn.*:
      description: Allows access to all warn permissions.
      children:
          DomsCommands.warn: true
          DomsCommands.warn.notify: true
          DomsCommands.warn.exempt: true
+         DomsCommands.warn.lookup: true
    DomsCommands.warn:
      description: Allows access to the warn command.
    DomsCommands.warn.exempt:
      description: Makes a player exempt from being warned.
    DomsCommands.warn.notify:
      description: Shows a message when a player is warned.
+   DomsCommands.warn.lookup:
+     description: Allows a player to lookup people's warns.
    DomsCommands.mute.*:
      description: Allows access to all mute permissions.
      children:
          DomsCommands.mute: true
          DomsCommands.mute.notify: true
          DomsCommands.mute.exempt: true
+         DomsCommands.mute.lookup: true
    DomsCommands.mute:
      description: Allows access to the mute command.
    DomsCommands.mute.exempt:
      description: Makes a player exempt from being muted.
    DomsCommands.mute.notify:
      description: Shows a message when a player is muted.
+   DomsCommands.mute.lookup:
+     description: Allows a player to lookup people's mutes.
    DomsCommands.away.*:
      description: Allows access to all away permissions.
      children:
@@ -617,6 +650,7 @@ permissions:
          DomsCommands.nickname.colors.gold: true
          DomsCommands.nickname.colors.gray: true
          DomsCommands.nickname.colors.darkgray: true
+         DomsCommands.nickname.colors.blue: true
          DomsCommands.nickname.colors.green: true
          DomsCommands.nickname.colors.lightblue: true
          DomsCommands.nickname.colors.red: true
@@ -702,6 +736,7 @@ permissions:
          DomsCommands.tell.colors.gold: true
          DomsCommands.tell.colors.gray: true
          DomsCommands.tell.colors.darkgray: true
+         DomsCommands.tell.colors.blue: true
          DomsCommands.tell.colors.green: true
          DomsCommands.tell.colors.lightblue: true
          DomsCommands.tell.colors.red: true
@@ -816,6 +851,7 @@ permissions:
          DomsCommands.renameitem.colors.gold: true
          DomsCommands.renameitem.colors.gray: true
          DomsCommands.renameitem.colors.darkgray: true
+         DomsCommands.renameitem.colors.blue: true
          DomsCommands.renameitem.colors.green: true
          DomsCommands.renameitem.colors.lightblue: true
          DomsCommands.renameitem.colors.red: true
@@ -893,6 +929,7 @@ permissions:
          DomsCommands.addlores.colors.gold: true
          DomsCommands.addlores.colors.gray: true
          DomsCommands.addlores.colors.darkgray: true
+         DomsCommands.addlores.colors.blue: true
          DomsCommands.addlores.colors.green: true
          DomsCommands.addlores.colors.lightblue: true
          DomsCommands.addlores.colors.red: true
@@ -985,6 +1022,7 @@ permissions:
          DomsCommands.chat.colors.gold: true
          DomsCommands.chat.colors.gray: true
          DomsCommands.chat.colors.darkgray: true
+         DomsCommands.chat.colors.blue: true
          DomsCommands.chat.colors.green: true
          DomsCommands.chat.colors.lightblue: true
          DomsCommands.chat.colors.red: true
@@ -1127,3 +1165,74 @@ permissions:
      description: Allows access to the enderchest command.
    DomsCommands.kiss:
      description: Allows access to the kiss command.
+   DomsCommands.sign.colors.*:
+     description: Allows access to use all colors in signs.
+     children:
+         DomsCommands.sign.colors.black: true
+         DomsCommands.sign.colors.darkblue: true
+         DomsCommands.sign.colors.darkgreen: true
+         DomsCommands.sign.colors.cyan: true
+         DomsCommands.sign.colors.darkred: true
+         DomsCommands.sign.colors.purple: true
+         DomsCommands.sign.colors.gold: true
+         DomsCommands.sign.colors.gray: true
+         DomsCommands.sign.colors.darkgray: true
+         DomsCommands.sign.colors.blue: true
+         DomsCommands.sign.colors.green: true
+         DomsCommands.sign.colors.lightblue: true
+         DomsCommands.sign.colors.red: true
+         DomsCommands.sign.colors.pink: true
+         DomsCommands.sign.colors.yellow: true
+         DomsCommands.sign.colors.white: true
+         DomsCommands.sign.colors.magic: true
+         DomsCommands.sign.colors.bold: true
+         DomsCommands.sign.colors.strike: true
+         DomsCommands.sign.colors.underline: true
+         DomsCommands.sign.colors.italics: true
+         DomsCommands.sign.colors.reset: true
+   DomsCommands.sign.colors.black:
+     description: Allows access to use black in signs.
+   DomsCommands.sign.colors.darkblue:
+     description: Allows access to use darkblue in signs.
+   DomsCommands.sign.colors.darkgreen:
+     description: Allows access to use darkgreen in signs.
+   DomsCommands.sign.colors.cyan:
+     description: Allows access to use cyan in signs.
+   DomsCommands.sign.colors.darkred:
+     description: Allows access to use darkred in signs.
+   DomsCommands.sign.colors.purple:
+     description: Allows access to use purple in signs.
+   DomsCommands.sign.colors.gold:
+     description: Allows access to use gold in signs.
+   DomsCommands.sign.colors.gray:
+     description: Allows access to use gray in signs.
+   DomsCommands.sign.colors.darkgray:
+     description: Allows access to use darkgray in signs.
+   DomsCommands.sign.colors.blue:
+     description: Allows access to use blue in signs.
+   DomsCommands.sign.colors.green:
+     description: Allows access to use green in signs.
+   DomsCommands.sign.colors.lightblue:
+     description: Allows access to use lightblue in signs.
+   DomsCommands.sign.colors.red:
+     description: Allows access to use red in signs.
+   DomsCommands.sign.colors.pink:
+     description: Allows access to use pink in signs.
+   DomsCommands.sign.colors.yellow:
+     description: Allows access to use yellow in signs.
+   DomsCommands.sign.colors.white:
+     description: Allows access to use white in signs.
+   DomsCommands.sign.colors.magic:
+     description: Allows access to use magic in signs.
+   DomsCommands.sign.colors.bold:
+     description: Allows access to use bold in signs.
+   DomsCommands.sign.colors.strike:
+     description: Allows access to use strike in signs.
+   DomsCommands.sign.colors.underline:
+     description: Allows access to use underline in signs.
+   DomsCommands.sign.colors.italics:
+     description: Allows access to use italics in signs.
+   DomsCommands.sign.colors.reset:
+     description: Allows access to use reset in signs.
+   DomsCommands.hug:
+     description: Allows access to the hug command.

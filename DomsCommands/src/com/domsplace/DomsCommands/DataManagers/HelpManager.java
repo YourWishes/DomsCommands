@@ -66,6 +66,7 @@ public class HelpManager extends DataManager {
         
         
         String lines = Base.listToString(helps, "\n");
+        lines = lines.replaceAll("\\n", "\n");
         this.help = lines.split("###");
         rules.close();
     }

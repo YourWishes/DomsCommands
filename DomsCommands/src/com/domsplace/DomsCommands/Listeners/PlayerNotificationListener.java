@@ -64,6 +64,7 @@ public class PlayerNotificationListener extends DomsListener {
     
     @EventHandler(priority=EventPriority.HIGH)
     public void changeMessageOfTheDay(ServerListPingEvent e) {
+        debug("Got " + e.getAddress().toString() + " :::: " + e.getMotd());
         e.setMotd(Base.colorise(getConfig().getString("messages.motd", e.getMotd())));
     }
 }

@@ -30,11 +30,12 @@ public class DataManager extends Base {
     private static final List<DataManager> MANAGERS = new ArrayList<DataManager>();
     
     public static final PluginManager PLUGIN_MANAGER = new PluginManager();
+    public static final CraftBukkitManager CRAFT_BUKKIT_MANAGER = new CraftBukkitManager();
     public static final ConfigManager CONFIG_MANAGER = new ConfigManager();
     public static final PlayerManager PLAYER_MANAGER = new PlayerManager();
     public static final WarpManager WARP_MANAGER = new WarpManager();
     public static final ChatManager CHAT_MANAGER = new ChatManager();
-    public static final CraftBukkitManager CRAFT_BUKKIT_MANAGER = new CraftBukkitManager();
+    public static final SpawnManager SPAWN_MANAGER = new SpawnManager();
     public static final RulesManager RULES_MANAGER = new RulesManager();
     public static final HelpManager HELP_MANAGER = new HelpManager();
     
@@ -49,6 +50,7 @@ public class DataManager extends Base {
     public static boolean loadAll() {
         for(DataManager dm : MANAGERS) {
             if(dm.load()) continue;
+            debug("Failed to load " + dm.getType().getType());
             return false;
         }
         
@@ -59,6 +61,7 @@ public class DataManager extends Base {
         for(DataManager dm : MANAGERS) {
             if(dm.getType().equals(ManagerType.CONFIG)) continue;
             if(dm.save()) continue;
+            debug("Failed to save " + dm.getType().getType());
             return false;
         }
         

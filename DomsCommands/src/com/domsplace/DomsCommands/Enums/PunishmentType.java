@@ -16,10 +16,10 @@ import java.util.List;
 public class PunishmentType extends DomsEnum {
     private static final List<PunishmentType> TYPES = new ArrayList<PunishmentType>();
     
-    public static final PunishmentType BAN = new PunishmentType("Ban");
-    public static final PunishmentType KICK = new PunishmentType("Kick");
-    public static final PunishmentType MUTE = new PunishmentType("Mute");
-    public static final PunishmentType WARN = new PunishmentType("Warning");
+    public static final PunishmentType BAN = new PunishmentType("Ban", "Banned");
+    public static final PunishmentType KICK = new PunishmentType("Kick", "Kicked");
+    public static final PunishmentType MUTE = new PunishmentType("Mute", "Muted");
+    public static final PunishmentType WARN = new PunishmentType("Warning", "Warned");
 
     public static PunishmentType getType(String type) {
         for(PunishmentType t : TYPES) {
@@ -30,11 +30,14 @@ public class PunishmentType extends DomsEnum {
     
     //Instance
     private String type;
+    private String past;
     
-    private PunishmentType(String type) {
+    private PunishmentType(String type, String past) {
         this.type = type;
+        this.past = past;
         TYPES.add(this);
     }
     
     public String getType() {return this.type;}
+    public String getPastText() {return this.past;}
 }

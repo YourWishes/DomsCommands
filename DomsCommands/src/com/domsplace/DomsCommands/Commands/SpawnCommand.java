@@ -17,6 +17,8 @@
 package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Bases.DataManager;
+import com.domsplace.DomsCommands.DataManagers.SpawnManager;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import org.bukkit.command.Command;
@@ -49,7 +51,7 @@ public class SpawnCommand extends BukkitCommand {
             return true;
         }
         
-        player.teleport(player.getLocation().getBukkitWorld().getSpawnLocation());
+        player.teleport(SpawnManager.SPAWN_MANAGER.getSpawn(player.getWorld()));
         sendMessage(player, "Teleporting you to spawn.");
         if(!player.compare(sender)) {
             sendMessage(sender, "Teleporting " + ChatImportant + 

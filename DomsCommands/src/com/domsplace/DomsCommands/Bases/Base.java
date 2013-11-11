@@ -348,7 +348,9 @@ public class Base extends RawBase {
     
     public static void error(String message, Exception e) {
         error(message, true);
+        debug("ERROR: " + message);
         if(!DebugMode) return;
+        error("CAUSE: " + e.getMessage());
         String lines = "\n" + e.getClass().getName() + ":  " +  e.getMessage();
         for(StackTraceElement ste : e.getStackTrace()) {
             

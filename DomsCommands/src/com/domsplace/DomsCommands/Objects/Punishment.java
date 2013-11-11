@@ -7,14 +7,29 @@ package com.domsplace.DomsCommands.Objects;
 
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author      Dominic
  * @since       11/10/2013
  */
 public class Punishment {
+    public static final int PUNS_PER_PAGE = 5;
     public static final String DEFAULT_REASON = "An Unknown Reason";
-            
+    
+    public static final List<Punishment> PUNISHMENTS = new ArrayList<Punishment>();
+    
+    public static Punishment getByID(long id) {
+        for(Punishment pun : PUNISHMENTS) {
+            if(pun.id == id) return pun;
+        }
+        return null;
+    }
+    
+    private static long nextId = 0;
+    
+    private long id;
     private DomsPlayer player;
     private PunishmentType type;
     private String reason;
@@ -48,8 +63,11 @@ public class Punishment {
         this.date = date;
         this.endDate = endDate;
         this.pardoned = false;
+        this.id = nextId += 1;
+        Punishment.PUNISHMENTS.add(this);
     }
     
+    public long getId() {return this.id;}
     public DomsPlayer getPlayer() {return this.player;}
     public PunishmentType getType() {return this.type;}
     public long getDate() {return this.date;}

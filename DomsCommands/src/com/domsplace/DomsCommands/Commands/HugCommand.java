@@ -17,31 +17,39 @@
 package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
-import com.domsplace.DomsCommands.DataManagers.SpawnManager;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
+import com.domsplace.DomsCommands.Objects.SubCommandOption;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 /**
  * @author      Dominic
- * @since       7/11/2013
+ * @since       27/10/2013
  */
-public class SetSpawnCommand extends BukkitCommand {
-    public SetSpawnCommand() {
-        super("setspawn");
+public class HugCommand extends BukkitCommand {
+    public HugCommand() {
+        super("hug");
+        this.addSubCommandOption(SubCommandOption.PLAYERS_OPTION);
     }
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!isPlayer(sender)) {
-            sendMessage(sender, ChatError + "Only players can do this.");
+        if(args.length < 1) {
+            sendMessage(sender, ChatError + "Please enter a player name.");
             return true;
         }
         
         DomsPlayer player = DomsPlayer.getPlayer(sender);
-        SpawnManager.SPAWN_MANAGER.setSpawn(player.getLocation(), player.getWorld());
-        sendMessage(sender, ChatDefault + "Set the spawn point to " +
-                ChatImportant + player.getLocation().toHumanString().replaceAll("in", ChatDefault + "in" + ChatImportant));
+        DomsPlayer target = DomsPlayer.guessPlayer(sender, args[0]);
+        if(target == null || !target.isOnline(sender)) {
+            sendMessage(sender, ChatError + args[0] + " isn't online.");
+            return true;
+        }
+        
+        broadcast(ChatImportant + 
+                player.getDisplayName() + ChatColor.DARK_PURPLE + " Hugged " + 
+                ChatImportant + target.getDisplayName());
         return true;
     }
 }

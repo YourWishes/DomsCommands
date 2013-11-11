@@ -36,6 +36,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private BackCommand backCommand;
     private BackpackCommand backpackCommand;
     private BanCommand banCommand;
+    private BansCommand bansCommand;
     private ChatChannelCommand chatChannelCommand;
     private CheckLagCommand checkLagCommand;
     private ClearInventoryCommand clearInventoryCommand;
@@ -62,10 +63,12 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private HelpCommand helpCommand;
     private HomeCommand homeCommand;
     private HomesCommand homesCommand;
+    private HugCommand hugCommand;
     private InvmodCommand invmodCommand;
     private ItemCommand itemCommand;
     private KickAllCommand kickAllCommand;
     private KickCommand kickCommand;
+    private KicksCommand kicksCommand;
     private KillCommand killCommand;
     private KissCommand kissCommand;
     private KitCommand kitCommand;
@@ -75,6 +78,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private MoreCommand moreCommand;
     private MOTDCommand motdCommand;
     private MuteCommand muteCommand;
+    private MutesCommand mutesCommand;
     private NicknameCommand nicknameCommand;
     private PardonCommand pardonCommand;
     private PingCommand pingCommand;
@@ -103,6 +107,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private TeleportRequestHereCommand tpahCommand;
     private TimeCommand timeCommand;
     private WarnCommand warnCommand;
+    private WarnsCommand warnsCommand;
     private WarpCommand warpCommand;
     private WeatherCommand weatherCommand;
     private WhoCommand whoCommand;
@@ -120,6 +125,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private PunishmentListener punishmentListener;
     private DomsChatListener domsChatListener;
     private ServerUnloadListener serverUnloadListener;
+    private SignListener signListener;
+    private DomsInventoryListener domsInventoryListener;
     
     //Threads
     private ConfigSaveThread configSaveThread;
@@ -145,6 +152,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.backCommand = new BackCommand();
         this.backpackCommand = new BackpackCommand();
         this.banCommand = new BanCommand();
+        this.bansCommand = new BansCommand();
         this.chatChannelCommand = new ChatChannelCommand();
         this.checkLagCommand = new CheckLagCommand();
         this.clearInventoryCommand = new ClearInventoryCommand();
@@ -171,10 +179,12 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.helpCommand = new HelpCommand();
         this.homeCommand = new HomeCommand();
         this.homesCommand = new HomesCommand();
+        this.hugCommand = new HugCommand();
         this.invmodCommand = new InvmodCommand();
         this.itemCommand = new ItemCommand();
         this.kickAllCommand = new KickAllCommand();
         this.kickCommand = new KickCommand();
+        this.kicksCommand = new KicksCommand();
         this.killCommand = new KillCommand();
         this.kissCommand = new KissCommand();
         this.kitCommand = new KitCommand();
@@ -184,6 +194,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.moreCommand = new MoreCommand();
         this.motdCommand = new MOTDCommand();
         this.muteCommand = new MuteCommand();
+        this.mutesCommand = new MutesCommand();
         this.nicknameCommand = new NicknameCommand();
         this.pardonCommand = new PardonCommand();
         this.pingCommand = new PingCommand();
@@ -212,6 +223,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.tpdenyCommand = new TeleportDenyCommand();
         this.tphereCommand = new TeleportHereCommand();
         this.warnCommand = new WarnCommand();
+        this.warnsCommand = new WarnsCommand();
         this.warpCommand = new WarpCommand();
         this.weatherCommand = new WeatherCommand();
         this.whoCommand = new WhoCommand();
@@ -229,6 +241,8 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.punishmentListener = new PunishmentListener();
         this.domsChatListener = new DomsChatListener();
         this.serverUnloadListener = new ServerUnloadListener();
+        this.signListener = new SignListener();
+        this.domsInventoryListener = new DomsInventoryListener();
         
         //Load Threads
         this.configSaveThread = new ConfigSaveThread();

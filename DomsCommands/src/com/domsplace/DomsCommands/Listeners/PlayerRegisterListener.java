@@ -18,6 +18,7 @@ package com.domsplace.DomsCommands.Listeners;
 
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.DomsListener;
+import com.domsplace.DomsCommands.DataManagers.SpawnManager;
 import com.domsplace.DomsCommands.Events.PlayerFirstJoinedEvent;
 import com.domsplace.DomsCommands.Events.PlayerLeaveGameEvent;
 import com.domsplace.DomsCommands.Events.PlayerPostFirstJoinEvent;
@@ -32,8 +33,10 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
@@ -63,6 +66,8 @@ public class PlayerRegisterListener extends DomsListener {
             player.setLastMoveTime(getNow());
             player.setFlightMode(e.getPlayer().getAllowFlight());
             player.setAFKTime(getNow());
+            
+            try {player.teleport(SpawnManager.SPAWN_MANAGER.getSpawn(player.getWorld()), false);} catch(Exception ex) {}
         
             try {player.getInventory().setToPlayer();} catch(Exception ex) {}
             try {player.getEnderChest().setToInventory(e.getPlayer().getEnderChest());} catch(Exception ex) {}
@@ -134,29 +139,5 @@ public class PlayerRegisterListener extends DomsListener {
         }
         
         DataManager.PLAYER_MANAGER.savePlayer(player);
-    }
-    
-    @EventHandler(priority=EventPriority.HIGHEST)
-    public void changeInventoryOnWorldChange(PlayerTeleportEvent e) {
-        try {if(DomsInventory.getInventoryGroupFromWorld(e.getFrom().getWorld().getName()).equals(
-                DomsInventory.getInventoryGroupFromWorld(e.getTo().getWorld().getName())
-        )) return;} catch(Exception ex) {}
-        
-        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
-        player.updateDomsInventory();
-        
-        DomsInventory inv = player.getInventoryFromWorld(e.getTo().getWorld().getName());
-        if(inv == null) {
-            return;
-        }
-        
-        inv.setToPlayer();
-        
-        inv = player.getEndChestFromWorld(e.getTo().getWorld().getName());
-        if(inv == null) {
-            return;
-        }
-        
-        inv.setToInventory(e.getPlayer().getEnderChest());
     }
 }

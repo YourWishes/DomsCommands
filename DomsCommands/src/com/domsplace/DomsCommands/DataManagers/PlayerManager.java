@@ -158,7 +158,6 @@ public class PlayerManager extends DataManager {
                     
                     player.addInventory(inv);
                 }
-                if(player.isOnline()) player.getInventory().setToPlayer();
             }
             
             if(yml.contains("endchests")) {
@@ -178,7 +177,6 @@ public class PlayerManager extends DataManager {
                     
                     player.addEndChest(inv);
                 }
-                if(player.isOnline()) player.getEnderChest().setToInventory(player.getOnlinePlayer().getEnderChest());
             }
             
             if(yml.contains("backpack")) {
@@ -220,6 +218,7 @@ public class PlayerManager extends DataManager {
     }
     
     public void savePlayer(DomsPlayer player) {
+        debug("Saving " + player.getPlayer());
         player.updateDomsInventory();
         try {
             File f = player.getPlayerFile();
@@ -231,7 +230,8 @@ public class PlayerManager extends DataManager {
             YamlConfiguration yml = new YamlConfiguration();
             
             yml.set("name", player.getPlayer());
-            if(!player.getDisplayName().equals(player.getPlayer())) {
+            if(!player.getDisplayName().equals(player.getPlayer()) && !player.getDisplayName().equalsIgnoreCase("off")) {
+                debug("Saving Displayname " + player.getDisplayName());
                 yml.set("nick", player.getDisplayName());
             }
             
