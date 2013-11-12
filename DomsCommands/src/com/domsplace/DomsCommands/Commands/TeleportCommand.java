@@ -162,7 +162,7 @@ public class TeleportCommand extends BukkitCommand {
             DomsLocation guessLoc = DomsLocation.guessLocation(loc);
             if(guessLoc == null) {
                 DomsPlayer from = (guessA == null ? DomsPlayer.getPlayer(sender) : guessA);
-                if(from == null || from.isConsole()) {
+                if(from == null || from.isConsole() || !from.isOnline(sender)) {
                     sendMessage(sender, ChatError + "Couldn't find player.");
                     return true;
                 }

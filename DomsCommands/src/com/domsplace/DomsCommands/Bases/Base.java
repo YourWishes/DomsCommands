@@ -376,25 +376,27 @@ public class Base extends RawBase {
     }
     
     public static Player getPlayer(CommandSender sender, String argument) {
-        Player p = null;
         for(Player plyr : Bukkit.getOnlinePlayers()) {
             if(!canSee(sender, plyr)) continue;
-            if(plyr.getName().toLowerCase().contains(argument.toLowerCase())) {
-                p = plyr;
-                break;
+            if(plyr.getName().toLowerCase().startsWith(argument.toLowerCase())) {
+                return plyr;
             }
         }
         
-        if(p == null) {
-            for(Player plyr : Bukkit.getOnlinePlayers()) {
-                if(!canSee(sender, plyr)) continue;
-                if(plyr.getDisplayName().toLowerCase().contains(argument.toLowerCase())) {
-                    p = plyr;
-                    break;
-                }
+        for(Player plyr : Bukkit.getOnlinePlayers()) {
+            if(!canSee(sender, plyr)) continue;
+            if(plyr.getName().toLowerCase().contains(argument.toLowerCase())) {
+                return plyr;
             }
         }
-        return p;
+        
+        for(Player plyr : Bukkit.getOnlinePlayers()) {
+            if(!canSee(sender, plyr)) continue;
+            if(plyr.getDisplayName().toLowerCase().contains(argument.toLowerCase())) {
+                return plyr;
+            }
+        }
+        return null;
     }
     
     public static OfflinePlayer getOfflinePlayer(Player player) {

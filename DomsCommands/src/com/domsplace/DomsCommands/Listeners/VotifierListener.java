@@ -39,7 +39,7 @@ public class VotifierListener extends DomsListener {
         
         for(String s : getConfig().getStringList("votifier.commands")) {
             for(String cmd : DataManager.CONFIG_MANAGER.format(player, s)) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
             }
         }
     }

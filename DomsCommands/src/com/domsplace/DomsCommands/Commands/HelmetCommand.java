@@ -56,7 +56,7 @@ public class HelmetCommand extends BukkitCommand {
         player.getOnlinePlayer().getEquipment().setHelmet(player.getOnlinePlayer().getItemInHand());
         player.getOnlinePlayer().setItemInHand(new ItemStack(Material.AIR));
         
-        sendMessage(sender, "Set " + ChatImportant + held.toHumanString() + ChatDefault + " as ypur helmet.");
+        sendMessage(sender, "Set " + ChatImportant + held.toHumanString() + ChatDefault + " as your helmet.");
         return true;
     }
 }
