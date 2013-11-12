@@ -46,8 +46,8 @@ public class WhoisCommand extends BukkitCommand {
             return false;
         }
         
-        DomsPlayer player = DomsPlayer.guessExactPlayer(sender, args[0], false);
-        if(player == null || player.isConsole() || !player.hasPlayedBefore()) {
+        DomsPlayer player = DomsPlayer.guessExactPlayer(sender, args[0], true);
+        if(player == null || player.isConsole()) {
             sendMessage(sender, ChatError + "That player hasn't played before.");
             return true;
         }
