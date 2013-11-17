@@ -3,7 +3,7 @@ description: Offers many commands for everyone to use!
 main: com.domsplace.DomsCommands.DomsCommandsPlugin
 authors: [Dominic, Jordan, Kyle]
 website: http://domsplace.com/
-version: '1.05'
+version: '1.06'
 load: POSTWORLD
 softdepend: [Vault, Votifier]
 commands:
@@ -1236,3 +1236,7 @@ permissions:
      description: Allows access to use reset in signs.
    DomsCommands.hug:
      description: Allows access to the hug command.
+   DomsCommands.spawn:
+     description: Allows access to the spawn command.
+   DomsCommands.spawn.others:
+     description: Allows access to teleport others to spawn.

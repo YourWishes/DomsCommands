@@ -51,6 +51,10 @@ public class SpawnCommand extends BukkitCommand {
             return true;
         }
         
+        if(!player.compare(sender) && !hasPermission(sender, "DomsCommands.spawn.others")) {
+            return this.noPermission(sender, cmd, label, args);
+        }
+        
         player.teleport(SpawnManager.SPAWN_MANAGER.getSpawn(player.getWorld()));
         sendMessage(player, "Teleporting you to spawn.");
         if(!player.compare(sender)) {
