@@ -113,6 +113,8 @@ public class PlayerManager extends DataManager {
                         p.setBanner(banner);
                     }
                     
+                    if(yml.contains(key + "pardoned")) p.isPardoned(yml.getBoolean(key + "pardoned", false));
+                    
                     p.setDate(yml.getLong(key + "date"));
                     p.setEndDate(yml.getLong(key + "end"));
                     
@@ -271,6 +273,8 @@ public class PlayerManager extends DataManager {
                 if(p.getBanner() != null) {
                     yml.set(key + "banner", p.getBanner());
                 }
+                
+                if(p.isPardoned()) yml.set(key + "pardoned", p.isPardoned());
                 
                 yml.set(key + "date", p.getDate());
                 yml.set(key + "end", p.getEndDate());
