@@ -16,12 +16,15 @@
 
 package com.domsplace.DomsCommands.Objects;
 
+import com.domsplace.BansUtils;
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Events.DomsPlayerUpdateVariablesEvent;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
+import com.domsplace.DomsCommands.Hooks.ForumAAHook;
+import com.domsplace.DomsCommands.Hooks.SELBansHook;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -486,6 +489,12 @@ public class DomsPlayer {
     
     public boolean isBanned() {
         if(this.getOfflinePlayer().isBanned()) return true;
+        if(SELBansHook.SELBANS_HOOK.isHooked()) {
+            try {
+                BansUtils.checkBans();
+                if(BansUtils.isPlayerBanned(this.getOfflinePlayer())) return true;
+            } catch(Exception e) {} catch(Error e) {}
+        }
         for(Punishment p : this.getPunishmentsOfType(PunishmentType.BAN)) {
             if(!p.isActive()) continue;
             return true;
@@ -494,6 +503,12 @@ public class DomsPlayer {
     }
 
     public boolean isMuted() {
+        if(SELBansHook.SELBANS_HOOK.isHooked()) {
+            try {
+                if(!BansUtils.CanPlayerTalk(this.getOfflinePlayer())) return false;
+            } catch(Exception e) {} catch(Error e) {}
+        }
+        
         for(Punishment p : this.getPunishmentsOfType(PunishmentType.MUTE)) {
             if(!p.isActive()) continue;
             return true;
@@ -506,6 +521,22 @@ public class DomsPlayer {
             this.flyMode = this.getOnlinePlayer().getAllowFlight();
         }
         return this.flyMode;
+    }
+    
+    public boolean isForumAARegistered() {
+        try {
+            return ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkExists(this.player)
+                    || ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkExists(this.getDisplayName());
+        } catch(Exception e) {} catch(Error e) {}
+        return false;
+    }
+    
+    public boolean isForumAAActivated() {
+        try {
+            return ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkActivated(this.player)
+                    || ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkActivated(this.getDisplayName());
+        } catch(Exception e) {} catch(Error e) {}
+        return false;
     }
     
     //Complex To's

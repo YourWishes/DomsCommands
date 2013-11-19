@@ -18,6 +18,7 @@ package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Punishment;
@@ -100,6 +101,11 @@ public class WhoisCommand extends BukkitCommand {
             messages.add(ChatImportant + "Food: " + ChatDefault + p.getFoodLevel() + "/20");
             messages.add(ChatImportant + "Running: " + ChatDefault + (p.isSprinting() ? "Yes" : "No"));
             messages.add(ChatImportant + "Sneaking: " + ChatDefault + (p.isSneaking() ? "Yes" : "No"));
+        }
+        
+        if(PluginHook.FORUMAA_HOOK.isHooked()) {
+            messages.add(ChatImportant + "ForumAA Registered: " + ChatDefault + (player.isForumAARegistered() ? "Yes" : "No"));
+            messages.add(ChatImportant + "ForumAA Activated: " + ChatDefault + (player.isForumAAActivated()? "Yes" : "No"));
         }
         
         sendMessage(sender, messages);

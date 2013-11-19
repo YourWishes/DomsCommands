@@ -32,10 +32,17 @@ public class PluginHook extends Base{
     
     public static final VaultHook VAULT_HOOK = new VaultHook();
     public static final VotifierHook VOTIFIER_HOOK = new VotifierHook();
+    public static final ForumAAHook FORUMAA_HOOK = new ForumAAHook();
+    public static final SELBansHook SELBANS_HOOK = new SELBansHook();
+    public static final TagAPIHook TAGAPI_HOOK = new TagAPIHook();
     
     //Static
     private static void hookPlugin(PluginHook hook) {
         PLUGIN_HOOKS.add(hook);
+    }
+    
+    public static List<PluginHook> getHookingPlugins() {
+        return new ArrayList<PluginHook>(PLUGIN_HOOKS);
     }
     
     public static PluginHook getHookFromPlugin(Plugin plugin) {

@@ -16,10 +16,12 @@
 
 package com.domsplace.DomsCommands.Commands;
 
-import com.domsplace.DomsCommands.Bases.Base;
-import com.domsplace.DomsCommands.Bases.BukkitCommand;
-import com.domsplace.DomsCommands.Bases.DataManager;
-import com.domsplace.DomsCommands.Objects.SubCommandOption;
+import com.domsplace.DomsCommands.Bases.*;
+import com.domsplace.DomsCommands.Objects.*;
+import com.domsplace.DomsCommands.Threads.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -65,6 +67,26 @@ public class DomsCommandsCommand extends BukkitCommand {
                 Base.DebugMode = !Base.DebugMode;
                 debug("Debug Mode Enabled!");
                 sendMessage(sender, "Turned Debug Mode " + ChatImportant + (Base.DebugMode ? "On" : "Off"));
+                return true;
+            }
+            
+            if(args[0].equalsIgnoreCase("server")) {
+                List<String> messages = new ArrayList<String>();
+                
+                messages.add(ChatColor.LIGHT_PURPLE + "=== Server Information ====");
+                messages.add(ChatColor.WHITE + "TPS: " + ServerTPSThread.getTPS());
+                for(PluginHook plugin : PluginHook.getHookingPlugins()) {
+                    messages.add(ChatColor.WHITE + plugin.getPluginName() + " hooked: " + (plugin.isHooked() ? "Yes" : "No"));
+                }
+                
+                messages.add(ChatColor.WHITE + "Registered Players: " + DomsPlayer.getRegisteredPlayers().size());
+                messages.add(ChatColor.WHITE + "Threads: " + DomsThread.getThreads().size());
+                messages.add(ChatColor.WHITE + "Listeners: " + DomsListener.getListeners().size());
+                messages.add(ChatColor.WHITE + "Commands: " + BukkitCommand.getCommands().size());
+                messages.add(ChatColor.WHITE + "Known Items: " + DomsItem.NEXT_ID);
+                messages.add(ChatColor.WHITE + "Classes: " + Bukkit.getServicesManager().getKnownServices().size());
+                
+                sendMessage(sender, messages);
                 return true;
             }
             

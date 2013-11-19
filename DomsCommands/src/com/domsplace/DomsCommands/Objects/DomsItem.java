@@ -364,7 +364,7 @@ public class DomsItem {
         return item.get(0);
     }
     
-    private static long NEXT_ID = Long.MIN_VALUE;
+    public static long NEXT_ID = Long.MIN_VALUE;
     
     //Instance
     private String material;

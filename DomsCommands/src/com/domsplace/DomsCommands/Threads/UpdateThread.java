@@ -45,7 +45,7 @@ public class UpdateThread extends DomsThread {
             
             String name = (String) latestFile.get("name");
             name = name.toLowerCase();
-            name = name.replaceAll(getPlugin().getName().toLowerCase(), "");
+            name = name.replaceAll("(?i)" + getPlugin().getName(), "");
             name = name.replaceAll("version", "");
             name = name.replaceAll(" ", "");
             name = name.replaceAll("v", "");
