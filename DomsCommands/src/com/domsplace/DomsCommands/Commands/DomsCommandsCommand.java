@@ -90,6 +90,12 @@ public class DomsCommandsCommand extends BukkitCommand {
                 return true;
             }
             
+            if(args[0].equalsIgnoreCase("bukkit")) {
+                sendMessage(sender, "Creating Bukkit Pages!");
+                DataManager.PLUGIN_MANAGER.createBukkitData();
+                return true;
+            }
+            
             sender.sendMessage(ChatError + "Unknown Argument " + args[0] + ".");
             return true;
         }

@@ -18,6 +18,7 @@ package com.domsplace.DomsCommands.Bases;
 
 import com.domsplace.DomsCommands.DataManagers.ConfigManager;
 import com.domsplace.DomsCommands.DomsCommandsPlugin;
+import com.domsplace.DomsCommands.Hooks.VaultHook;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.io.File;
 import java.text.DecimalFormat;
@@ -207,6 +208,14 @@ public class Base extends RawBase {
         return s.substring(0, length);
     }
     
+    public static String pad(String s, int length) {
+        if(s.length() >= length) return s;
+        for(int i = s.length(); i < length; i++) {
+            s += " ";
+        }
+        return s;
+    }
+    
     public static String emoji(String s) {
         s = s.replaceAll("<3", "❤");
         s = s.replaceAll("(?i)\\(PERSONF\\)", "유");
@@ -225,7 +234,10 @@ public class Base extends RawBase {
         msg = msg.replaceAll("\\t", TAB);
         msg = msg.replaceAll("\\\\t", TAB);
         msg = msg.replaceAll("\t", TAB);
-        sender.sendMessage(ChatDefault + msg);
+        String[] msgs = msg.split("\n");
+        for(String s : msgs) {
+            sender.sendMessage(ChatDefault + s);
+        }
     }
 
     public static void sendMessage(CommandSender sender, String msg, Object... objs) {
@@ -1004,5 +1016,48 @@ public class Base extends RawBase {
         if(type == null) return true;
         if(type.equals(Material.AIR)) return true;
         return !type.isSolid();
+    }
+    
+    //Economy Utils
+    public static boolean useEcon() {
+        return VaultHook.VAULT_HOOK.isHooked() && VaultHook.VAULT_HOOK.getEconomy() != null;
+    }
+    
+    public static double getBalance(String player) {
+        try {
+            return VaultHook.VAULT_HOOK.getEconomy().getBalance(player);
+        } catch(Exception e) {} catch(Error e) {}
+        return 0.0d;
+    }
+    
+    public static String formatEcon(double amt) {
+        try {
+            return VaultHook.VAULT_HOOK.getEconomy().format(amt);
+        } catch(Exception e) { } catch(Error e) {}
+        return Base.twoDecimalPlaces(amt);
+    }
+    
+    public static void chargePlayer(OfflinePlayer player, double amt) {
+        if(player == null) return;
+        chargePlayer(player.getName(), amt);
+    }
+    
+    public static void chargePlayer(String player, double amt) {
+        if(player == null) return;
+        try {
+            if(amt == 0) return;
+            if(amt < 0) {
+                VaultHook.VAULT_HOOK.getEconomy().depositPlayer(player, -amt);
+            } else if(amt > 0) {
+                VaultHook.VAULT_HOOK.getEconomy().withdrawPlayer(player, amt);
+            }
+        } catch(Exception e) {} catch(Error e) {}
+    }
+    
+    public static boolean hasBalance(String player) {
+        try {
+            return VaultHook.VAULT_HOOK.getEconomy().hasAccount(player);
+        } catch(Exception e) {} catch(Error e) {}
+        return false;
     }
 }

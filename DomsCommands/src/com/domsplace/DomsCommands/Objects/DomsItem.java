@@ -254,7 +254,7 @@ public class DomsItem {
         List<String> s2 = new ArrayList<String>();
         
         for(String s : count.keySet()) {
-            s2.add(count.get(s) + " lots of " + s);
+            s2.add(count.get(s) + " lot" + (count.get(s) != 1 ? "s" : "") + " of " + s);
         }
         
         return s2;

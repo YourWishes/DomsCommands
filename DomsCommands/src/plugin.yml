@@ -3,7 +3,7 @@ description: Offers many commands for everyone to use!
 main: com.domsplace.DomsCommands.DomsCommandsPlugin
 authors: [Dominic, Jordan, Kyle]
 website: http://domsplace.com/
-version: '1.07'
+version: '1.08'
 load: POSTWORLD
 commands:
    DomsCommands:
@@ -135,6 +135,11 @@ commands:
       aliases: [warning, bad]
       usage: /<command> [player] (reason)
       permission: DomsCommands.warn
+   warns:
+      description: Lookup a player's warnings.
+      aliases: [lookupwarns, warnslookup, findwarns, warnwhois, warnreason, wreason]
+      usage: /<command> [player|id]
+      permission: DomsCommands.warn.lookup
    away:
       description: Marks or unmarks yourself as being Away.
       aliases: [afk, awayfromkeyboard, busy]
@@ -408,6 +413,16 @@ commands:
       description: Show the love.
       usage: /<command> [player]
       permission: DomsCommands.hug
+   nameplate:
+      description: Change the nameplate of a player.
+      aliases: [setnameplate, name]
+      usage: /<command> (player) [name]
+      permission: DomsCommands.nameplate
+   recipe:
+      description: Get's the recipe to craft an item.
+      aliases: [getrecipe]
+      usage: /<command> (item)
+      permission: DomsCommands.recipe
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -492,6 +507,8 @@ permissions:
        DomsCommands.kiss: true
        DomsCommands.hug: true
        DomsCommands.sign.colors.*: true
+       DomsCommands.nameplate.*: true
+       DomsCommands.recipe: true
    DomsCommands.reload:
      description: Allows access to reload the Configuration.
    DomsCommands.domscommands:
@@ -1239,3 +1256,81 @@ permissions:
      description: Allows access to the spawn command.
    DomsCommands.spawn.others:
      description: Allows access to teleport others to spawn.
+   DomsCommands.nameplate.*:
+     description: Allows access to all nameplate permissions.
+     children:
+         DomsCommands.nameplate: true
+         DomsCommands.nameplate.colors.*: true
+   DomsCommands.nameplate:
+     description: Allows access to the nameplate command.
+   DomsCommands.nameplate.colors.*:
+     description: Allows access to use all colors in nameplates.
+     children:
+         DomsCommands.nameplate.colors.black: true
+         DomsCommands.nameplate.colors.darkblue: true
+         DomsCommands.nameplate.colors.darkgreen: true
+         DomsCommands.nameplate.colors.cyan: true
+         DomsCommands.nameplate.colors.darkred: true
+         DomsCommands.nameplate.colors.purple: true
+         DomsCommands.nameplate.colors.gold: true
+         DomsCommands.nameplate.colors.gray: true
+         DomsCommands.nameplate.colors.darkgray: true
+         DomsCommands.nameplate.colors.blue: true
+         DomsCommands.nameplate.colors.green: true
+         DomsCommands.nameplate.colors.lightblue: true
+         DomsCommands.nameplate.colors.red: true
+         DomsCommands.nameplate.colors.pink: true
+         DomsCommands.nameplate.colors.yellow: true
+         DomsCommands.nameplate.colors.white: true
+         DomsCommands.nameplate.colors.magic: true
+         DomsCommands.nameplate.colors.bold: true
+         DomsCommands.nameplate.colors.strike: true
+         DomsCommands.nameplate.colors.underline: true
+         DomsCommands.nameplate.colors.italics: true
+         DomsCommands.nameplate.colors.reset: true
+   DomsCommands.nameplate.colors.black:
+     description: Allows access to use black in nameplates.
+   DomsCommands.nameplate.colors.darkblue:
+     description: Allows access to use darkblue in nameplates.
+   DomsCommands.nameplate.colors.darkgreen:
+     description: Allows access to use darkgreen in nameplates.
+   DomsCommands.nameplate.colors.cyan:
+     description: Allows access to use cyan in nameplates.
+   DomsCommands.nameplate.colors.darkred:
+     description: Allows access to use darkred in nameplates.
+   DomsCommands.nameplate.colors.purple:
+     description: Allows access to use purple in nameplates.
+   DomsCommands.nameplate.colors.gold:
+     description: Allows access to use gold in nameplates.
+   DomsCommands.nameplate.colors.gray:
+     description: Allows access to use gray in nameplates.
+   DomsCommands.nameplate.colors.darkgray:
+     description: Allows access to use darkgray in nameplates.
+   DomsCommands.nameplate.colors.blue:
+     description: Allows access to use blue in nameplates.
+   DomsCommands.nameplate.colors.green:
+     description: Allows access to use green in nameplates.
+   DomsCommands.nameplate.colors.lightblue:
+     description: Allows access to use lightblue in nameplates.
+   DomsCommands.nameplate.colors.red:
+     description: Allows access to use red in nameplates.
+   DomsCommands.nameplate.colors.pink:
+     description: Allows access to use pink in nameplates.
+   DomsCommands.nameplate.colors.yellow:
+     description: Allows access to use yellow in nameplates.
+   DomsCommands.nameplate.colors.white:
+     description: Allows access to use white in nameplates.
+   DomsCommands.nameplate.colors.magic:
+     description: Allows access to use magic in nameplates.
+   DomsCommands.nameplate.colors.bold:
+     description: Allows access to use bold in nameplates.
+   DomsCommands.nameplate.colors.strike:
+     description: Allows access to use strike in nameplates.
+   DomsCommands.nameplate.colors.underline:
+     description: Allows access to use underline in nameplates.
+   DomsCommands.nameplate.colors.italics:
+     description: Allows access to use italics in nameplates.
+   DomsCommands.nameplate.colors.reset:
+     description: Allows access to use reset in nameplates.
+   DomsCommands.recipe:
+     description: Allows access to the recipe command.

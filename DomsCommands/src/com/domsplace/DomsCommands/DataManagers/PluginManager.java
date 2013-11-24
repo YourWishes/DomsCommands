@@ -19,6 +19,9 @@ package com.domsplace.DomsCommands.DataManagers;
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Enums.ManagerType;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import org.bukkit.configuration.MemorySection;
@@ -41,7 +44,9 @@ public class PluginManager extends DataManager {
         InputStream is = getPlugin().getResource("plugin.yml");
         plugin = YamlConfiguration.loadConfiguration(is);
         is.close();
-        
+    }
+    
+    public void createBukkitData() {
         //For the Bukkit Page
         String out = "";
         for(String key : ((MemorySection) plugin.get("commands")).getKeys(false)) {
@@ -53,9 +58,19 @@ public class PluginManager extends DataManager {
             out += "----\n";
         }
         
-        //log("\n\n" + out);
+        try {
+            File f = new File(getDataFolder(), "cmds.txt");
+            f.createNewFile();
+            
+            BufferedWriter writer = new BufferedWriter(new FileWriter(f));
+            writer.write(out);
+            writer.flush();
+        } catch(Exception e) {
+            error("failed to save cmds", e);
+        }
         
         out = "";
+        
         for(String key : ((MemorySection) plugin.get("permissions")).getKeys(true)) {
             if(key.endsWith("description") || key.endsWith("children") || !(plugin.contains("permissions." + key + ".description"))) continue;
             out += "\n----\n**Node**: //" + key + "//";
@@ -64,7 +79,17 @@ public class PluginManager extends DataManager {
                 //out += "\n\\\\**Also Gives**: " + (Base.setToString(((MemorySection) plugin.get("permissions." + key + ".children")).getKeys(false), ", "));
             } catch(Exception e) {}
         }
-        //log(out);
+        
+        
+        try {
+            File f = new File(getDataFolder(), "perms.txt");
+            f.createNewFile();
+            
+            BufferedWriter writer = new BufferedWriter(new FileWriter(f));
+            writer.write(out);
+            writer.flush();
+        } catch(Exception e) {
+            error("failed to save perms", e);}
     }
     
     public YamlConfiguration getYML() {

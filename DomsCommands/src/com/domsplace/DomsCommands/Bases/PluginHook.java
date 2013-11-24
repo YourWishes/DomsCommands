@@ -35,6 +35,7 @@ public class PluginHook extends Base{
     public static final ForumAAHook FORUMAA_HOOK = new ForumAAHook();
     public static final SELBansHook SELBANS_HOOK = new SELBansHook();
     public static final TagAPIHook TAGAPI_HOOK = new TagAPIHook();
+    public static final VillagesHook VILLAGES_HOOK = new VillagesHook();
     
     //Static
     private static void hookPlugin(PluginHook hook) {

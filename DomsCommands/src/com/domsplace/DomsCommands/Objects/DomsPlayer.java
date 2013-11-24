@@ -20,6 +20,7 @@ import com.domsplace.BansUtils;
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.PluginHook;
+import com.domsplace.DomsCommands.DataManagers.SpawnManager;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Events.DomsPlayerUpdateVariablesEvent;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
@@ -54,6 +55,7 @@ public class DomsPlayer {
     public static final DomsPlayer CONSOLE_PLAYER = new DomsPlayer("CONSOLE");
     
     public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#^*&(),\\_\\-\\s]*$";
+    public static final String NAMEPLATE_REGEX = "^[a-zA-Z0-9!@#^*&(),\\_\\-\\s]*$";
     public static final int VIEW_DISTANCE = 5;
     
     //Static
@@ -175,6 +177,7 @@ public class DomsPlayer {
     //Instance
     private final String player;
     private String displayName;
+    private String namePlate;
     private File playerFile;
     
     private String lastIP;
@@ -234,7 +237,7 @@ public class DomsPlayer {
     public long getLogoutTime() {return this.logout;}
     public long getPlayTime() {return this.playtime;}
     public long getAFKTime() {return this.afkTime;}
-    public String getLastIP() {return this.lastIP;}
+    public String getLastIP() {return (this.lastIP == null ? "" : this.lastIP);}
     public long getLastMoveTime() {return this.lastMoveTime;}
     public TeleportRequest getLastTeleporRequest() {return this.lastRequest;}
     public DomsLocation getBackLocation() {return this.backLocation;}
@@ -257,6 +260,7 @@ public class DomsPlayer {
     public DomsInventory getBackpack() {return this.backpack;}
     public DomsLocation getFurnaceLocation() {return this.playerFurnace;}
     public String getNickname() {return this.displayName;}
+    public String getNamePlate() {return this.namePlate;}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
@@ -281,6 +285,7 @@ public class DomsPlayer {
     public void setFlightMode(boolean f) {this.flyMode = f;}
     public void setFurnaceLocation(DomsLocation location) {this.playerFurnace = location.copy();}
     public DomsInventory setBackpack(DomsInventory inventory) {this.backpack = inventory; return this.backpack;}
+    public void setNamePlate(String s) {this.namePlate = s;}
     
     @Override public String toString() {return this.getDisplayName();}
     
@@ -332,7 +337,7 @@ public class DomsPlayer {
     public DomsLocation getLocation() {
         if(this.isConsole()) return null;
         if(this.isOnline()) return new DomsLocation(this.getOnlinePlayer().getLocation());
-        return this.lastLocation;
+        return (this.lastLocation == null ? SpawnManager.SPAWN_MANAGER.getSpawn(Bukkit.getWorlds().get(0).getName()) : this.lastLocation);
     }
 
     public List<Punishment> getPunishmentsOfType(PunishmentType type) {
@@ -471,6 +476,10 @@ public class DomsPlayer {
         BlockFace tFace = this.getTargetBlockFace(s);
         if(target == null || tFace == null) return null;
         return target.getRelative(tFace);
+    }
+    
+    public String getCountry() {
+        return null;
     }
     
     //Complex set's
@@ -613,7 +622,6 @@ public class DomsPlayer {
             this.enderchest.add(inv);
         } catch(Exception e) {
             Base.debug("Failed to update " + this.getDisplayName() + "'s inventory.");
-            e.printStackTrace();
         }
     }
     
@@ -710,5 +718,14 @@ public class DomsPlayer {
             return true;
         }
         return false;
+    }
+
+    public void refreshTag() {
+        if(this.isConsole()) return;
+        if(!this.isOnline()) return;
+        try {
+            PluginHook.TAGAPI_HOOK.refreshTags(this.getOnlinePlayer());
+            Base.debug("Refreshed Tags.");
+        } catch(Exception e) {} catch (Error e) {}
     }
 }

@@ -11,6 +11,7 @@ public class TagAPIHook extends PluginHook {
     
     public TagAPIHook() {
         super("TagAPI");
+        this.shouldHook(true);
     }
     
     public TagAPI getTagAPI() {

@@ -46,5 +46,6 @@ public class PlayDirtyListener extends DomsListener {
         e.setCancelled(true);
         if(isPlayer(e.getPlayer())) log(e.getPlayer().getName() + " issued command /" + e.toFullCommand());
         cmd.fakeExecute(e.getPlayer(), e.toFullCommand());
+        debug("DONE EXECUTING");
     }
 }

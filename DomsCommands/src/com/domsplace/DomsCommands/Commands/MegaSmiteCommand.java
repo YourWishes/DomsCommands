@@ -62,7 +62,7 @@ public class MegaSmiteCommand extends BukkitCommand {
         if(targetPlayer != null) {
             sendMessage(targetPlayer, "Thou hath been smitten!");
             if(!targetPlayer.compare(sender)) {
-                sendMessage(sender, "Smote " + ChatImportant + targetPlayer.getOnlinePlayer());
+                sendMessage(sender, "Smote " + ChatImportant + targetPlayer.getDisplayName());
             }
         }
         for(int i = 0; i < 15; i++) {

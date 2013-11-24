@@ -173,7 +173,7 @@ public class SubCommandOption extends Base {
     }
     
     public static String reverse(String s, CommandSender sender) {
-        if(Bukkit.getPlayer(s) != null) return SubCommandOption.PLAYERS_OPTION.option;
+        if(Base.getPlayer(sender, s) != null) return SubCommandOption.PLAYERS_OPTION.option;
         if(Bukkit.getWorld(s) != null) return SubCommandOption.WORLD_OPTION.option;
         if(Enchantment.getByName(s) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
         if(DomsEntity.craftEntity(s, DomsPlayer.getPlayer(sender)) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;

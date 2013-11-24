@@ -22,7 +22,6 @@ import com.domsplace.DomsCommands.DataManagers.SpawnManager;
 import com.domsplace.DomsCommands.Events.PlayerFirstJoinedEvent;
 import com.domsplace.DomsCommands.Events.PlayerLeaveGameEvent;
 import com.domsplace.DomsCommands.Events.PlayerPostFirstJoinEvent;
-import com.domsplace.DomsCommands.Objects.DomsInventory;
 import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Kit;
@@ -33,11 +32,8 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  * @author      Dominic

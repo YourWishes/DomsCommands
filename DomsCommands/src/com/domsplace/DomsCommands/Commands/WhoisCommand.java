@@ -23,6 +23,8 @@ import com.domsplace.DomsCommands.Enums.PunishmentType;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Punishment;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
+import com.domsplace.Villages.Objects.Resident;
+import com.domsplace.Villages.Objects.Village;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
@@ -53,33 +55,33 @@ public class WhoisCommand extends BukkitCommand {
             return true;
         }
         
-        String[] message = new String[] {
-            ChatImportant + "Information about " + player.getPlayer(),
-            ChatImportant + "Display Name: " + ChatDefault + player.getDisplayName(),
-            ChatImportant + "Online: " + ChatDefault + (player.isOnline(sender) ? "Yes" : "No"),
-            ChatImportant + "IP: " + ChatDefault + player.getLastIP(),
-            ChatImportant + "Joined: " + ChatDefault + Base.getTimeDifference(player.getJoinTime(), getNow()) + ChatDefault + " ago",
-            ChatImportant + "Last Login: " + ChatDefault + Base.getTimeDifference(player.getLoginTime(), getNow()) + ChatDefault + " ago",
-            ChatImportant + "Last Logout: " + ChatDefault + Base.getTimeDifference(player.getLogoutTime(), getNow()) + ChatDefault + " ago",
-            ChatImportant + "Playtime: " + ChatDefault + Base.capitalizeFirstLetter(Base.getTimeDifference(0, player.getPlayTime())),
-            ChatImportant + "Last Location: " + ChatDefault + player.getLocation().toHumanString(),
-            ChatImportant + "Group: " + ChatDefault + player.getGroup(),
-            ChatImportant + "Can Fly: " + ChatDefault + (player.isFlightMode() ? "Yes" : "No")
-        };
         
         List<String> messages = new ArrayList<String>();
-        Base.addArrayToList(messages, message);
+        try {messages.add(ChatImportant + "Information about " + player.getPlayer());} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Display Name: " + ChatDefault + player.getDisplayName());} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Online: " + ChatDefault + (player.isOnline(sender) ? "Yes" : "No"));} catch(Exception e) {}
+        try {messages.add(ChatImportant + "IP: " + ChatDefault + player.getLastIP());} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Joined: " + ChatDefault + Base.getTimeDifference(player.getJoinTime(), getNow()) + ChatDefault + " ago");} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Last Login: " + ChatDefault + Base.getTimeDifference(player.getLoginTime(), getNow()) + ChatDefault + " ago");} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Last Logout: " + ChatDefault + Base.getTimeDifference(player.getLogoutTime(), getNow()) + ChatDefault + " ago");} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Playtime: " + ChatDefault + Base.capitalizeFirstLetter(Base.getTimeDifference(0, player.getPlayTime())));} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Last Location: " + ChatDefault + player.getLocation().toHumanString());} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Group: " + ChatDefault + player.getGroup());} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Can Fly: " + ChatDefault + (player.isFlightMode() ? "Yes" : "No"));} catch(Exception e) {}
         
-        List<DomsPlayer> ipPlayers = DomsPlayer.getPlayersByIP(player.getLastIP());
-        if(ipPlayers.size() > 1) {
-            String x = ChatImportant + "Players Using IP: " + ChatDefault;
-            for(int i = 0; i < ipPlayers.size(); i++) {
-                if(ipPlayers.get(i).isOnline(sender)) x+= ChatColor.GREEN;
-                x += ipPlayers.get(i).getPlayer() + ChatDefault;
-                if(i < ipPlayers.size() - 1) x += ", ";
+        try {
+            if(player.getLastIP().equals("")) throw new Exception("IDGAF");
+            List<DomsPlayer> ipPlayers = DomsPlayer.getPlayersByIP(player.getLastIP());
+            if(ipPlayers.size() > 1) {
+                String x = ChatImportant + "Players Using IP: " + ChatDefault;
+                for(int i = 0; i < ipPlayers.size(); i++) {
+                    if(ipPlayers.get(i).isOnline(sender)) x+= ChatColor.GREEN;
+                    x += ipPlayers.get(i).getPlayer() + ChatDefault;
+                    if(i < ipPlayers.size() - 1) x += ", ";
+                }
+                messages.add(x);
             }
-            messages.add(x);
-        }
+        } catch(Exception e) {}
         
         List<Punishment> bans = player.getPunishmentsOfType(PunishmentType.BAN);
         List<Punishment> kicks = player.getPunishmentsOfType(PunishmentType.KICK);
@@ -106,6 +108,23 @@ public class WhoisCommand extends BukkitCommand {
         if(PluginHook.FORUMAA_HOOK.isHooked()) {
             messages.add(ChatImportant + "ForumAA Registered: " + ChatDefault + (player.isForumAARegistered() ? "Yes" : "No"));
             messages.add(ChatImportant + "ForumAA Activated: " + ChatDefault + (player.isForumAAActivated()? "Yes" : "No"));
+        }
+        
+        if(Base.useEcon()) {
+            messages.add(ChatImportant + "Has Account: " + ChatDefault + (Base.hasBalance(player.getPlayer()) ? "Yes" : "No"));
+            messages.add(ChatImportant + "Balance: " + ChatDefault + Base.formatEcon(Base.getBalance(player.getPlayer())));
+        }
+        
+        if(PluginHook.VILLAGES_HOOK.isHooked()) {
+            try {
+                Resident r = Resident.getResident(player.getOfflinePlayer());
+                Village v = Village.getPlayersVillage(r);
+                messages.add(ChatImportant + "In Village: " + ChatDefault + (v == null ? "No" : "Yes"));
+                if(v != null) {
+                    messages.add(ChatImportant + "Village: " + ChatDefault + v.getName());
+                    messages.add(ChatImportant + "Is Mayor: " + ChatDefault + (v.isMayor(r) ? "Yes" : "No"));
+                }
+            } catch(Exception e) {} catch(Error e) {}
         }
         
         sendMessage(sender, messages);
