@@ -19,7 +19,9 @@ package com.domsplace.DomsCommands;
 import com.domsplace.DomsCommands.Bases.*;
 import com.domsplace.DomsCommands.Commands.*;
 import com.domsplace.DomsCommands.Listeners.*;
+import com.domsplace.DomsCommands.Objects.DomsCommandsAddon;
 import com.domsplace.DomsCommands.Threads.*;
+import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -269,6 +271,10 @@ public class DomsCommandsPlugin extends JavaPlugin {
         
         DomsThread.stopAllThreads();
         DataManager.saveAll();
+        
+        for(DomsCommandsAddon addon : new ArrayList<DomsCommandsAddon>(DomsCommandsAddon.ADDONS)) {
+            addon.disable();
+        }
     }
     
     public void disable() {

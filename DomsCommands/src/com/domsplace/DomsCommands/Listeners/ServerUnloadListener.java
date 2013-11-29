@@ -51,7 +51,6 @@ public class ServerUnloadListener extends DomsListener {
         for(DomsCommandsAddon p : new ArrayList<DomsCommandsAddon>(DomsCommandsAddon.ADDONS)) {
             if(p.getPlugin() == null) continue;
             if(!p.getPlugin().getName().equalsIgnoreCase(e.getPlugin().getName())) continue;
-            p.disable();
             DomsCommandsAddon.ADDONS.remove(p);
         }
     }
