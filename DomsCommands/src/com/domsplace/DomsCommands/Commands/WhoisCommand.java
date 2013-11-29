@@ -59,6 +59,9 @@ public class WhoisCommand extends BukkitCommand {
         List<String> messages = new ArrayList<String>();
         try {messages.add(ChatImportant + "Information about " + player.getPlayer());} catch(Exception e) {}
         try {messages.add(ChatImportant + "Display Name: " + ChatDefault + player.getDisplayName());} catch(Exception e) {}
+        if(player.getNamePlate() != null && !player.getNamePlate().equalsIgnoreCase("off") && !player.getNamePlate().replaceAll(" ", "").equals("")) {
+            messages.add(ChatImportant + "Nameplate: " + ChatDefault + player.getNamePlate());
+        }
         try {messages.add(ChatImportant + "Online: " + ChatDefault + (player.isOnline(sender) ? "Yes" : "No"));} catch(Exception e) {}
         try {messages.add(ChatImportant + "IP: " + ChatDefault + player.getLastIP());} catch(Exception e) {}
         try {messages.add(ChatImportant + "Joined: " + ChatDefault + Base.getTimeDifference(player.getJoinTime(), getNow()) + ChatDefault + " ago");} catch(Exception e) {}

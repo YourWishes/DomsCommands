@@ -22,6 +22,7 @@ import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.PluginHook;
 import com.domsplace.DomsCommands.DataManagers.SpawnManager;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
+import com.domsplace.DomsCommands.Events.DomsPlayerUpdateSavedVariablesEvent;
 import com.domsplace.DomsCommands.Events.DomsPlayerUpdateVariablesEvent;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
 import com.domsplace.DomsCommands.Hooks.ForumAAHook;
@@ -202,6 +203,7 @@ public class DomsPlayer {
     private final List<DomsInventory> enderchest;
     private DomsInventory backpack;
     private Map<String, String> variables;
+    private Map<String, String> savedVariables;
     private Map<Kit, Long> kitCooldowns;
     
     private boolean flyMode;
@@ -222,6 +224,7 @@ public class DomsPlayer {
         this.afkTime = Base.getNow();
         this.lastMoveTime = Base.getNow();
         this.variables = new HashMap<String, String>();
+        this.savedVariables = new HashMap<String, String>();
         this.kitCooldowns = new HashMap<Kit, Long>();
         
         this.registerPlayer();
@@ -253,8 +256,10 @@ public class DomsPlayer {
     public String getWorld() {if(this.getLocation() == null) return null; return this.getLocation().getWorld();}
     public DomsChannel getChannel() {return DomsChannel.getPlayersChannel(this);}
     public Map<String, String> getVariables() {this.updateVariables(false); return new HashMap<String, String>(this.variables);}
+    public Map<String, String> getSavedVariables() {this.updateSavedVariables(false); return new HashMap<String, String>(this.savedVariables);}
     public Map<Kit, Long> getKitCooldowns() {return new HashMap<Kit, Long>(this.kitCooldowns);}
     public String getVariable(String key) {this.updateVariables(false); return this.variables.get(key);}
+    public String getSavedVariable(String key) {this.updateSavedVariables(false); return this.savedVariables.get(key);}
     public long getKitCooldown(Kit k) {try {return this.kitCooldowns.get(k);}catch(Exception e) {return -1;}}
     public boolean getFlightMode() {return this.flyMode;}
     public DomsInventory getBackpack() {return this.backpack;}
@@ -281,6 +286,7 @@ public class DomsPlayer {
     public void setLastMessenger(DomsPlayer player) {this.lastPrivateMessenger = player;}
     public void setPlayerFile(File file) {this.playerFile = file;}
     public void setVariable(String key, String variable) {this.variables.put(key, variable); this.updateVariables(false);}
+    public void setSavedVariable(String key, String variable) {this.savedVariables.put(key, variable); this.updateSavedVariables(false);}
     public void setKitCooldown(Kit k, long l) {this.kitCooldowns.put(k, l);}
     public void setFlightMode(boolean f) {this.flyMode = f;}
     public void setFurnaceLocation(DomsLocation location) {this.playerFurnace = location.copy();}
@@ -626,6 +632,7 @@ public class DomsPlayer {
     }
     
     public void updateVariables() {this.updateVariables(true);}
+    public void updateSavedVariables() {this.updateSavedVariables(true);}
     
     private void updateVariables(boolean fireEvent) {
         if(this.player == null || this.displayName == null) return;
@@ -657,6 +664,13 @@ public class DomsPlayer {
         //Finally, fire event
         if(fireEvent) {
             DomsPlayerUpdateVariablesEvent event = new DomsPlayerUpdateVariablesEvent(this);
+            event.fireEvent();
+        }
+    }
+    
+    private void updateSavedVariables(boolean fireEvent) {
+        if(fireEvent) {
+            DomsPlayerUpdateSavedVariablesEvent event = new DomsPlayerUpdateSavedVariablesEvent(this);
             event.fireEvent();
         }
     }

@@ -61,6 +61,7 @@ public class HelpCommand extends BukkitCommand {
         
         if(page > pages.length || page < 1) {
             sendMessage(sender, ChatError + "Page must be between 1 and " + pages.length);
+            return true;
         }
         
         page = page - 1;

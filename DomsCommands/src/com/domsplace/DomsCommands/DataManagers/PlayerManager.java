@@ -211,7 +211,19 @@ public class PlayerManager extends DataManager {
 
         if(yml.contains("location")) {
             player.setLastLocation(DomsLocation.guessLocation(yml.getString("location")));
-        }   
+        }
+        
+        //Store Saved Variables
+        if(yml.contains("variables")) {
+            try {
+                for(String s : ((MemorySection) yml.get("variables")).getKeys(false)) {
+                    try {
+                        player.setVariable(s, yml.getString("variables." + s));
+                    } catch(Exception e) {}
+                }
+            } catch(Exception e) {}
+        }
+        
         return player;
     }
     
@@ -353,6 +365,12 @@ public class PlayerManager extends DataManager {
             if(player.getFurnaceLocation() != null) {
                 yml.set("furnace", player.getFurnaceLocation().toString());
             }
+        }
+        
+        //Save Variables
+        Map<String, String> vars = player.getSavedVariables();
+        for(String key : vars.keySet()) {
+            yml.set("variables." + key, vars.get(key));
         }
 
         try {

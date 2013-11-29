@@ -34,5 +34,7 @@ public class AddPlayerTimeThread extends DomsThread {
         for(DomsPlayer plyr : DomsPlayer.getOnlinePlayers()) {
             plyr.addPlayTime(1000);
         }
+        
+        System.gc();
     }
 }

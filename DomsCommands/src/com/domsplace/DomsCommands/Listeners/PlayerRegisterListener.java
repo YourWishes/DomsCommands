@@ -103,6 +103,7 @@ public class PlayerRegisterListener extends DomsListener {
             event.fireEvent();
             debug("Fired Event");
             DataManager.PLAYER_MANAGER.savePlayer(player);
+            player.updateSavedVariables();
         } catch(Exception ex) {
             error("Failed to Save new player..", ex);
         }

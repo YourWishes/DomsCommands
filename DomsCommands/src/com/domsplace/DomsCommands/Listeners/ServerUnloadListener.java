@@ -18,6 +18,8 @@ package com.domsplace.DomsCommands.Listeners;
 
 import com.domsplace.DomsCommands.Bases.DomsListener;
 import com.domsplace.DomsCommands.Bases.PluginHook;
+import com.domsplace.DomsCommands.Objects.DomsCommandsAddon;
+import java.util.ArrayList;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -41,5 +43,16 @@ public class ServerUnloadListener extends DomsListener {
         PluginHook hook = PluginHook.getHookFromPlugin(e.getPlugin());
         if(hook == null) return;
         hook.hook();
+    }
+    
+    @EventHandler(ignoreCancelled=true)
+    public void handleAddonUnloaded(PluginDisableEvent e) {
+        if(e.getPlugin() == null) return;
+        for(DomsCommandsAddon p : new ArrayList<DomsCommandsAddon>(DomsCommandsAddon.ADDONS)) {
+            if(p.getPlugin() == null) continue;
+            if(!p.getPlugin().getName().equalsIgnoreCase(e.getPlugin().getName())) continue;
+            p.disable();
+            DomsCommandsAddon.ADDONS.remove(p);
+        }
     }
 }
