@@ -525,6 +525,7 @@ public class DomsPlayer {
         }
         
         for(Punishment p : this.getPunishmentsOfType(PunishmentType.MUTE)) {
+            if(p == null) continue;
             if(!p.isActive()) continue;
             return true;
         }

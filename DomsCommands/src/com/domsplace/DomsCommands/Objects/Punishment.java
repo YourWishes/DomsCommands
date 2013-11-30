@@ -72,7 +72,7 @@ public class Punishment {
     public PunishmentType getType() {return this.type;}
     public long getDate() {return this.date;}
     public long getEndDate() {return this.endDate;}
-    public DomsLocation getLocation() {return this.location;}
+    public DomsLocation getLocation() {return (this.location == null ? new DomsLocation(0, 0, 0) : this.location);}
     public String getReason() {if(this.reason == null) return Punishment.DEFAULT_REASON; return this.reason;}
     public String getBanner() {return this.sender;}
     

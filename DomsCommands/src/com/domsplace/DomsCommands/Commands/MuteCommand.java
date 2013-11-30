@@ -23,6 +23,7 @@ import static com.domsplace.DomsCommands.Bases.Base.ChatImportant;
 import static com.domsplace.DomsCommands.Bases.Base.sendMessage;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Enums.PunishmentType;
+import com.domsplace.DomsCommands.Objects.DomsLocation;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Punishment;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
@@ -55,6 +56,7 @@ public class MuteCommand extends BukkitCommand {
         
         if(rel.isMuted()) {
             for(Punishment p : rel.getPunishmentsOfType(PunishmentType.MUTE)) {
+                if(p == null) continue;
                 p.isPardoned(true);
             }
             
@@ -102,6 +104,7 @@ public class MuteCommand extends BukkitCommand {
         String name = sender.getName();
         if(isPlayer(sender)) {
             name = DomsPlayer.getPlayer(sender).getDisplayName();
+            p.setLocation(new DomsLocation(getPlayer(sender).getLocation()));
         }
         broadcast(
             "DomsCommands.mute.notify",
