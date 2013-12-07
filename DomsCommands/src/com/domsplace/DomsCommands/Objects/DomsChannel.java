@@ -63,6 +63,10 @@ public class DomsChannel {
     
     public static List<DomsChannel> getChannels() {return new ArrayList<DomsChannel>(REGISTERED_CHANNELS);}
     
+    public static String escapeRaw(String x) {
+        return x.replaceAll("\"", "\\\"");
+    }
+    
     //Instance
     private String name;
     private String chatPermission;
@@ -74,9 +78,9 @@ public class DomsChannel {
     private List<String> commands;
     private Map<String, String> variables;
     
-    private boolean useEmoji = false;
-    private boolean useURLs = false;
-    private boolean useNicknames = false;
+    private boolean colorEmoji = false;
+    private boolean colorURLs = false;
+    private boolean colorNicknames = false;
     
     public DomsChannel (String name, String chatPermission, DomsChatFormat format, boolean isp, List<String> commands) {
         this.name = name;
@@ -110,7 +114,7 @@ public class DomsChannel {
     
     public boolean isPrivate() {return this.isprivate;}
     
-    public void useEmoji(boolean t) {this.useEmoji = t;}
+    public void useEmoji(boolean t) {this.colorEmoji = t;}
     
     public void removePlayer(DomsPlayer player) {if(!this.hasPlayer(player)) return; this.players.remove(player);}
     public void removeVariable(String key) {this.variables.remove(key);}
@@ -121,13 +125,14 @@ public class DomsChannel {
     
     public DomsChatFormat getFormat(DomsPlayer player) {
         if(player.isConsole()) return this.defaultFormat;
-        return this.getGroupFormat(player.getGroup());
-    }
-    
-    public DomsChatFormat getGroupFormat(String group) {
+        //Try to get by group
         for(DomsChatFormat format : this.chatFormats) {
-            if(format.getGroup().equalsIgnoreCase(group)) return format;
+            if(format.getGroup() == null) continue;
+            if(!format.getGroup().equalsIgnoreCase(player.getGroup())) continue;
+            return format;
         }
+        
+        //Try to get the fallback format
         return this.defaultFormat;
     }
     
@@ -161,15 +166,47 @@ public class DomsChannel {
         if(Base.removeColors(message).replaceAll(" ", "").equals("")) return;
         
         //Format Message Emoji
-        if(this.useEmoji) message = Base.emoji(message);
+        if(this.colorEmoji) message = Base.emoji(message);
         
         msgFormat = msgFormat.replaceAll("\\{MESSAGE\\}", Matcher.quoteReplacement(message));
+        
         if(this.isprivate) {
-            Base.broadcast(this.players, msgFormat);
+            for(DomsPlayer rec : this.players) {
+                this.chat(player, rec, format, msgFormat);
+            }
         } else if(this.receivePermission != null) {
-            Base.broadcast(this.receivePermission, msgFormat);
+            for(DomsPlayer rec : DomsPlayer.getOnlinePlayers()) {
+                if(!rec.hasPermisson(this.receivePermission)) continue;
+                this.chat(player, rec, format, msgFormat);
+            }
         } else {
-            Base.broadcast(msgFormat);
+            for(DomsPlayer rec : DomsPlayer.getOnlinePlayers()) {
+                this.chat(player, rec, format, msgFormat);
+            }
         }
+    }
+    
+    public void chat(DomsPlayer player, DomsPlayer reciever, DomsChatFormat format, String msgFormat) {
+        List<String> parts = new ArrayList<String>();
+        
+        String[] splitParts = msgFormat.split(" ");
+        
+        for(int i = 0; i < splitParts.length; i++) {
+            String finalMessage = format.formatPart(splitParts[i] + (i < (splitParts.length - 1) ? " " : ""), player, reciever);
+            parts.add(finalMessage);
+        }
+        
+        String finalMessage = "";
+        if(parts.size() == 1) {
+            finalMessage = parts.get(0);
+        } else {
+            finalMessage = "{text:\"\",extra:[";
+            for(String x : parts) {
+                finalMessage += x + ",";
+            }
+            finalMessage = Base.trim(finalMessage, finalMessage.length() - 1);
+            finalMessage += "]}";
+        }
+        Base.sendRawMessage(reciever, finalMessage);
     }
 }

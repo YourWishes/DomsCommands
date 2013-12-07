@@ -423,6 +423,11 @@ commands:
       aliases: [getrecipe]
       usage: /<command> (item)
       permission: DomsCommands.recipe
+   tellraw:
+      description: Send a raw message to a player.
+      aliases: [rawtell, msgraw]
+      usage: /<command> [player] [message]
+      permission: DomsCommands.tellraw
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -509,6 +514,7 @@ permissions:
        DomsCommands.sign.colors.*: true
        DomsCommands.nameplate.*: true
        DomsCommands.recipe: true
+       DomsCommands.tellraw: true
    DomsCommands.reload:
      description: Allows access to reload the Configuration.
    DomsCommands.domscommands:
@@ -1334,3 +1340,5 @@ permissions:
      description: Allows access to use reset in nameplates.
    DomsCommands.recipe:
      description: Allows access to the recipe command.
+   DomsCommands.tellraw:
+     description: Allows access to the tellraw command.

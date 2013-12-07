@@ -69,6 +69,7 @@ public class ConfigManager extends DataManager {
         df("colors.default", "&7");
         df("colors.important", "&9");
         df("colors.error", "&c");
+        df("colors.nickname.tablist", true);
         
         df("messages.firstjoin.broadcast", "&d{DISPLAYNAME} has joined {SERVER} for the first time! Please make them feel welcome!");
         df("messages.firstjoin.message", "&7Please be sure to read the rules, &9{NAME}&7!\n&7And most importantly, have fun!");

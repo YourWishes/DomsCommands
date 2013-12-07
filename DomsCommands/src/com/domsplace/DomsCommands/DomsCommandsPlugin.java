@@ -18,6 +18,7 @@ package com.domsplace.DomsCommands;
 
 import com.domsplace.DomsCommands.Bases.*;
 import com.domsplace.DomsCommands.Commands.*;
+import com.domsplace.DomsCommands.Exceptions.SaveResult;
 import com.domsplace.DomsCommands.Listeners.*;
 import com.domsplace.DomsCommands.Objects.DomsCommandsAddon;
 import com.domsplace.DomsCommands.Threads.*;
@@ -109,6 +110,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private TeleportRequestAllCommand tpaallCommand;
     private TeleportRequestCommand tpaCommand;
     private TeleportRequestHereCommand tpahCommand;
+    private TellRawCommand tellRawCommand;
     private TimeCommand timeCommand;
     private WarnCommand warnCommand;
     private WarnsCommand warnsCommand;
@@ -219,6 +221,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.spawnCommand = new SpawnCommand();
         this.spawnMobCommand = new SpawnMobCommand();
         this.stopCommand = new ShutdownCommand();
+        this.tellRawCommand = new TellRawCommand();
         this.timeCommand = new TimeCommand();
         this.tpaallCommand = new TeleportRequestAllCommand();
         this.tpacceptCommand = new TeleportAcceptCommand();
@@ -258,6 +261,10 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.updateThread = new UpdateThread();
         
         PluginHook.hookAll();
+        
+        //Invoke Silly Things
+        DomsCommandsAddon.invoke();
+        SaveResult.FILE_CREATE_FAILED.getResult();
         
         this.enabled = true;
         Base.log("Finished Loading " + this.getName() + ", " + BukkitCommand.getCommands().size() + " commands registered.");

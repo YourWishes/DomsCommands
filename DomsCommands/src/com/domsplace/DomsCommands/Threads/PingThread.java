@@ -16,15 +16,8 @@
 
 package com.domsplace.DomsCommands.Threads;
 
-import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Bases.DomsThread;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.Socket;
-import java.nio.channels.SocketChannel;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 /**

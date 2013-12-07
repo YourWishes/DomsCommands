@@ -218,7 +218,7 @@ public class PlayerManager extends DataManager {
             try {
                 for(String s : ((MemorySection) yml.get("variables")).getKeys(false)) {
                     try {
-                        player.setVariable(s, yml.getString("variables." + s));
+                        player.setSavedVariable(s, yml.getString("variables." + s));
                     } catch(Exception e) {}
                 }
             } catch(Exception e) {}

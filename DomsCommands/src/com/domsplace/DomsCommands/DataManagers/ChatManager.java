@@ -52,7 +52,7 @@ public class ChatManager extends DataManager {
         yml = YamlConfiguration.loadConfiguration(chatFile);
         
         if(!yml.contains("main.format")) yml.set("main.format", "&8{DISPLAYNAME}&7: &f{MESSAGE}");
-        if(!yml.contains("main.groups.Admin") && n) yml.set("main.groups.OP", "&4[&c{PREFIX}&c{GROUP}&c{SUFFIX}&4] &8{NAME}&7: &f{MESSAGE}");
+        if(!yml.contains("main.groups.OP") && n) yml.set("main.groups.OP", "&4[&c{PREFIX}&c{GROUP}&c{SUFFIX}&4] &8{NAME}&7: &f{MESSAGE}");
         if(!yml.contains("main.emoji") && n) yml.set("main.emoji", true);
         
         if(!yml.contains("server.format")) yml.set("server.format", "&d[{DISPLAYNAME}&d] &d{MESSAGE}");
@@ -107,7 +107,24 @@ public class ChatManager extends DataManager {
             if(yml.contains(s + ".groups")) {
                 MemorySection ms = (MemorySection) yml.get(s + ".groups");
                 for(String g : ms.getKeys(false)) {
-                    DomsChatFormat nform = new DomsChatFormat(g, yml.getString(s + ".groups." + g));
+                    String fmt = "";
+                    if(yml.contains(s + ".groups." + g + ".format")) {
+                        fmt = yml.getString(s + ".groups." + g + ".format");
+                    } else {
+                        fmt = yml.getString(s + ".groups." + g, "FORMATNOTFOUND");
+                    }
+                    DomsChatFormat nform = new DomsChatFormat(g, fmt);
+                    
+                    if(yml.contains(s + ".groups." + g + ".formats.player")) {
+                        nform.setPlayerFormat(colorise(yml.getString(s + ".groups." + g + ".formats.player", "{text:\"{NAME}\"}")));
+                    }
+                    if(yml.contains(s + ".groups." + g + ".formats.url")) {
+                        nform.setURLFormat(colorise(yml.getString(s + ".groups." + g + ".formats.url", "{text:\"{URL}\"}")));
+                    }
+                    if(yml.contains(s + ".groups." + g + ".formats.command")) {
+                        nform.setCommandFormat(colorise(yml.getString(s + ".groups." + g + ".formats.command", "{text:\"{COMMAND}\"}")));
+                    }
+                    
                     channel.addGroupFormat(nform);
                 }
             }

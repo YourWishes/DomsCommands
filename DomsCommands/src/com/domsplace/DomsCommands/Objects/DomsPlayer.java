@@ -57,9 +57,15 @@ public class DomsPlayer {
     
     public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#^*&(),\\_\\-\\s]*$";
     public static final String NAMEPLATE_REGEX = "^[a-zA-Z0-9!@#^*&(),\\_\\-\\s]*$";
+    public static final String MINECRAFT_NAME_REGEX = "[a-zA-Z0-9\\_]*$";
+    public static final String NOT_MINECRAFT_NAME_REGEX = "[^a-zA-Z0-9\\_]*";
     public static final int VIEW_DISTANCE = 5;
     
     //Static
+    public static DomsPlayer guessPlayer(DomsPlayer sender, String guess) {
+        if(!sender.isOnline()) return null;
+        return guessPlayer(sender.getOnlinePlayer(), guess, false);
+    }
     public static DomsPlayer guessPlayer(CommandSender sender, String guess) {return guessPlayer(sender, guess, false);}
     public static DomsPlayer guessPlayer(CommandSender sender, String guess, boolean createIfNotExists) {
         Player tryPlayer = Base.getPlayer(sender, guess);
@@ -70,6 +76,10 @@ public class DomsPlayer {
         }
     }
     
+    public static DomsPlayer guessOnlinePlayer(DomsPlayer sender, String guess) {
+        if(!sender.isOnline()) return null;
+        return guessOnlinePlayer(sender.getOnlinePlayer(), guess);
+    }
     public static DomsPlayer guessOnlinePlayer(CommandSender sender, String guess) {
         Player tryPlayer = Base.getPlayer(sender, guess);
         if(tryPlayer == null) return null;
@@ -125,10 +135,25 @@ public class DomsPlayer {
         return list;
     }
     
+    public static DomsPlayer getExactPlayer(String guess) {
+        for(DomsPlayer player : DomsPlayer.REGISTERED_ONLINE_PLAYERS.values()) {
+            if(player.getPlayer().equalsIgnoreCase(guess)) return player;
+        }
+        for(DomsPlayer player : DomsPlayer.REGISTERED_PLAYERS.values()) {
+            if(player.getPlayer().equalsIgnoreCase(guess)) return player;
+        }
+        return null;
+    }
+    
+    public static DomsPlayer guessExactPlayer(DomsPlayer sender, String guess) {return guessExactPlayer(sender, guess, false);}
+    public static DomsPlayer guessExactPlayer(DomsPlayer sender, String guess, boolean create) {
+        if(sender == null || !sender.isOnline()) return null;
+        return guessExactPlayer(sender.getOnlinePlayer(), guess, create);
+    }
     public static DomsPlayer guessExactPlayer(CommandSender sender, String guess) {return guessExactPlayer(sender, guess, false);}
     public static DomsPlayer guessExactPlayer(CommandSender sender, String guess, boolean createIfNotExists) {
         OfflinePlayer p = Base.getOfflinePlayer(sender, guess);
-        if(p == null && !createIfNotExists) return null;
+        if((p == null || !DomsPlayer.isPlayerRegistered(p)) && !createIfNotExists) return null;
         return DomsPlayer.getPlayer((p == null ? Base.getOfflinePlayer(guess) : p));
     }
     
@@ -163,6 +188,7 @@ public class DomsPlayer {
     }
     
     public static boolean isPlayerRegistered(Player player) {return isPlayerRegistered(player.getName());}
+    public static boolean isPlayerRegistered(OfflinePlayer player) {return isPlayerRegistered(player.getName());}
     public static boolean isPlayerRegistered(String player) {return REGISTERED_PLAYERS.containsKey(player);}
 
     public static List<DomsPlayer> getPlayersByIP(String lastIP) {
@@ -291,7 +317,12 @@ public class DomsPlayer {
     public void setFlightMode(boolean f) {this.flyMode = f;}
     public void setFurnaceLocation(DomsLocation location) {this.playerFurnace = location.copy();}
     public DomsInventory setBackpack(DomsInventory inventory) {this.backpack = inventory; return this.backpack;}
-    public void setNamePlate(String s) {this.namePlate = s;}
+    public void setNamePlate(String s) {
+        this.namePlate = s;
+        if(this.isOnline() && !this.isConsole()) {
+            this.getOnlinePlayer().setCustomName(s);
+        }
+    }
     
     @Override public String toString() {return this.getDisplayName();}
     
@@ -492,7 +523,10 @@ public class DomsPlayer {
     public void setDisplayName(String newName) {
         this.displayName = newName;
         Base.debug("Dn: " + this.displayName);
-        if(this.isOnline() && !this.isConsole() && newName != null) this.getOnlinePlayer().setDisplayName(newName);
+        if(this.isOnline() && !this.isConsole() && newName != null) {
+            this.getOnlinePlayer().setDisplayName(newName);
+            if(Base.getConfig().getBoolean("colors.nickname.tablist", true)) this.getOnlinePlayer().setPlayerListName(newName);
+        }
     }
     
     //Complex is's

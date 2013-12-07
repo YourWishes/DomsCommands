@@ -17,10 +17,15 @@
 package com.domsplace.DomsCommands.Bases;
 
 import com.domsplace.DomsCommands.DataManagers.ConfigManager;
+import com.domsplace.DomsCommands.DataManagers.CraftBukkitManager;
 import com.domsplace.DomsCommands.DomsCommandsPlugin;
 import com.domsplace.DomsCommands.Hooks.VaultHook;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
@@ -229,6 +236,93 @@ public class Base extends RawBase {
     }
     
     //Messaging Utils
+    public static void sendRawMessage(CommandSender sender, String message) {
+        if(!isPlayer(sender)) unformatAndSendMessage(sender, message);
+        if(!trySendRawMessage(getPlayer(sender), message)) unformatAndSendMessage(sender, message);
+    }
+    
+    public static void unformatAndSendMessage(CommandSender sender, String msg) {
+        if(isPlayer(sender)) getPlayer(sender).sendRawMessage(msg);
+        else sendMessage(sender, msg);
+    }
+    
+    public static boolean trySendRawMessage(Player player, String message) {
+        if(!CraftBukkitManager.CRAFT_BUKKIT_MANAGER.canFindCraftBukkit()) return false;
+        if(message == null || player == null) return false;
+        Class IChatBaseComponent = CraftBukkitManager.CRAFT_BUKKIT_MANAGER.getMineClass("IChatBaseComponent");
+        Class ChatSerializer = CraftBukkitManager.CRAFT_BUKKIT_MANAGER.getMineClass("ChatSerializer");
+        Class PacketPlayOutChat = CraftBukkitManager.CRAFT_BUKKIT_MANAGER.getMineClass("PacketPlayOutChat");
+        Class CraftPlayer = CraftBukkitManager.CRAFT_BUKKIT_MANAGER.getCraftClass("entity.CraftPlayer");
+        Class Packet = CraftBukkitManager.CRAFT_BUKKIT_MANAGER.getMineClass("Packet");
+        Class PlayerConnection = CraftBukkitManager.CRAFT_BUKKIT_MANAGER.getMineClass("PlayerConnection");
+        if(IChatBaseComponent == null || ChatSerializer == null || PacketPlayOutChat == null || CraftPlayer == null) return false;
+        
+        try {
+            Method m = ChatSerializer.getMethod("a", String.class);
+            m.setAccessible(true);
+            Object comp = m.invoke(null, message);
+            Object packet = PacketPlayOutChat.getDeclaredConstructor(IChatBaseComponent, boolean.class).newInstance(comp, true);
+            Object cPlayer = CraftPlayer.cast(player);
+            Object handle = CraftPlayer.getMethod("getHandle").invoke(cPlayer);
+            Object playerConnection = handle.getClass().getDeclaredField("playerConnection").get(handle);
+            PlayerConnection.getDeclaredMethod("sendPacket", Packet).invoke(playerConnection, packet);
+            return true; 
+        }catch(InvocationTargetException e) {
+            Base.debug("INVOKE: " + e.getCause());
+            return false;
+        } catch(Exception e) {
+            Base.debug("FAILED TO SEND RAW MESSAGE");
+            return false;
+        }
+    }
+    
+    public static void sendRawMesage(CommandSender sender, Object[] objs) {
+        for(Object o : objs) {
+            sendRawMessage(sender, o.toString());
+        }
+    }
+    
+    public static void sendRawMessage(CommandSender sender, List<?> msgs) {
+        for(Object o : msgs) {
+            sendMessage(sender, o);
+        }
+    }
+    
+    public static void sendRawMessage(DomsPlayer player, Object... o) {
+        if(player == null) return;
+        if(!player.isOnline()) return;
+        sendRawMessage(player.getOnlinePlayer(), o);
+    }
+    
+    public static void sendRawMessage(Object... o) {
+        sendRawMessage(Bukkit.getConsoleSender(), o);
+    }
+    
+    public static void sendRawMessage(CommandSender sender, Object... msg) {
+        for(Object o : msg) {
+            sendRawMessage(sender, o);
+        }
+    }
+    
+    public static void sendRawMessage(CommandSender sender, Object msg) {
+        if(msg == null) return;
+        if(msg instanceof String) {
+            sendRawMessage(sender, (String) msg);
+            return;
+        }
+        
+        if(msg instanceof Object[]) {
+            sendRawMessage(sender, (Object[]) msg);
+            return;
+        }
+        
+        if(msg instanceof List<?>) {
+            sendRawMessage(sender, (List<?>) msg);
+            return;
+        }
+        sendMessage(sender, msg.toString());
+    }
+    
     public static void sendMessage(CommandSender sender, String msg) {
         if(msg.replaceAll(" ", "").equalsIgnoreCase("")) return;
         msg = msg.replaceAll("\\t", TAB);
@@ -339,6 +433,46 @@ public class Base extends RawBase {
     public static void broadcast(List<DomsPlayer> players, Object o) {
         for(DomsPlayer p : players) {
             sendMessage(p, o);
+        }
+    }
+    
+    public static void sendRawAll(List<Player> players, Object o) {
+        for(Player p : players) {
+            sendRawMessage(p, o);
+        }
+    }
+    
+    public static void sendRawAll(Player[] players, Object o) {
+        for(Player p : players) {
+            sendRawMessage(p, o);
+        }
+    }
+    
+    public static void sendRawAll(Object o) {
+        sendRawAll(Bukkit.getOnlinePlayers(), o);
+    }
+    
+    public static void sendRawAll(String permission, Object o) {
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            if(!hasPermission((CommandSender) p, permission)) continue;
+            sendRawMessage(p, o);
+        }
+    }
+    
+    public static void broadcastRaw(Object o) {
+        sendRawMessage(o);
+        sendRawAll(o);
+    }
+    
+    public static void broadcastRaw(String permission, Object o) {
+        sendRawMessage(o);
+        sendRawAll(permission, o);
+    }
+    
+    public static void broadcastRaw(List<DomsPlayer> players, Object o) {
+        sendRawMessage(o);
+        for(DomsPlayer p : players) {
+            sendRawMessage(p, o);
         }
     }
     
@@ -510,6 +644,15 @@ public class Base extends RawBase {
     public static boolean isIP(Object o) {
         String s = o.toString();
         return s.matches("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
+    }
+    
+    public static boolean isURL(String url) {
+        try {
+            URL t = new URL(url);
+            return true;
+        } catch (MalformedURLException ex) {
+            return false;
+        }
     }
     
     public static String listToString(List<? extends Object> strings) {

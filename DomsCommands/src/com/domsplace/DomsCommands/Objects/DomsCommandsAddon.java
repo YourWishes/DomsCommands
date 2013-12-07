@@ -27,6 +27,11 @@ import org.bukkit.plugin.Plugin;
 public abstract class DomsCommandsAddon {
     public static final List<DomsCommandsAddon> ADDONS = new ArrayList<DomsCommandsAddon>();
     
+    public static void invoke() {
+        //Silly bukkit
+        int x = (int)Math.random();
+    }
+    
     private final Plugin plugin;
     
     public DomsCommandsAddon(Plugin p) {this.plugin = p; ADDONS.add(this);}

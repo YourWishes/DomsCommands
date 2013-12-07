@@ -63,6 +63,10 @@ public class PlayerRegisterListener extends DomsListener {
             player.setFlightMode(e.getPlayer().getAllowFlight());
             player.setAFKTime(getNow());
             
+            if(player.getNamePlate() != null && !player.getNamePlate().equalsIgnoreCase("off") && !player.getNamePlate().replaceAll(" ", "").equals("")) {
+                player.setNamePlate(player.getNamePlate());
+            }
+            
             try {player.teleport(SpawnManager.SPAWN_MANAGER.getSpawn(player.getWorld()), false);} catch(Exception ex) {}
         
             try {player.getInventory().setToPlayer();} catch(Exception ex) {}
@@ -91,6 +95,10 @@ public class PlayerRegisterListener extends DomsListener {
         player.setLastMoveTime(getNow());
         player.setAFK(false);
         player.setAFKTime(getNow());
+        
+        if(player.getNamePlate() != null && !player.getNamePlate().equalsIgnoreCase("off") && !player.getNamePlate().replaceAll(" ", "").equals("")) {
+            player.setNamePlate(player.getNamePlate());
+        }
         
         try {player.getInventory().setToPlayer();} catch(Exception ex) {}
         try {player.getEnderChest().setToInventory(e.getPlayer().getEnderChest());} catch(Exception ex) {}
