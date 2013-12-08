@@ -28,9 +28,14 @@ public class DomsChatFormat {
     private String group;
     private String format;
     
+    /*
     private String playerFormat = "{text:\"{DISPLAYNAME}\",hoverEvent:{action:show_text,value:\"Username: {NAME}\"},clickEvent:{action:suggest_command,value:\"{NAME}\"}}";
     private String urlFormat = "{text:\"§aLink\",hoverEvent:{action:show_text,value:\"§aClick to go to: §r{URL}\"},clickEvent:{action:open_url,value:\"{URL}\"}}";
     private String commandFormat = "{text:\"§9{COMMAND}\",hoverEvent:{action:show_text,value:\"Click to try this command.\"},clickEvent:{action:suggest_command,value:\"{COMMAND}\"}}";
+    */
+    private String playerFormat = null;
+    private String urlFormat = null;
+    private String commandFormat = null;
     
     public DomsChatFormat(String group, String format) {
         this.group = group;
@@ -51,12 +56,18 @@ public class DomsChatFormat {
         String guess = Base.removeColors(part);
         
         //Handle isPlayer
-        DomsPlayer g = DomsPlayer.getExactPlayer(guess.replaceAll(DomsPlayer.NOT_MINECRAFT_NAME_REGEX, ""));
-        if(g != null) return formatPlayer(part, g, talker, reciever, guess);
+        if(this.playerFormat != null) {
+            DomsPlayer g = DomsPlayer.getExactPlayer(guess.replaceAll(DomsPlayer.NOT_MINECRAFT_NAME_REGEX, ""));
+            if(g != null) return formatPlayer(part, g, talker, reciever, guess);
+        }
         
-        if(Base.isURL(guess)) return formatURL(part, talker, reciever, guess);
+        if(this.urlFormat != null) {
+            if(Base.isURL(guess)) return formatURL(part, talker, reciever, guess);
+        }
         
-        if(guess.startsWith("/")) return formatCommand(part, talker, reciever, guess);
+        if(this.commandFormat != null) {
+            if(guess.startsWith("/")) return formatCommand(part, talker, reciever, guess);
+        }
         
         return formatText(part);
     }

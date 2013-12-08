@@ -297,6 +297,7 @@ public class DomsPlayer {
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
     public boolean isAFK() {return this.afk;}
     public boolean isConsole() {return this.equals(CONSOLE_PLAYER);}
+    public boolean isOp() {return this.getOfflinePlayer().isOp();}
     
     public void setJoinTime(long time) {this.join = time;}
     public void setLoginTime(long time) {this.login = time;}

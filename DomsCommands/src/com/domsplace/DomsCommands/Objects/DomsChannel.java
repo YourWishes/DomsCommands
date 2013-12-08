@@ -168,7 +168,7 @@ public class DomsChannel {
         //Format Message Emoji
         if(this.colorEmoji) message = Base.emoji(message);
         
-        msgFormat = msgFormat.replaceAll("\\{MESSAGE\\}", Matcher.quoteReplacement(message));
+        msgFormat = msgFormat.replaceAll("\\{MESSAGE\\}", Matcher.quoteReplacement(message.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"")));
         
         if(this.isprivate) {
             for(DomsPlayer rec : this.players) {

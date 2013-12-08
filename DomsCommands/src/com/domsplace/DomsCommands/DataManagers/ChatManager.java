@@ -96,6 +96,16 @@ public class ChatManager extends DataManager {
             
             DomsChatFormat dformat = new DomsChatFormat("", format);
             
+            if(yml.contains(s + ".formats.player"))  {
+                dformat.setPlayerFormat(yml.getString(s + ".formats.player", "{text\"{DISPLAYNAME}\"}"));
+            }
+            if(yml.contains(s + ".formats.url"))  {
+                dformat.setURLFormat(yml.getString(s + ".formats.url", "{text\"{DISPLAYNAME}\"}"));
+            }
+            if(yml.contains(s + ".formats.command"))  {
+                dformat.setCommandFormat(yml.getString(s + ".formats.command", "{text\"{DISPLAYNAME}\"}"));
+            }
+            
             List<String> commands = new ArrayList<String>();
             if(yml.contains(s + ".commands")) commands = yml.getStringList(s + ".commands");
             

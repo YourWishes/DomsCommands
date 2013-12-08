@@ -71,6 +71,7 @@ public class WhoisCommand extends BukkitCommand {
         try {messages.add(ChatImportant + "Last Location: " + ChatDefault + player.getLocation().toHumanString());} catch(Exception e) {}
         try {messages.add(ChatImportant + "Group: " + ChatDefault + player.getGroup());} catch(Exception e) {}
         try {messages.add(ChatImportant + "Can Fly: " + ChatDefault + (player.isFlightMode() ? "Yes" : "No"));} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Operator: " + ChatDefault + (player.isOp() ? "Yes" : "No"));}catch(Exception e) {}
         
         try {
             if(player.getLastIP().equals("")) throw new Exception("IDGAF");
