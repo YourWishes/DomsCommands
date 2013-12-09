@@ -19,8 +19,8 @@ package com.domsplace.DomsCommands.DataManagers;
 import static com.domsplace.DomsCommands.Bases.Base.getDataFolder;
 import com.domsplace.DomsCommands.Bases.DataManager;
 import com.domsplace.DomsCommands.Enums.ManagerType;
-import com.domsplace.DomsCommands.Objects.DomsChannel;
-import com.domsplace.DomsCommands.Objects.DomsChatFormat;
+import com.domsplace.DomsCommands.Objects.Chat.DomsChannel;
+import com.domsplace.DomsCommands.Objects.Chat.DomsChatFormat;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class ChatManager extends DataManager {
             yml.set("AdminChat.format",
                     "{CHANNEL}[{PREFIX}{GROUP}{SUFFIX}] [{WORLD}|{GAMEMODE}] [{DISPLAYNAME}/{NAME}] SAID:&r {MESSAGE}");
             yml.set("AdminChat.chatpermission", "DomsCommands.adminchat");
-            yml.set("AdminChat.receivepermission", "DomsCommands.receiveadminchat");
+            yml.set("AdminChat.receivepermission", "DomsCommands.adminchat");
         }
         
         for(DomsChannel channel : DomsChannel.getChannels()) {
@@ -90,28 +90,16 @@ public class ChatManager extends DataManager {
             String format = yml.getString(s + ".format");
             String permission = "";
             boolean ipriv = false;
-            
             if(yml.contains(s + ".chatpermission")) permission = yml.getString(s + ".chatpermission");
             if(yml.contains(s + ".private")) ipriv = yml.getBoolean(s + ".private");
             
-            DomsChatFormat dformat = new DomsChatFormat("", format);
-            
-            if(yml.contains(s + ".formats.player"))  {
-                dformat.setPlayerFormat(yml.getString(s + ".formats.player", "{text\"{DISPLAYNAME}\"}"));
-            }
-            if(yml.contains(s + ".formats.url"))  {
-                dformat.setURLFormat(yml.getString(s + ".formats.url", "{text\"{DISPLAYNAME}\"}"));
-            }
-            if(yml.contains(s + ".formats.command"))  {
-                dformat.setCommandFormat(yml.getString(s + ".formats.command", "{text\"{DISPLAYNAME}\"}"));
-            }
+            DomsChatFormat dformat = new DomsChatFormat(colorise(format));
             
             List<String> commands = new ArrayList<String>();
             if(yml.contains(s + ".commands")) commands = yml.getStringList(s + ".commands");
             
             DomsChannel channel = new DomsChannel(s, permission, dformat, ipriv, commands);
             
-            if(yml.contains(s + ".emoji") && yml.getBoolean(s + ".emoji", false)) channel.useEmoji(true);
             if(yml.contains(s + ".receivepermission")) channel.setReceivePermission(yml.getString(s + ".receivepermission"));
             
             if(yml.contains(s + ".groups")) {
@@ -123,19 +111,10 @@ public class ChatManager extends DataManager {
                     } else {
                         fmt = yml.getString(s + ".groups." + g, "FORMATNOTFOUND");
                     }
-                    DomsChatFormat nform = new DomsChatFormat(g, fmt);
+                    DomsChatFormat nform = new DomsChatFormat(colorise(fmt));
+                    nform.setGroup(g);
                     
-                    if(yml.contains(s + ".groups." + g + ".formats.player")) {
-                        nform.setPlayerFormat(colorise(yml.getString(s + ".groups." + g + ".formats.player", "{text:\"{NAME}\"}")));
-                    }
-                    if(yml.contains(s + ".groups." + g + ".formats.url")) {
-                        nform.setURLFormat(colorise(yml.getString(s + ".groups." + g + ".formats.url", "{text:\"{URL}\"}")));
-                    }
-                    if(yml.contains(s + ".groups." + g + ".formats.command")) {
-                        nform.setCommandFormat(colorise(yml.getString(s + ".groups." + g + ".formats.command", "{text:\"{COMMAND}\"}")));
-                    }
-                    
-                    channel.addGroupFormat(nform);
+                    channel.addFormat(nform);
                 }
             }
         }

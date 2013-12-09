@@ -17,7 +17,7 @@
 package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
-import com.domsplace.DomsCommands.Objects.DomsChannel;
+import com.domsplace.DomsCommands.Objects.Chat.DomsChannel;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
 import org.bukkit.command.Command;

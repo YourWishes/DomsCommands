@@ -16,6 +16,7 @@
 
 package com.domsplace.DomsCommands.Objects;
 
+import com.domsplace.DomsCommands.Objects.Chat.DomsChannel;
 import com.domsplace.BansUtils;
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.DataManager;
@@ -355,7 +356,7 @@ public class DomsPlayer {
     
     //Complex get's
     public final String getDisplayName() {
-        this.updateVariables(false);
+        //this.updateVariables(false);
         if(this.isConsole() && this.displayName == null) {
             this.displayName = "Server";
             return this.displayName;
@@ -673,7 +674,7 @@ public class DomsPlayer {
     private void updateVariables(boolean fireEvent) {
         if(this.player == null || this.displayName == null) return;
         this.variables.put("NAME", this.player);
-        this.variables.put("DISPLAYNAME", this.displayName);
+        this.variables.put("DISPLAYNAME", this.getDisplayName());
         
         if(this.afk) {
             this.variables.put("AWAY", "Away");

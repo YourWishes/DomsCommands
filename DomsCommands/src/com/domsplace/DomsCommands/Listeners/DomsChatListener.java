@@ -21,8 +21,8 @@ import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Bases.DomsListener;
 import com.domsplace.DomsCommands.Events.DomsChatEvent;
 import com.domsplace.DomsCommands.Events.PreCommandEvent;
-import com.domsplace.DomsCommands.Objects.DomsChannel;
-import com.domsplace.DomsCommands.Objects.DomsChatFormat;
+import com.domsplace.DomsCommands.Objects.Chat.DomsChannel;
+import com.domsplace.DomsCommands.Objects.Chat.DomsChatFormat;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,11 +44,11 @@ public class DomsChatListener extends DomsListener {
         DomsChannel channel = player.getChannel();
         DomsChatFormat format = channel.getFormat(player);
         
-        DomsChatEvent event = new DomsChatEvent(player, format, channel);
+        DomsChatEvent event = new DomsChatEvent(player, format, channel, e.getMessage());
         event.fireEvent();
         if(event.isCancelled()) return;
         
-        channel.chat(player, event.getFormat(), e.getMessage());
+        channel.chat(player, event.getFormat(), event.getMessage());
     }
     
     @EventHandler(ignoreCancelled=true, priority=EventPriority.LOWEST)

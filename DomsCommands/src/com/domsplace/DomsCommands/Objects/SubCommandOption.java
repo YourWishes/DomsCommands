@@ -16,6 +16,7 @@
 
 package com.domsplace.DomsCommands.Objects;
 
+import com.domsplace.DomsCommands.Objects.Chat.DomsChannel;
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
 import com.domsplace.DomsCommands.Commands.GamemodeCommand;

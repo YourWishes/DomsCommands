@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.domsplace.DomsCommands.Objects;
+package com.domsplace.DomsCommands.Objects.Chat;
 
 import com.domsplace.DomsCommands.Bases.Base;
+import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 /**
  *
@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 public class DomsChannel {
     private static final List<DomsChannel> REGISTERED_CHANNELS = new ArrayList<DomsChannel>();
     
-    private static final DomsChannel FALLBACK_CHANNEL = new DomsChannel("ERROR", "DomsCommands.*", new DomsChatFormat("", "&c[&4ERROR&c] &6{DISPLAYNAME}&7: &f{MESSAGE}"), false, new ArrayList<String>());
+    private static final DomsChannel FALLBACK_CHANNEL = new DomsChannel("ERROR", "DomsCommands.*", new DomsChatFormat("§c[§4ERROR§c] §6{DISPLAYNAME}§7: §f{MESSAGE}"), false, new ArrayList<String>());
     
     public static DomsChannel getPlayersChannel(DomsPlayer player) {
         for(DomsChannel c : REGISTERED_CHANNELS) {
@@ -78,10 +78,6 @@ public class DomsChannel {
     private List<String> commands;
     private Map<String, String> variables;
     
-    private boolean colorEmoji = false;
-    private boolean colorURLs = false;
-    private boolean colorNicknames = false;
-    
     public DomsChannel (String name, String chatPermission, DomsChatFormat format, boolean isp, List<String> commands) {
         this.name = name;
         this.chatPermission = chatPermission;
@@ -114,14 +110,12 @@ public class DomsChannel {
     
     public boolean isPrivate() {return this.isprivate;}
     
-    public void useEmoji(boolean t) {this.colorEmoji = t;}
-    
     public void removePlayer(DomsPlayer player) {if(!this.hasPlayer(player)) return; this.players.remove(player);}
     public void removeVariable(String key) {this.variables.remove(key);}
     
     public void addPlayer(DomsPlayer player) {this.players.add(player);}
     public void addVariable(String key, String obj) {this.variables.put(key, obj);}
-    public void addGroupFormat(DomsChatFormat format) {this.chatFormats.add(format);}
+    public void addFormat(DomsChatFormat format) {this.chatFormats.add(format);}
     
     public DomsChatFormat getFormat(DomsPlayer player) {
         if(player.isConsole()) return this.defaultFormat;
@@ -148,65 +142,20 @@ public class DomsChannel {
     public void chat(DomsPlayer player, String[] args) {this.chat(player, Base.arrayToString(args, " "));}
     public void chat(DomsPlayer player, String message) {this.chat(player, this.getFormat(player), message);}
     public void chat(DomsPlayer player, DomsChatFormat format, String message) {
-        player.updateVariables();
-        String msgFormat = format.getFormat();
-        msgFormat = Base.colorise(msgFormat);
-        
-        for(String key : this.variables.keySet()) {
-            msgFormat = msgFormat.replaceAll("\\{" + key + "\\}", Matcher.quoteReplacement(Base.colorise(this.variables.get(key))));
-        }
-        
-        Map<String, String> playerVariables = player.getVariables();
-        for(String key : playerVariables.keySet()) {
-            msgFormat = msgFormat.replaceAll("\\{" + key + "\\}", Matcher.quoteReplacement(Base.colorise(playerVariables.get(key))));
-        }
-        
-        message = Base.coloriseByPermission(message, player, "DomsCommands.chat.colors.");
-        
-        if(Base.removeColors(message).replaceAll(" ", "").equals("")) return;
-        
-        //Format Message Emoji
-        if(this.colorEmoji) message = Base.emoji(message);
-        
-        msgFormat = msgFormat.replaceAll("\\{MESSAGE\\}", Matcher.quoteReplacement(message.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"")));
-        
         if(this.isprivate) {
             for(DomsPlayer rec : this.players) {
-                this.chat(player, rec, format, msgFormat);
+                format.chat(player, rec, this, message);
             }
         } else if(this.receivePermission != null) {
             for(DomsPlayer rec : DomsPlayer.getOnlinePlayers()) {
                 if(!rec.hasPermisson(this.receivePermission)) continue;
-                this.chat(player, rec, format, msgFormat);
+                format.chat(player, rec, this, message);
             }
         } else {
             for(DomsPlayer rec : DomsPlayer.getOnlinePlayers()) {
-                this.chat(player, rec, format, msgFormat);
+                format.chat(player, rec, this, message);
             }
         }
-    }
-    
-    public void chat(DomsPlayer player, DomsPlayer reciever, DomsChatFormat format, String msgFormat) {
-        List<String> parts = new ArrayList<String>();
-        
-        String[] splitParts = msgFormat.split(" ");
-        
-        for(int i = 0; i < splitParts.length; i++) {
-            String finalMessage = format.formatPart(splitParts[i] + (i < (splitParts.length - 1) ? " " : ""), player, reciever);
-            parts.add(finalMessage);
-        }
-        
-        String finalMessage = "";
-        if(parts.size() == 1) {
-            finalMessage = parts.get(0);
-        } else {
-            finalMessage = "{text:\"\",extra:[";
-            for(String x : parts) {
-                finalMessage += x + ",";
-            }
-            finalMessage = Base.trim(finalMessage, finalMessage.length() - 1);
-            finalMessage += "]}";
-        }
-        Base.sendRawMessage(reciever, finalMessage);
+        format.chat(player, DomsPlayer.CONSOLE_PLAYER, this, message);
     }
 }

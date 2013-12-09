@@ -3,7 +3,7 @@ description: Offers many commands for everyone to use!
 main: com.domsplace.DomsCommands.DomsCommandsPlugin
 authors: [Dominic, Jordan, Kyle]
 website: http://domsplace.com/
-version: '1.10'
+version: '1.11'
 load: POSTWORLD
 commands:
    DomsCommands:

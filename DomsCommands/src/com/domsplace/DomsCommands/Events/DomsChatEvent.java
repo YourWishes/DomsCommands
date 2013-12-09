@@ -17,8 +17,8 @@
 package com.domsplace.DomsCommands.Events;
 
 import com.domsplace.DomsCommands.Bases.DomsCancellableEvent;
-import com.domsplace.DomsCommands.Objects.DomsChannel;
-import com.domsplace.DomsCommands.Objects.DomsChatFormat;
+import com.domsplace.DomsCommands.Objects.Chat.DomsChannel;
+import com.domsplace.DomsCommands.Objects.Chat.DomsChatFormat;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 
 /**
@@ -29,17 +29,21 @@ public class DomsChatEvent extends DomsCancellableEvent {
     private final DomsPlayer player;
     private DomsChatFormat format;
     private DomsChannel channel;
+    private String message;
     
-    public DomsChatEvent(DomsPlayer player, DomsChatFormat format, DomsChannel channel) {
+    public DomsChatEvent(DomsPlayer player, DomsChatFormat format, DomsChannel channel, String message) {
         this.player = player;
         this.format = format;
         this.channel = channel;
+        this.message = message;
     }
     
     public DomsPlayer getPlayer() {return this.player;}
     public DomsChatFormat getFormat() {return this.format;}
     public DomsChannel getChannel() {return this.channel;}
+    public String getMessage() {return this.message;}
     
     public void setFormat(DomsChatFormat format) {this.format = format;}
     public void setChannel(DomsChannel channel) {this.channel = channel;}
+    public void setMessage(String message) {this.message = message;}
 }

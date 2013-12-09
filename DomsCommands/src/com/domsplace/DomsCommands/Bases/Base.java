@@ -20,6 +20,7 @@ import com.domsplace.DomsCommands.DataManagers.ConfigManager;
 import com.domsplace.DomsCommands.DataManagers.CraftBukkitManager;
 import com.domsplace.DomsCommands.DomsCommandsPlugin;
 import com.domsplace.DomsCommands.Hooks.VaultHook;
+import com.domsplace.DomsCommands.Objects.Chat.DomsChatObject;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -36,8 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
@@ -237,13 +236,28 @@ public class Base extends RawBase {
     
     //Messaging Utils
     public static void sendRawMessage(CommandSender sender, String message) {
-        if(!isPlayer(sender)) unformatAndSendMessage(sender, message);
+        if(!isPlayer(sender)) {
+            unformatAndSendMessage(sender, message);
+            return;
+        }
         if(!trySendRawMessage(getPlayer(sender), message)) unformatAndSendMessage(sender, message);
     }
     
+    public static void sendRawMessage(CommandSender sender, DomsChatObject object) {
+        if(!isPlayer(sender)) {
+            sendMessage(sender, object.compileUnformatted());
+            return;
+        }
+        sendRawMessage(sender, object.compile());
+    }
+    
     public static void unformatAndSendMessage(CommandSender sender, String msg) {
-        if(isPlayer(sender)) getPlayer(sender).sendRawMessage(msg);
-        else sendMessage(sender, msg);
+        DomsChatObject o = DomsChatObject.createFromString(msg);
+        if(o == null) {
+            sendMessage(sender, msg);
+            return;
+        }
+        sendMessage(sender, o.compileUnformatted());
     }
     
     public static boolean trySendRawMessage(Player player, String message) {
@@ -266,10 +280,8 @@ public class Base extends RawBase {
             Object handle = CraftPlayer.getMethod("getHandle").invoke(cPlayer);
             Object playerConnection = handle.getClass().getDeclaredField("playerConnection").get(handle);
             PlayerConnection.getDeclaredMethod("sendPacket", Packet).invoke(playerConnection, packet);
-            return true; 
-        }catch(InvocationTargetException e) {
-            Base.debug("INVOKE: " + e.getCause());
-            return false;
+            Base.debug("Sent: " + message);
+            return true;
         } catch(Exception e) {
             Base.debug("FAILED TO SEND RAW MESSAGE");
             return false;
@@ -291,7 +303,7 @@ public class Base extends RawBase {
     public static void sendRawMessage(DomsPlayer player, Object... o) {
         if(player == null) return;
         if(!player.isOnline()) return;
-        sendRawMessage(player.getOnlinePlayer(), o);
+        sendRawMessage(player.getCommandSender(), o);
     }
     
     public static void sendRawMessage(Object... o) {
@@ -311,6 +323,11 @@ public class Base extends RawBase {
             return;
         }
         
+        if(msg instanceof DomsChatObject) {
+            sendRawMessage(sender, (DomsChatObject)msg);
+            return;
+        }
+        
         if(msg instanceof Object[]) {
             sendRawMessage(sender, (Object[]) msg);
             return;
@@ -320,7 +337,7 @@ public class Base extends RawBase {
             sendRawMessage(sender, (List<?>) msg);
             return;
         }
-        sendMessage(sender, msg.toString());
+        sendRawMessage(sender, msg.toString());
     }
     
     public static void sendMessage(CommandSender sender, String msg) {
@@ -732,6 +749,13 @@ public class Base extends RawBase {
     
     public static DyeColor getDyeColor(String s) {
         for(DyeColor color : DyeColor.values()) {
+            if(color.name().equalsIgnoreCase(s)) return color;
+        }
+        return null;
+    }
+    
+    public static ChatColor getColorByName(String s) {
+        for(ChatColor color : ChatColor.values()) {
             if(color.name().equalsIgnoreCase(s)) return color;
         }
         return null;
