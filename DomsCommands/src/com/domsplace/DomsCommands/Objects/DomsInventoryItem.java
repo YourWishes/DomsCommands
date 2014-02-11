@@ -42,6 +42,13 @@ public class DomsInventoryItem {
         return new DomsInventoryItem(items.size(), items.get(0));
     }
     
+    public static DomsInventoryItem createFromItemStack(ItemStack items) {
+        if(items == null || items.getAmount() < 1) return null;
+        DomsItem item = new DomsItem(items);
+        if(item.isAir()) return null;
+        return new DomsInventoryItem(items.getAmount(), item);
+    }
+    
     //Instance
     private int size;
     private DomsItem item;

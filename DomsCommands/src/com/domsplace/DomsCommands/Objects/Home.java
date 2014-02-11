@@ -21,6 +21,7 @@ package com.domsplace.DomsCommands.Objects;
  * @author Dominic Masters
  */
 public class Home {
+    public static final String BED_NAME = "Bed";    //Needs work
     public static final String HOME_NAME_REGEX = "^[a-zA-Z0-9]*$";
     
     //Instance

@@ -37,6 +37,8 @@ public abstract class DomsChatFormatter {
         }
     };
     
+    public static final DomsChatURLFormatter URL_FORMATTER = new DomsChatURLFormatter();
+    
     public static final DomsChatFormatter VARIABLE_FORMATTER = new DomsChatPlayerVariableFormatter() {};
     
     public DomsChatFormatter() {}

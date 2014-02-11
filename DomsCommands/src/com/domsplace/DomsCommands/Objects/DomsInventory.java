@@ -20,8 +20,10 @@ import com.domsplace.DomsCommands.Bases.Base;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -85,6 +87,8 @@ public class DomsInventory {
     private DomsInventoryItem leggings;
     private DomsInventoryItem boots;
     
+    private Inventory inventory = null;
+    
     private final DomsPlayer player;
     private String inventoryGroup;
     private int level = 0;
@@ -120,6 +124,27 @@ public class DomsInventory {
     public DomsInventoryItem getBoots() {return this.boots;}
     public int getExpLevel() {return this.level;}
     public float getExp() {return this.xp;}
+    public Inventory getInventory() {
+        if(this.inventory == null) {
+            this.inventory = Bukkit.createInventory(null, InventoryType.CHEST);
+            this.setToInventory(inventory);
+        }
+        return this.inventory;
+    }
+    
+    public void updateFromInventory() {
+        if(this.inventory == null) return;
+        this.slots.clear();
+        ItemStack[] items = this.inventory.getContents();
+        for(int i = 0; i < items.length; i++) {
+            ItemStack is = items[i];
+            if(is == null) continue;
+            if(is.getAmount() < 1) continue;
+            try {
+                this.slots.put(i, DomsInventoryItem.createFromItemStack(is));
+            } catch(Throwable t) {}
+        }
+    }
     
     public void setInventoryGroup(String world) {this.inventoryGroup = world;}
     public void setHelmet(DomsInventoryItem item) {this.helmet = item;}

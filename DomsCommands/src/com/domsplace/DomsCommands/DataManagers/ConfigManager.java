@@ -81,6 +81,8 @@ public class ConfigManager extends DataManager {
         
         df("messages.shutdown.kickmessage", Bukkit.getServer().getShutdownMessage());
         
+        //df("messages.achievements.broadcast", "{text\"{DISPLAYNAME} earned the achievement \",extra:[{text:\"{ACHIEVEMENT}\",hoverEvent:{action:show_achievement,value:\"{ACHIEVEMENTID}\"}}]}");
+        
         cmds = new ArrayList<String>();
         cmds.add("village admin save");
         df("messages.shutdown.commands", cmds);
@@ -116,6 +118,8 @@ public class ConfigManager extends DataManager {
         df("chat.usechat", true);
         
         df("joinkit", "default");
+        
+        df("scoreboards.enabled", true);
         
         if(!config.contains("kits")) {
             df("kits.default.name", "Default");

@@ -3,7 +3,7 @@ description: Offers many commands for everyone to use!
 main: com.domsplace.DomsCommands.DomsCommandsPlugin
 authors: [Dominic, Jordan, Kyle]
 website: http://domsplace.com/
-version: '1.11'
+version: '1.12'
 load: POSTWORLD
 commands:
    DomsCommands:
@@ -478,7 +478,7 @@ permissions:
        DomsCommands.homes: true
        DomsCommands.deletehome: true
        DomsCommands.kit.*: true
-       DomsCommands.chat.colors.*: true
+       DomsCommands.chat.*: true
        DomsCommands.fly.*: true
        DomsCommands.who: true
        DomsCommands.whois: true
@@ -1032,6 +1032,13 @@ permissions:
      description: Allows access to the kit command.
    DomsCommands.kit.cooldown:
      description: Allows access to bypass the kit cooldown.
+   DomsCommands.chat.*:
+     description: Allows access to use all things in chat.
+     children:
+         DomsCommands.chat.colors.*: true
+         DomsCommands.chat.url: true
+   DomsCommands.chat.url:
+     description: Allows access to use URLs in chat.
    DomsCommands.chat.colors.*:
      description: Allows access to use all colors in chat.
      children:

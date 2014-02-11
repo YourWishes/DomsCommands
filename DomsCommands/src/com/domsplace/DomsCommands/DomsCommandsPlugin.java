@@ -138,6 +138,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private ConfigSaveThread configSaveThread;
     private AddPlayerTimeThread playerTimeThread;
     private PlayerAwayThread playerAwayThread;
+    public ServerCPUThread serverCPUThread;
     private ServerTPSThread serverTPSThread;
     private UpdateThread updateThread;
     
@@ -257,6 +258,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.configSaveThread = new ConfigSaveThread();
         this.playerTimeThread = new AddPlayerTimeThread();
         this.playerAwayThread = new PlayerAwayThread();
+        this.serverCPUThread = new ServerCPUThread();
         this.serverTPSThread = new ServerTPSThread();
         this.updateThread = new UpdateThread();
         

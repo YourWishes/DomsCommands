@@ -17,6 +17,8 @@
 package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Objects.DomsInventory;
+import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -31,8 +33,6 @@ public class BackpackCommand extends BukkitCommand {
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
-        return this.noPermission(sender, cmd, label, args);
-        /*
         if(!isPlayer(sender)) {
             sendMessage(sender, ChatError + "Only players can do this.");
             return true;
@@ -42,8 +42,8 @@ public class BackpackCommand extends BukkitCommand {
         DomsInventory backpack = p.getBackpack();
         if(backpack == null) backpack = p.setBackpack(new DomsInventory(p, ""));
         
-        //p.getOnlinePlayer().openInventory(backpack.getI);
+        p.getOnlinePlayer().openInventory(backpack.getInventory());
         sendMessage(sender, "Opening your backpack.");
-        return true;*/
+        return true;
     }
 }

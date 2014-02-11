@@ -35,6 +35,7 @@ public class AddPlayerTimeThread extends DomsThread {
             plyr.addPlayTime(1000);
         }
         
+        //Added Garbage Collection
         System.gc();
     }
 }

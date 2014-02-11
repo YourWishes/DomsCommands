@@ -26,7 +26,7 @@ import com.domsplace.DomsCommands.Objects.DomsPlayer;
  */
 public class ConfigSaveThread extends DomsThread {
     public ConfigSaveThread() {
-        super(300, 600);
+        super(300, 600, true);
     }
     
     @Override

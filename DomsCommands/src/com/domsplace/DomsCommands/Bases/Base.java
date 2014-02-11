@@ -23,7 +23,6 @@ import com.domsplace.DomsCommands.Hooks.VaultHook;
 import com.domsplace.DomsCommands.Objects.Chat.DomsChatObject;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -280,10 +279,8 @@ public class Base extends RawBase {
             Object handle = CraftPlayer.getMethod("getHandle").invoke(cPlayer);
             Object playerConnection = handle.getClass().getDeclaredField("playerConnection").get(handle);
             PlayerConnection.getDeclaredMethod("sendPacket", Packet).invoke(playerConnection, packet);
-            Base.debug("Sent: " + message);
             return true;
         } catch(Exception e) {
-            Base.debug("FAILED TO SEND RAW MESSAGE");
             return false;
         }
     }
@@ -509,7 +506,7 @@ public class Base extends RawBase {
         error(message, false);
     }
     
-    public static void error(String message, Exception e) {
+    public static void error(String message, Throwable e) {
         error(message, true);
         debug("ERROR: " + message);
         if(!DebugMode) return;
@@ -692,7 +689,7 @@ public class Base extends RawBase {
     }
     
     public static String twoDecimalPlaces(double x) {
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("0.00");
         return df.format(x);
     }
     

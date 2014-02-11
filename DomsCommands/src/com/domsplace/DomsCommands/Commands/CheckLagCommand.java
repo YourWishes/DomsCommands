@@ -17,6 +17,7 @@
 package com.domsplace.DomsCommands.Commands;
 
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
+import com.domsplace.DomsCommands.Threads.ServerCPUThread;
 import com.domsplace.DomsCommands.Threads.ServerTPSThread;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,9 @@ public class CheckLagCommand extends BukkitCommand {
         double total = r.totalMemory() / mb;
         double max = r.maxMemory() / mb;
         double perc = used/total*100;
+        //Check CPU
+        getPlugin().serverCPUThread.run();
+        msgs.add(ChatDefault + "CPU Usgae: " + ChatImportant + twoDecimalPlaces(ServerCPUThread.getCPU()) + "%");
         msgs.add(ChatDefault + "Memory Usage: " + ChatImportant + twoDecimalPlaces(used) + "MB " + ChatDefault + "(" + ChatImportant + twoDecimalPlaces(perc) + "%" + ChatDefault + ")");
         msgs.add(ChatDefault + "Total Memory: " + ChatImportant + twoDecimalPlaces(total) + "MB");
         msgs.add(ChatDefault + "Max Memory: " + ChatImportant + twoDecimalPlaces(max) + "MB");

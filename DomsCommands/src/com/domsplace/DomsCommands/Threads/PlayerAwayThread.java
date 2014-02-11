@@ -28,7 +28,7 @@ import com.domsplace.DomsCommands.Objects.Punishment;
  */
 public class PlayerAwayThread extends DomsThread {
     public PlayerAwayThread() {
-        super(1,1);
+        super(1,1,true);
     }
     
     @Override

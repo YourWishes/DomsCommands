@@ -46,14 +46,13 @@ public class PingThread extends DomsThread {
             Player p = player.getOnlinePlayer();
             
             long before = getNow();
-            p.getAddress().getAddress().isReachable(5000);
+            p.getAddress().getAddress().isReachable(10000);
             long after = getNow();
             
             long diff = after - before;
             sendMessage(this.player, "Your ping: " + ChatImportant + diff + "ms" + ChatDefault + ".");
         } catch(Exception e) {
             sendMessage(this.player, ChatError + "Failed to get ping.");
-            e.printStackTrace();
             return;
         }
     }

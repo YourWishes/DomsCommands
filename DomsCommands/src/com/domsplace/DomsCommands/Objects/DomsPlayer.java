@@ -28,6 +28,7 @@ import com.domsplace.DomsCommands.Events.DomsPlayerUpdateVariablesEvent;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
 import com.domsplace.DomsCommands.Hooks.ForumAAHook;
 import com.domsplace.DomsCommands.Hooks.SELBansHook;
+import com.domsplace.DomsCommands.Objects.Scoreboard.PlayerScoreboard;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,10 +175,15 @@ public class DomsPlayer {
     public static DomsPlayer getPlayer(Player p) {return getPlayer(p.getName());}
     public static DomsPlayer getPlayer(OfflinePlayer player) {return getPlayer(player.getName());}
     public static DomsPlayer getPlayer(String player) {
-        if(REGISTERED_ONLINE_PLAYERS.containsKey(player)) return REGISTERED_ONLINE_PLAYERS.get(player);
-        if(isPlayerRegistered(player)) return REGISTERED_PLAYERS.get(player);
+        DomsPlayer ply = null;
+        try {ply = REGISTERED_ONLINE_PLAYERS.get(player);} catch(Throwable e) {}
+        if(ply != null) return ply;
+        try {ply = REGISTERED_PLAYERS.get(player);} catch(Throwable e) {}
+        if(ply != null) return ply;
         return new DomsPlayer(player);
     }
+    
+    //Extremely laggy..
     public static DomsPlayer getPlayerByIP(String string) {
         for(DomsPlayer player : REGISTERED_PLAYERS.values()) {
             if(player == null) continue;
@@ -191,7 +197,7 @@ public class DomsPlayer {
     public static boolean isPlayerRegistered(Player player) {return isPlayerRegistered(player.getName());}
     public static boolean isPlayerRegistered(OfflinePlayer player) {return isPlayerRegistered(player.getName());}
     public static boolean isPlayerRegistered(String player) {return REGISTERED_PLAYERS.containsKey(player);}
-
+    
     public static List<DomsPlayer> getPlayersByIP(String lastIP) {
         List<DomsPlayer> players = new ArrayList<DomsPlayer>();
         for(DomsPlayer p : REGISTERED_PLAYERS.values()) {
@@ -229,15 +235,16 @@ public class DomsPlayer {
     private final List<DomsInventory> inventories;
     private final List<DomsInventory> enderchest;
     private DomsInventory backpack;
-    private Map<String, String> variables;
-    private Map<String, String> savedVariables;
-    private Map<Kit, Long> kitCooldowns;
+    private final Map<String, String> variables;
+    private final Map<String, String> savedVariables;
+    private final Map<Kit, Long> kitCooldowns;
     
     private boolean flyMode;
     
     private TeleportRequest lastRequest;
     
     private DomsPlayer lastPrivateMessenger;
+    private PlayerScoreboard scoreboard;
     
     private DomsPlayer(String player) {
         this.player = player;
@@ -293,11 +300,12 @@ public class DomsPlayer {
     public DomsLocation getFurnaceLocation() {return this.playerFurnace;}
     public String getNickname() {return this.displayName;}
     public String getNamePlate() {return this.namePlate;}
+    public PlayerScoreboard getScoreboard() {return this.scoreboard;}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
     public boolean isAFK() {return this.afk;}
-    public boolean isConsole() {return this.equals(CONSOLE_PLAYER);}
+    public final boolean isConsole() {return this.equals(CONSOLE_PLAYER);}
     public boolean isOp() {return this.getOfflinePlayer().isOp();}
     
     public void setJoinTime(long time) {this.join = time;}
@@ -319,6 +327,7 @@ public class DomsPlayer {
     public void setFlightMode(boolean f) {this.flyMode = f;}
     public void setFurnaceLocation(DomsLocation location) {this.playerFurnace = location.copy();}
     public DomsInventory setBackpack(DomsInventory inventory) {this.backpack = inventory; return this.backpack;}
+    public void setScoreboard(PlayerScoreboard sb) {this.scoreboard = sb;}
     public void setNamePlate(String s) {
         this.namePlate = s;
         if(this.isOnline() && !this.isConsole()) {
@@ -685,9 +694,9 @@ public class DomsPlayer {
         if(!this.isConsole()) {
             if(this.getWorld() != null) this.variables.put("WORLD", this.getWorld());
             
-            if(this.getChatPrefix() != null) this.variables.put("PREFIX", this.getChatPrefix());
-            if(this.getChatSuffix() != null) this.variables.put("SUFFIX", this.getChatSuffix());
-            if(this.getGroup() != null) this.variables.put("GROUP", this.getGroup());
+            if(this.getChatPrefix() != null) this.variables.put("PREFIX", Base.colorise(this.getChatPrefix()));
+            if(this.getChatSuffix() != null) this.variables.put("SUFFIX", Base.colorise(this.getChatSuffix()));
+            if(this.getGroup() != null) this.variables.put("GROUP", Base.colorise(this.getGroup()));
         }
         
         if(this.isOnline()) {

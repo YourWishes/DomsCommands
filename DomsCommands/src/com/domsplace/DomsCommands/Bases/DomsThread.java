@@ -71,6 +71,10 @@ public class DomsThread extends Base implements Runnable {
         if(this.thread == null) return;
         this.getThread().cancel();
     }
+    
+    public void deregister() {
+        DomsThread.THREADS.remove(this);
+    }
 
     @Override
     public void run() {

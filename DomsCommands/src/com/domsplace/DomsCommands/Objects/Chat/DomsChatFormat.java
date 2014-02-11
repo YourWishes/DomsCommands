@@ -49,6 +49,7 @@ public class DomsChatFormat {
     public void setGroup(String group) {this.group = group;}
     
     public void chat(DomsPlayer chatter, DomsPlayer reciever, DomsChannel channel, String message) {
+        if(message.replaceAll(" ", "").equals("")) return;
         chatter.updateVariables();
         String formattingFormat = this.format + ChatColor.RESET;
         
@@ -156,6 +157,11 @@ public class DomsChatFormat {
                 if(com == null) continue;
                 return com;
             }
+        }
+        
+        if(!format) {
+            DomsChatObject o = DomsChatFormatter.URL_FORMATTER.getObject(talker, reciever, channel, this, current, c, underline, strikethrough, obfuscate, italics, bold, message);
+            if(o != null) return o;
         }
         
         DomsChatComponent textComponent = new DomsChatComponent(ComponentType.TEXT, current);

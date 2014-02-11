@@ -19,6 +19,7 @@ package com.domsplace.DomsCommands.Objects.Scoreboard;
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Scoreboard.ScoreboardType.Type;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class PlayerScoreboard {
         this.player = player;
         this.lastCycle = 0L;
         
-        this.scoreboards = new HashMap<Type, ScoreboardType>();
+        this.scoreboards = new EnumMap<Type, ScoreboardType>(Type.class);
     }
     
     public final DomsPlayer getPlayer() {return this.player;}

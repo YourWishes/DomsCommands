@@ -17,7 +17,11 @@
 package com.domsplace.DomsCommands.Bases;
     
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
+import com.domsplace.DomsCommands.Threads.DomsCommandThread;
+import static com.domsplace.DomsCommands.Threads.DomsCommandThread.COMMAND_FAILED;
+import static com.domsplace.DomsCommands.Threads.DomsCommandThread.COMMAND_SUCCESS;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -77,20 +81,20 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if(args.length > 0 && (args[0].equals(COMMAND_SUCCESS) || args[0].equals(COMMAND_FAILED))) {
+            boolean success = false;
+            try {
+                success = args[0].equals(DomsCommandThread.COMMAND_SUCCESS);
+            } catch(Exception e) {}
+            return success;
+        }
+        
         if(cmd.getName().equalsIgnoreCase(this.command)) {
             if(!hasPermission(sender, cmd.getPermission())) return noPermission(sender, cmd, label, args);
-            boolean result = false;
-            //Error Handling
-            try {
-                result = this.cmd(sender, cmd, label, args);
-            } catch(Exception e) {
-                debug("Exception e:" + e.getMessage());
-                error("Command Execution failed \"" + this.toFullCommand(sender, cmd, label, args) + "\" Show to Plugin Author!", e);
-                sendMessage(sender, ChatError + "A command error occured and the command was not finished successfully, please contact an admin!");
-            }
             
-            if(!result) return commandFailed(sender, cmd, label, args);
-            return commandSuccess(sender, cmd, label, args);
+            //TEST: Fire ASYNC Command Thread
+            DomsCommandThread thread = new DomsCommandThread(this, sender, cmd, label, args);
+            return true;
         }
         
         return badCommand(sender, cmd, label, args);
@@ -125,6 +129,12 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
     public List<String> tabFailed(CommandSender sender, Command cmd, String label, String[] args) {return null;}
     public List<String> badTab(CommandSender sender, Command cmd, String label, String[] args) {return null;}
     public List<String> tabSuccess(CommandSender sender, Command cmd, String label, String[] args, List<String> successValue) {return successValue;}
+    
+    public void onError(CommandSender sender, Command cmd, String label, String[] args, Throwable e) {
+        error("Command Execution failed \"" + this.toFullCommand(sender, cmd, label, args) + "\" Show to Plugin Author!", e);
+        e.printStackTrace();
+        sendMessage(sender, ChatError + "A command error occured and the command was not finished successfully, please contact an admin!");
+    }
     
     public boolean noPermission(CommandSender sender, Command cmd, String label, String[] args) {
         cmd.setPermissionMessage(colorise(Base.getPermissionMessage()));

@@ -228,7 +228,6 @@ public class PlayerManager extends DataManager {
     }
     
     public SaveResult savePlayer(DomsPlayer player) {
-        debug("Saving " + player.getPlayer());
         player.updateDomsInventory();
         
         File f = player.getPlayerFile();
@@ -317,8 +316,10 @@ public class PlayerManager extends DataManager {
 
                     Map<Integer, DomsInventoryItem> items = inv.getItems();
                     for(Integer i : items.keySet()) {
-                        if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
-                        yml.set(key + "items.slot" + i, items.get(i).toString());
+                        try {
+                            if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
+                            yml.set(key + "items.slot" + i, items.get(i).toString());
+                        } catch(Throwable t) {}
                     }
 
                     if(inv.getExp() > 0) {yml.set(key + "xp", Float.toString(inv.getExp()));}
@@ -336,8 +337,10 @@ public class PlayerManager extends DataManager {
 
                     Map<Integer, DomsInventoryItem> items = inv.getItems();
                     for(Integer i : items.keySet()) {
-                        if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
-                        yml.set(key + "items.slot" + i, items.get(i).toString());
+                        try {
+                            if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
+                            yml.set(key + "items.slot" + i, items.get(i).toString());
+                        } catch(Throwable t) {}
                     }
                 } catch(Exception e) {
                     log("Failed to save " + player.getPlayer() + "'s Enderchest \"" + inv.getInventoryGroup() + "\".");
@@ -353,10 +356,13 @@ public class PlayerManager extends DataManager {
             if(player.getBackpack() != null) {
                 try {
                     DomsInventory inv = player.getBackpack();
+                    inv.updateFromInventory();
                     Map<Integer, DomsInventoryItem> items = inv.getItems();
                     for(Integer i : items.keySet()) {
-                        if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
-                        yml.set("backpack.slot" +  i, items.get(i).toString());
+                        try {
+                            if(items.get(i) == null || items.get(i).getItem() == null || items.get(i).getItem().isAir()) continue;
+                            yml.set("backpack.slot" +  i, items.get(i).toString());
+                        } catch(Throwable t) {}
                     }
                 } catch(Exception e) {
                     log("Failed to save " + player.getPlayer() + "'s Backpack \"" + player.getBackpack().getInventoryGroup() + "\".");

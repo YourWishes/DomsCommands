@@ -33,16 +33,16 @@ public class ServerTPSThread extends DomsThread {
     private long lastCheck = getNow();
     
     public ServerTPSThread() {
-        super(1, 1);
+        super(1, 2);
     }
     
     @Override
     public void run() {
         long now = getNow();
         
-        double diff = now - lastCheck;
+        double diff = (double)now - (double)lastCheck;
         try {
-            tps = (tps + (20d / (diff / 1000d)))/2d;
+            tps = (tps + (10d * (diff / 1000d)))/2d;
         } catch(Exception e) {return;}
         
         lastCheck = now;
