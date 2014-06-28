@@ -51,7 +51,7 @@ public class AddLoresCommand extends BukkitCommand {
             return false;
         }
         
-        DomsPlayer player = DomsPlayer.getPlayer(sender);
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromCommandSender(sender);
         
         ItemStack is = player.getOnlinePlayer().getItemInHand();
         if(is == null || 

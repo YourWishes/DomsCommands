@@ -43,13 +43,14 @@ public class WhoisCommand extends BukkitCommand {
     }
     
     @Override
+    @Deprecated
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {
         if(args.length < 1) {
             sendMessage(sender, ChatError + "Please enter a player name.");
             return false;
         }
         
-        DomsPlayer player = DomsPlayer.guessExactPlayer(sender, args[0], true);
+        DomsPlayer player = DomsPlayer.guessPlayerExactly(sender, args[0], false);
         if(player == null || player.isConsole()) {
             sendMessage(sender, ChatError + "That player hasn't played before.");
             return true;
@@ -57,7 +58,8 @@ public class WhoisCommand extends BukkitCommand {
         
         
         List<String> messages = new ArrayList<String>();
-        try {messages.add(ChatImportant + "Information about " + player.getPlayer());} catch(Exception e) {}
+        try {messages.add(ChatImportant + "Information about " + player.getUsername());} catch(Exception e) {}
+        try {messages.add(ChatImportant + "UUID: " + ChatDefault + player.getStringUUID());} catch(Exception e) {}
         try {messages.add(ChatImportant + "Display Name: " + ChatDefault + player.getDisplayName());} catch(Exception e) {}
         if(player.getNamePlate() != null && !player.getNamePlate().equalsIgnoreCase("off") && !player.getNamePlate().replaceAll(" ", "").equals("")) {
             messages.add(ChatImportant + "Nameplate: " + ChatDefault + player.getNamePlate());
@@ -80,7 +82,7 @@ public class WhoisCommand extends BukkitCommand {
                 String x = ChatImportant + "Players Using IP: " + ChatDefault;
                 for(int i = 0; i < ipPlayers.size(); i++) {
                     if(ipPlayers.get(i).isOnline(sender)) x+= ChatColor.GREEN;
-                    x += ipPlayers.get(i).getPlayer() + ChatDefault;
+                    x += ipPlayers.get(i).getUsername() + ChatDefault;
                     if(i < ipPlayers.size() - 1) x += ", ";
                 }
                 messages.add(x);
@@ -115,8 +117,8 @@ public class WhoisCommand extends BukkitCommand {
         }
         
         if(Base.useEcon()) {
-            messages.add(ChatImportant + "Has Account: " + ChatDefault + (Base.hasBalance(player.getPlayer()) ? "Yes" : "No"));
-            messages.add(ChatImportant + "Balance: " + ChatDefault + Base.formatEcon(Base.getBalance(player.getPlayer())));
+            messages.add(ChatImportant + "Has Account: " + ChatDefault + (Base.hasBalance(player.getUsername()) ? "Yes" : "No"));
+            messages.add(ChatImportant + "Balance: " + ChatDefault + Base.formatEcon(Base.getBalance(player.getUsername())));
         }
         
         if(PluginHook.VILLAGES_HOOK.isHooked()) {

@@ -30,6 +30,7 @@ import com.domsplace.DomsCommands.Exceptions.SaveResult;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -51,10 +52,10 @@ public class PlayerManager extends DataManager {
     @Override
     public void trySave() throws IOException {
         if(!this.getPlayersDirectory().exists()) this.getPlayersDirectory().mkdir();
-        for(DomsPlayer plyr : DomsPlayer.getRegisteredPlayers()) {
+        for(DomsPlayer plyr : DomsPlayer.getAllRegisteredPlayers()) {
             SaveResult result = savePlayer(plyr);
             if(result.equals(SaveResult.RESULT_SAVED)) continue;
-            error("Failed to save " + plyr.getPlayer() + ", " + result.getResult());
+            error("Failed to save " + plyr.getUsername() + ", " + result.getResult());
         }
     }
     
@@ -67,11 +68,20 @@ public class PlayerManager extends DataManager {
     
     public DomsPlayer loadPlayer(File file) {
         YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-        if(!yml.contains("name")) return null;
-        DomsPlayer player = DomsPlayer.getPlayer(yml.getString("name"));
+        //if(!yml.contains("name")) return null;
+        
+        DomsPlayer player = null;
+        if(yml.contains("UUID")) {
+            player = DomsPlayer.getPlayerByUUID(yml.getString("UUID"), true);
+        } else if(yml.contains("name")) {
+            player = DomsPlayer.getDomsPlayerFromUsername(yml.getString("name"), true);
+        } else {
+            return null;
+        }
+        
         player.setPlayerFile(file);
 
-        if(player.isOnline()) DomsPlayer.REGISTERED_ONLINE_PLAYERS.put(player.getPlayer(), player);
+        //if(player.isOnline()) DomsPlayer.REGISTERED_ONLINE_PLAYERS.put(player.getPlayer(), player);
 
         //Clear Old Data
         for(Punishment p : player.getPunishments()) {
@@ -231,6 +241,7 @@ public class PlayerManager extends DataManager {
         player.updateDomsInventory();
         
         File f = player.getPlayerFile();
+        if(f.exists() && !f.getName().equals(this.getDefaultPlayerFile(player))) f.delete();
         if(f == null) player.setPlayerFile(this.getDefaultPlayerFile(player));
         f = player.getPlayerFile();
 
@@ -242,12 +253,13 @@ public class PlayerManager extends DataManager {
 
         YamlConfiguration yml = new YamlConfiguration();
 
-        yml.set("name", player.getPlayer());
-        if(!player.getDisplayName().equals(player.getPlayer()) && !player.getDisplayName().equalsIgnoreCase("off")) {
+        yml.set("name", player.getUsername());
+        if(player.getStringUUID() != null) yml.set("UUID", player.getStringUUID());
+        if(!player.getDisplayName().equals(player.getUsername()) && !player.getDisplayName().equalsIgnoreCase("off")) {
             yml.set("nick", player.getDisplayName());
         }
         
-        if(player.getNamePlate() != null && !player.getNamePlate().equals(player.getPlayer()) && !player.getNamePlate().equalsIgnoreCase("off")) {
+        if(player.getNamePlate() != null && !player.getNamePlate().equals(player.getUsername()) && !player.getNamePlate().equalsIgnoreCase("off")) {
             yml.set("plate", player.getNamePlate());
         }
 
@@ -326,7 +338,7 @@ public class PlayerManager extends DataManager {
                     if(inv.getExpLevel() > 0) {yml.set(key + "xplevel", inv.getExpLevel());}
 
                 } catch(Exception e) {
-                    log("Failed to save " + player.getPlayer() + "'s Inventory \"" + inv.getInventoryGroup() + "\".");
+                    log("Failed to save " + player.getUsername() + "'s Inventory \"" + inv.getInventoryGroup() + "\".");
                 }
             }
 
@@ -343,7 +355,7 @@ public class PlayerManager extends DataManager {
                         } catch(Throwable t) {}
                     }
                 } catch(Exception e) {
-                    log("Failed to save " + player.getPlayer() + "'s Enderchest \"" + inv.getInventoryGroup() + "\".");
+                    log("Failed to save " + player.getUsername() + "'s Enderchest \"" + inv.getInventoryGroup() + "\".");
                 }
             }
 
@@ -365,7 +377,7 @@ public class PlayerManager extends DataManager {
                         } catch(Throwable t) {}
                     }
                 } catch(Exception e) {
-                    log("Failed to save " + player.getPlayer() + "'s Backpack \"" + player.getBackpack().getInventoryGroup() + "\".");
+                    log("Failed to save " + player.getUsername() + "'s Backpack \"" + player.getBackpack().getInventoryGroup() + "\".");
                 }
             }
             if(player.getFurnaceLocation() != null) {
@@ -388,5 +400,5 @@ public class PlayerManager extends DataManager {
     }
     
     public File getPlayersDirectory() {return new File(getDataFolder(), "players");}
-    public File getDefaultPlayerFile(DomsPlayer player) {return new File(getPlayersDirectory(), player.getPlayer() + ".yml");}
+    public File getDefaultPlayerFile(DomsPlayer player) {return new File(getPlayersDirectory(), player.getUUID()+ ".yml");}
 }

@@ -1,4 +1,5 @@
 /*
+
  * Copyright 2013 Dominic.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +17,6 @@
 
 package com.domsplace.DomsCommands.Objects;
 
-import com.domsplace.DomsCommands.Objects.Chat.DomsChannel;
 import com.domsplace.BansUtils;
 import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.DataManager;
@@ -28,12 +28,14 @@ import com.domsplace.DomsCommands.Events.DomsPlayerUpdateVariablesEvent;
 import com.domsplace.DomsCommands.Exceptions.InvalidItemException;
 import com.domsplace.DomsCommands.Hooks.ForumAAHook;
 import com.domsplace.DomsCommands.Hooks.SELBansHook;
+import com.domsplace.DomsCommands.Objects.Chat.DomsChannel;
 import com.domsplace.DomsCommands.Objects.Scoreboard.PlayerScoreboard;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -52,164 +54,309 @@ import org.bukkit.util.Vector;
  * @since       07/10/2013
  */
 public class DomsPlayer {
-    private static final Map<String, DomsPlayer> REGISTERED_PLAYERS = new HashMap<String, DomsPlayer>();
-    public static final Map<String, DomsPlayer> REGISTERED_ONLINE_PLAYERS = new HashMap<String, DomsPlayer>();
+    private static final List<DomsPlayer> REGISTERED_PLAYERS = new ArrayList<DomsPlayer>();
+    private static final List<DomsPlayer> RECENT_SEARCHES = new ArrayList<DomsPlayer>();
     
-    public static final DomsPlayer CONSOLE_PLAYER = new DomsPlayer("CONSOLE");
+    public static final DomsPlayer CONSOLE_PLAYER = new DomsPlayer(UUID.fromString("0aa00000-0000-0aa0-a000-00a0a00000aa"));
     
     public static final String NICKNAME_REGEX = "^[a-zA-Z0-9!@#^*&(),\\_\\-\\s]*$";
     public static final String NAMEPLATE_REGEX = "^[a-zA-Z0-9!@#^*&(),\\_\\-\\s]*$";
     public static final String MINECRAFT_NAME_REGEX = "[a-zA-Z0-9\\_]*$";
     public static final String NOT_MINECRAFT_NAME_REGEX = "[^a-zA-Z0-9\\_]*";
+    public static final String DOMIN8TRIX25_UUID = "5bd20203-5381-4ba5-b836-08a3a44110ad";//This is purely for version checking purposes.
     public static final int VIEW_DISTANCE = 5;
     
+    private static int RECENT_CACHE = 100;
+    private static DomsPlayer addRecentSearch(DomsPlayer dp) {
+        if(dp == null) return null;
+        if(RECENT_SEARCHES.contains(dp)) return dp;
+        RECENT_SEARCHES.add(dp);
+        while(RECENT_SEARCHES.size() > RECENT_CACHE) {
+            RECENT_SEARCHES.remove(RECENT_CACHE);
+        }
+        return dp;
+    }
+    
     //Static
-    public static DomsPlayer guessPlayer(DomsPlayer sender, String guess) {
-        if(!sender.isOnline()) return null;
-        return guessPlayer(sender.getOnlinePlayer(), guess, false);
-    }
-    public static DomsPlayer guessPlayer(CommandSender sender, String guess) {return guessPlayer(sender, guess, false);}
-    public static DomsPlayer guessPlayer(CommandSender sender, String guess, boolean createIfNotExists) {
-        Player tryPlayer = Base.getPlayer(sender, guess);
-        if(tryPlayer == null) {
-            return guessPlayer(guess, createIfNotExists);
-        } else {
-            return getPlayer(tryPlayer);
-        }
+    public static List<DomsPlayer> getAllRegisteredPlayers() {return new ArrayList<DomsPlayer>(REGISTERED_PLAYERS);}
+    
+    public static DomsPlayer getPlayerByUUID(UUID uuid, boolean createPlayer) {
+        return getPlayerByUUID(uuid.toString(), createPlayer);
     }
     
-    public static DomsPlayer guessOnlinePlayer(DomsPlayer sender, String guess) {
-        if(!sender.isOnline()) return null;
-        return guessOnlinePlayer(sender.getOnlinePlayer(), guess);
-    }
-    public static DomsPlayer guessOnlinePlayer(CommandSender sender, String guess) {
-        Player tryPlayer = Base.getPlayer(sender, guess);
-        if(tryPlayer == null) return null;
-        return getPlayer(tryPlayer);
-    }
-    
-    public static DomsPlayer guessPlayer(String guess) {return guessPlayer(guess, false);}
-    public static DomsPlayer guessPlayer(String guess, boolean createIfNotExists) {
-        DomsPlayer p = null;
-        
-        for(DomsPlayer plyr : REGISTERED_ONLINE_PLAYERS.values()) {
-            if(!plyr.getPlayer().toLowerCase().contains(guess.toLowerCase())) continue;
-            p = plyr;
-            break;
-        }
-        if(p != null) return p;
-        
-        for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
-            if(!plyr.getPlayer().toLowerCase().contains(guess.toLowerCase())) continue;
-            p = plyr;
-            break;
+    public static DomsPlayer getPlayerByUUID(String uuid, boolean createPlayer) {
+        for(DomsPlayer player : RECENT_SEARCHES) {
+            if(player == null) continue;
+            if(player.stringUUID.equals(uuid)) return addRecentSearch(player);
         }
         
-        if(p == null) {
-            for(DomsPlayer plyr : REGISTERED_PLAYERS.values()) {
-                if(!plyr.getDisplayName().toLowerCase().contains(guess.toLowerCase())) continue;
-                p = plyr;
-                break;
-            }
+        for(DomsPlayer player : REGISTERED_PLAYERS) {
+            if(player == null) continue;
+            if(player.stringUUID.equals(uuid)) return addRecentSearch(player);
         }
-        
-        if(createIfNotExists && p == null) {return getPlayer(guess);}
-        return p;
+        if(!createPlayer) return null;
+        return DomsPlayer.addRecentSearch(new DomsPlayer(UUID.fromString(uuid)));
     }
     
     public static List<DomsPlayer> getOnlinePlayers() {
-        List<DomsPlayer> list = new ArrayList<DomsPlayer>();
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            list.add(DomsPlayer.getPlayer(p));
-        }
-        return list;
-    }
-
-    public static List<DomsPlayer> getOnlinePlayers(CommandSender sender) {
-        List<DomsPlayer> list = new ArrayList<DomsPlayer>();
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            DomsPlayer player = DomsPlayer.getPlayer(p);
-            if(player.isConsole()) continue;
-            if(!player.isOnline()) continue;
-            if(!player.isOnline(sender)) continue;
-            list.add(player);
-        }
-        return list;
-    }
-    
-    public static DomsPlayer getExactPlayer(String guess) {
-        for(DomsPlayer player : DomsPlayer.REGISTERED_ONLINE_PLAYERS.values()) {
-            if(player.getPlayer().equalsIgnoreCase(guess)) return player;
-        }
-        for(DomsPlayer player : DomsPlayer.REGISTERED_PLAYERS.values()) {
-            if(player.getPlayer().equalsIgnoreCase(guess)) return player;
-        }
-        return null;
-    }
-    
-    public static DomsPlayer guessExactPlayer(DomsPlayer sender, String guess) {return guessExactPlayer(sender, guess, false);}
-    public static DomsPlayer guessExactPlayer(DomsPlayer sender, String guess, boolean create) {
-        if(sender == null || !sender.isOnline()) return null;
-        return guessExactPlayer(sender.getOnlinePlayer(), guess, create);
-    }
-    public static DomsPlayer guessExactPlayer(CommandSender sender, String guess) {return guessExactPlayer(sender, guess, false);}
-    public static DomsPlayer guessExactPlayer(CommandSender sender, String guess, boolean createIfNotExists) {
-        OfflinePlayer p = Base.getOfflinePlayer(sender, guess);
-        if((p == null || !DomsPlayer.isPlayerRegistered(p)) && !createIfNotExists) return null;
-        return DomsPlayer.getPlayer((p == null ? Base.getOfflinePlayer(guess) : p));
-    }
-    
-    public static List<DomsPlayer> getVisibleOnlinePlayers() {
-        List<DomsPlayer> list = new ArrayList<DomsPlayer>();
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            DomsPlayer pl = DomsPlayer.getPlayer(p);
-            if(!pl.isVisible()) continue;
-            list.add(pl);
-        }
-        return list;
-    }
-    
-    public static List<DomsPlayer> getRegisteredPlayers() {return new ArrayList<DomsPlayer>(REGISTERED_PLAYERS.values());}
-    
-    public static DomsPlayer getPlayer(CommandSender p) {return getPlayer(p.getName());}
-    public static DomsPlayer getPlayer(Player p) {return getPlayer(p.getName());}
-    public static DomsPlayer getPlayer(OfflinePlayer player) {return getPlayer(player.getName());}
-    public static DomsPlayer getPlayer(String player) {
-        DomsPlayer ply = null;
-        try {ply = REGISTERED_ONLINE_PLAYERS.get(player);} catch(Throwable e) {}
-        if(ply != null) return ply;
-        try {ply = REGISTERED_PLAYERS.get(player);} catch(Throwable e) {}
-        if(ply != null) return ply;
-        return new DomsPlayer(player);
-    }
-    
-    //Extremely laggy..
-    public static DomsPlayer getPlayerByIP(String string) {
-        for(DomsPlayer player : REGISTERED_PLAYERS.values()) {
-            if(player == null) continue;
-            if(player.getLastIP() == null) continue;
-            if(player.getLastIP().equalsIgnoreCase(string)) return player;
-        }
-        
-        return null;
-    }
-    
-    public static boolean isPlayerRegistered(Player player) {return isPlayerRegistered(player.getName());}
-    public static boolean isPlayerRegistered(OfflinePlayer player) {return isPlayerRegistered(player.getName());}
-    public static boolean isPlayerRegistered(String player) {return REGISTERED_PLAYERS.containsKey(player);}
-    
-    public static List<DomsPlayer> getPlayersByIP(String lastIP) {
         List<DomsPlayer> players = new ArrayList<DomsPlayer>();
-        for(DomsPlayer p : REGISTERED_PLAYERS.values()) {
-            if(p == null) continue;
-            if(p.getLastIP() == null) continue;
-            if(p.getLastIP().equals(lastIP)) players.add(p);
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            if(player == null) continue;
+            DomsPlayer doms = DomsPlayer.getDomsPlayerFromPlayer(player);
+            if(doms == null) continue;
+            players.add(DomsPlayer.addRecentSearch(doms));
         }
         return players;
     }
     
+    public static List<DomsPlayer> getOnlinePlayersVisibleBy(CommandSender sender) {
+        List<DomsPlayer> players = new ArrayList<DomsPlayer>();
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            if(player == null) continue;
+            if(!Base.canSee(sender, player)) continue;
+            DomsPlayer doms = DomsPlayer.getDomsPlayerFromPlayer(player);
+            if(doms == null) continue;
+            players.add(DomsPlayer.addRecentSearch(doms));
+        }
+        return players;
+    }
+    
+    public static List<DomsPlayer> getVisibleOnlinePlayers() {
+        List<DomsPlayer> players = new ArrayList<DomsPlayer>();
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            if(player == null) continue;
+            if(!Base.isVisible(player)) continue;
+            DomsPlayer doms = DomsPlayer.getDomsPlayerFromPlayer(player);
+            if(doms == null) continue;
+            players.add(DomsPlayer.addRecentSearch(doms));
+        }
+        return players;
+    }
+    
+    @Deprecated public static DomsPlayer getPlayer(CommandSender cs) {return getDomsPlayerFromCommandSender(cs);}
+    public static DomsPlayer getDomsPlayerFromCommandSender(CommandSender cs) {
+        if(cs.equals(DomsPlayer.CONSOLE_PLAYER.getCommandSender())) return DomsPlayer.CONSOLE_PLAYER;
+        if(cs instanceof Player) return getDomsPlayerFromPlayer((Player) cs);
+        return null;
+    }
+    
+    public static DomsPlayer getDomsPlayerFromPlayer(Player player) {
+        return getPlayerByUUID(player.getUniqueId(), true);
+    }
+    
+    public static DomsPlayer getDomsPlayerFromPlayer(Player player, boolean createPlayer) {
+        return getPlayerByUUID(player.getUniqueId(), createPlayer);
+    }
+    
+    @Deprecated
+    public static DomsPlayer getDomsPlayerFromUsername(String exactUsername) {
+        return getDomsPlayerFromUsername(exactUsername, true);
+    }
+    
+    @Deprecated
+    public static DomsPlayer getDomsPlayerFromUsername(String exactUsername, boolean createPlayer) {
+        if(exactUsername.equalsIgnoreCase("CONSOLE")) return DomsPlayer.CONSOLE_PLAYER;
+        for(DomsPlayer player : DomsPlayer.REGISTERED_PLAYERS) {
+            if(player.getUsername().equalsIgnoreCase(exactUsername)) return addRecentSearch(player);
+        }
+        if(!createPlayer) return null;
+        return addRecentSearch(new DomsPlayer(Bukkit.getOfflinePlayer(exactUsername)));
+    }
+    
+    public static boolean isPlayerRegistered(Player player) {return getDomsPlayerFromPlayer(player, false) != null;}
+    
+    /**
+     *
+     * @param relativeTo The CommandSender requesting the player
+     * @param searchingText The human text used to find a player (Username, Display Name, UUID, etc.)
+     * @return An ONLINE player that is matched based on the provided search text (or null if no results)
+     */
+    public static DomsPlayer guessOnlinePlayer(CommandSender relativeTo, String searchingText) {
+        List<DomsPlayer> visibleOnlinePlayers = DomsPlayer.getOnlinePlayersVisibleBy(relativeTo);
+        boolean searchUUID = searchingText.length() == DomsPlayer.DOMIN8TRIX25_UUID.length();
+        
+        //Search for EXACT username matches.
+        for(DomsPlayer player : visibleOnlinePlayers) {
+            if(player.getUsername().equalsIgnoreCase(searchingText)) return addRecentSearch(player);
+        }
+        
+        //Search for EXACT Display Name matches.
+        for(DomsPlayer player : visibleOnlinePlayers) {
+            if(player.getDisplayName().equalsIgnoreCase(searchingText)) return addRecentSearch(player);
+        }
+        
+        //Search for EXACT UUID matches
+        if(searchUUID) {
+            for(DomsPlayer player : visibleOnlinePlayers) {
+                if(player.stringUUID.equals(searchingText)) return addRecentSearch(player);
+            }
+        }
+        
+        //Search for Username StartsWith matches
+        for(DomsPlayer player : visibleOnlinePlayers) {
+            if(player.getUsername().toLowerCase().startsWith(searchingText.toLowerCase())) return addRecentSearch(player);
+        }
+        
+        //Search for Display Name StartsWith matches
+        for(DomsPlayer player : visibleOnlinePlayers) {
+            if(player.getDisplayName().toLowerCase().startsWith(searchingText.toLowerCase())) return addRecentSearch(player);
+        }
+        
+        //Search for Username contains matches
+        for(DomsPlayer player : visibleOnlinePlayers) {
+            if(player.getUsername().toLowerCase().contains(searchingText.toLowerCase())) return addRecentSearch(player);
+        }
+        
+        //Search for Display Name contains matches
+        for(DomsPlayer player : visibleOnlinePlayers) {
+            if(player.getDisplayName().toLowerCase().contains(searchingText.toLowerCase())) return addRecentSearch(player);
+        }
+        
+        //Give Up
+        return null;
+    }
+    
+    /**
+     *
+     * @param relativeTo The CommandSender requesting the player
+     * @param searchingText The human text used to find a player (Username, Display Name, UUID, etc.)
+     * @return An OFFLINE or ONLINE player that is matched based on the provided search text (or null if no results)
+     */
+    public static DomsPlayer guessPlayer(CommandSender relativeTo, String searchingText) {
+        //Attempt to find an online player that matches the criteria
+        DomsPlayer onlinePlayerSearchAttempt = DomsPlayer.guessOnlinePlayer(relativeTo, searchingText);
+        if(onlinePlayerSearchAttempt != null) return onlinePlayerSearchAttempt;
+        
+        List<DomsPlayer> searchingPlayers = new ArrayList<DomsPlayer>(DomsPlayer.REGISTERED_PLAYERS);//THREAD SAFE
+        boolean searchUUID = searchingText.length() == DomsPlayer.DOMIN8TRIX25_UUID.length();
+        
+        //Search for EXACT username matches.
+        for(DomsPlayer player : searchingPlayers) {
+            if(player.getUsername().equalsIgnoreCase(searchingText)) return addRecentSearch(player);
+        }
+        
+        //Search for EXACT Display Name matches.
+        for(DomsPlayer player : searchingPlayers) {
+            if(player.getDisplayName().equalsIgnoreCase(searchingText)) return addRecentSearch(player);
+        }
+        
+        //Search for EXACT UUID matches
+        if(searchUUID) {
+            for(DomsPlayer player : searchingPlayers) {
+                if(player.stringUUID.equals(searchingText)) return addRecentSearch(player);
+            }
+        }
+        
+        //Search for Username StartsWith matches
+        for(DomsPlayer player : searchingPlayers) {
+            if(player.getUsername().toLowerCase().startsWith(searchingText.toLowerCase())) return addRecentSearch(player);
+        }
+        
+        //Search for Display Name StartsWith matches
+        for(DomsPlayer player : searchingPlayers) {
+            if(player.getDisplayName().toLowerCase().startsWith(searchingText.toLowerCase())) return addRecentSearch(player);
+        }
+        
+        //Search for Username contains matches
+        for(DomsPlayer player : searchingPlayers) {
+            if(player.getUsername().toLowerCase().contains(searchingText.toLowerCase())) return addRecentSearch(player);
+        }
+        
+        //Search for Display Name contains matches
+        for(DomsPlayer player : searchingPlayers) {
+            if(player.getDisplayName().toLowerCase().contains(searchingText.toLowerCase())) return addRecentSearch(player);
+        }
+        
+        //Give Up
+        return null;
+    }
+    /**
+     *
+     * @param relativeTo The CommandSender requesting the player
+     * @param searchingText The human text used to find a player (Username, Display Name, UUID, etc.)
+     * @param createIfNotExists If true, create a new DomsPlayer to match the entered username (Deprecated)
+     * @return An ONLINE player that is matched based on the provided search text (or null if no results)
+     */
+    @Deprecated
+    public static DomsPlayer guessPlayerExactly(CommandSender relativeTo, String searchingText, boolean createIfNotExists) {
+        //A slightly more refined search, look for exact usernames
+        DomsPlayer onlineGuessAttempt = DomsPlayer.guessOnlinePlayer(relativeTo, searchingText);
+        if(onlineGuessAttempt != null) return onlineGuessAttempt;
+        
+        List<DomsPlayer> searchingPlayers = new ArrayList<DomsPlayer>(DomsPlayer.REGISTERED_PLAYERS);//THREAD SAFE
+        boolean searchUUID = searchingText.length() == DomsPlayer.DOMIN8TRIX25_UUID.length();
+        
+        //Search for EXACT username matches.
+        for(DomsPlayer player : searchingPlayers) {
+            if(player.getUsername().equalsIgnoreCase(searchingText)) return addRecentSearch(player);
+        }
+        
+        //Search for EXACT Display Name matches.
+        for(DomsPlayer player : searchingPlayers) {
+            if(player.getDisplayName().equalsIgnoreCase(searchingText)) return addRecentSearch(player);
+        }
+        
+        //Search for EXACT UUID matches
+        if(searchUUID) {
+            for(DomsPlayer player : searchingPlayers) {
+                if(player.stringUUID.equals(searchingText)) return addRecentSearch(player);
+            }
+        }
+        
+        //Give Up
+        DomsPlayer player = null;
+        if(createIfNotExists) {
+            player = DomsPlayer.getDomsPlayerFromUsername(searchingText, true);
+        }
+        return addRecentSearch(player);
+    }
+    
+    public static List<DomsPlayer> getPlayersByIP(String ip) {
+        List<DomsPlayer> players = new ArrayList<DomsPlayer>();
+        for(DomsPlayer player : DomsPlayer.getOnlinePlayers()) {
+            if(player == null) continue;
+            if(player.getLastIP() == null) continue;
+            if(!player.getLastIP().equalsIgnoreCase(ip)) continue;
+            players.add(DomsPlayer.addRecentSearch(player));
+        }
+        
+        for(DomsPlayer player : DomsPlayer.RECENT_SEARCHES) {
+            if(player == null) continue;
+            if(player.getLastIP() == null) continue;
+            if(!player.getLastIP().equalsIgnoreCase(ip)) continue;
+            if(players.contains(player)) continue;
+            players.add(DomsPlayer.addRecentSearch(player));
+        }
+        
+        for(DomsPlayer player : DomsPlayer.REGISTERED_PLAYERS) {
+            if(player == null) continue;
+            if(player.getLastIP() == null) continue;
+            if(!player.getLastIP().equalsIgnoreCase(ip)) continue;
+            if(players.contains(player)) continue;
+            players.add(DomsPlayer.addRecentSearch(player));
+        }
+        
+        return players;
+    }
+    
+    public static DomsPlayer getPlayerByIP(String ip) {
+        //Get Online Players
+        List<DomsPlayer> playersUsingIP = DomsPlayer.getPlayersByIP(ip);
+        DomsPlayer newest = null;
+        for(DomsPlayer player : playersUsingIP) {
+            if(newest == null) {
+                newest = player;
+                continue;
+            }
+            
+            if(player.getLogoutTime() < newest.getLogoutTime()) continue;
+            newest = player;
+        }
+        return newest;
+    }
+    
     //Instance
-    private final String player;
+    private String stringUUID;
     private String displayName;
     private String namePlate;
     private File playerFile;
@@ -246,8 +393,12 @@ public class DomsPlayer {
     private DomsPlayer lastPrivateMessenger;
     private PlayerScoreboard scoreboard;
     
-    private DomsPlayer(String player) {
-        this.player = player;
+    private DomsPlayer(OfflinePlayer player) {
+        this(player.getUniqueId());
+    }
+    
+    private DomsPlayer(UUID uuid) {
+        this.stringUUID = uuid.toString();
         if(this.isConsole()) this.displayName = "&dServer";
         this.displayName = this.getDisplayName();
         this.punishments = new ArrayList<Punishment>();
@@ -264,10 +415,10 @@ public class DomsPlayer {
         this.registerPlayer();
     }
     
-    private void registerPlayer() {REGISTERED_PLAYERS.put(player, this);}
+    private void registerPlayer() {REGISTERED_PLAYERS.add(this);}
     
-    public String getPlayer() {return this.player;}
-    public OfflinePlayer getOfflinePlayer() {return Bukkit.getOfflinePlayer(player);}
+    @Deprecated public String getUsername() {return getOfflinePlayer().getName();}
+    public OfflinePlayer getOfflinePlayer() {return Bukkit.getOfflinePlayer(this.getUUID());}
     public Player getOnlinePlayer() {return this.getOfflinePlayer().getPlayer();}
     public long getJoinTime() {return this.join;}
     public long getLoginTime() {return this.login;}
@@ -301,6 +452,8 @@ public class DomsPlayer {
     public String getNickname() {return this.displayName;}
     public String getNamePlate() {return this.namePlate;}
     public PlayerScoreboard getScoreboard() {return this.scoreboard;}
+    public String getStringUUID() {if(this.stringUUID == null) this.stringUUID = this.getUUID().toString();return this.stringUUID;}
+    public UUID getUUID() {return UUID.fromString(stringUUID);}
     
     public boolean isOnline() {if(this.isConsole()) return true; return this.getOfflinePlayer().isOnline();}
     public boolean isVisible() {if(this.isConsole()) return true; return Base.isVisible(this.getOfflinePlayer());}
@@ -328,10 +481,11 @@ public class DomsPlayer {
     public void setFurnaceLocation(DomsLocation location) {this.playerFurnace = location.copy();}
     public DomsInventory setBackpack(DomsInventory inventory) {this.backpack = inventory; return this.backpack;}
     public void setScoreboard(PlayerScoreboard sb) {this.scoreboard = sb;}
+    public void setStringUUID(String s) {this.stringUUID = s;}
     public void setNamePlate(String s) {
-        this.namePlate = s;
+        this.namePlate = (s.equalsIgnoreCase("off") ? null : s);
         if(this.isOnline() && !this.isConsole()) {
-            this.getOnlinePlayer().setCustomName(s);
+            this.getOnlinePlayer().setCustomName(s.equalsIgnoreCase("off") ? this.getOnlinePlayer().getName(): s);
         }
     }
     
@@ -374,7 +528,7 @@ public class DomsPlayer {
             return this.displayName;
         }
         if(!this.isOnline()) {
-            if(this.displayName == null) this.displayName = this.getPlayer();
+            if(this.displayName == null) this.displayName = this.getOfflinePlayer().getName();
             return this.displayName;
         }
         if(!Base.isVisible(this.getOnlinePlayer())) return this.displayName;
@@ -447,11 +601,12 @@ public class DomsPlayer {
     
     public DomsInventory getEndChestFromWorld(String w) {return this.getEndChestFromGroup(DomsInventory.getInventoryGroupFromWorld(w));}
     
+    @Deprecated
     public String getAbsoluteGroup() {
         if(this.getWorld() == null) return null;
         if(PluginHook.VAULT_HOOK.isHooked() && PluginHook.VAULT_HOOK.getPermission() != null) {
             if(this.getWorld() == null) return null;
-            return PluginHook.VAULT_HOOK.getPermission().getPrimaryGroup(this.getWorld(), this.player);
+            return PluginHook.VAULT_HOOK.getPermission().getPrimaryGroup(this.getWorld(), this.getUsername());
         }
         return null;
     }
@@ -465,7 +620,7 @@ public class DomsPlayer {
     public String getChatPrefix() {
         if(this.getWorld() == null) return "";
         if(PluginHook.VAULT_HOOK.isHooked() && PluginHook.VAULT_HOOK.getChat() != null) {
-            String playerPrefix =  PluginHook.VAULT_HOOK.getChat().getPlayerPrefix(this.getWorld(), this.player);
+            String playerPrefix =  PluginHook.VAULT_HOOK.getChat().getPlayerPrefix(this.getWorld(), this.getUsername());
             if(playerPrefix != null && !playerPrefix.equals("")) return playerPrefix;
             String groupPrefix = PluginHook.VAULT_HOOK.getChat().getGroupPrefix(this.getWorld(), this.getAbsoluteGroup());
             if(groupPrefix != null) return groupPrefix;
@@ -476,7 +631,7 @@ public class DomsPlayer {
     public String getChatSuffix() {
         if(this.getWorld() == null) return "";
         if(PluginHook.VAULT_HOOK.isHooked() && PluginHook.VAULT_HOOK.getChat() != null) {
-            String playerSuffix =  PluginHook.VAULT_HOOK.getChat().getPlayerSuffix(this.getWorld(), this.player);
+            String playerSuffix =  PluginHook.VAULT_HOOK.getChat().getPlayerSuffix(this.getWorld(), this.getUsername());
             if(playerSuffix != null && !playerSuffix.equals("")) return playerSuffix;
             String groupSuffix = PluginHook.VAULT_HOOK.getChat().getGroupSuffix(this.getWorld(), this.getAbsoluteGroup());
             if(groupSuffix != null) return groupSuffix;
@@ -584,17 +739,19 @@ public class DomsPlayer {
         return this.flyMode;
     }
     
+    @Deprecated
     public boolean isForumAARegistered() {
         try {
-            return ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkExists(this.player)
+            return ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkExists(this.getUsername())
                     || ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkExists(this.getDisplayName());
         } catch(Exception e) {} catch(Error e) {}
         return false;
     }
     
+    @Deprecated
     public boolean isForumAAActivated() {
         try {
-            return ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkActivated(this.player)
+            return ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkActivated(this.getUsername())
                     || ForumAAHook.FORUMAA_HOOK.getSQLQuery().checkActivated(this.getDisplayName());
         } catch(Exception e) {} catch(Error e) {}
         return false;
@@ -635,7 +792,13 @@ public class DomsPlayer {
     }
 
     public boolean compare(CommandSender s) {
-        return s.getName().equalsIgnoreCase(this.player);
+        if(s instanceof Player) return compare((Player) s);
+        if(s.equals(this.getCommandSender())) return true;
+        return false;
+    }
+    
+    public boolean compare(Player player) {
+        return player.getUniqueId().toString().equals(this.stringUUID);
     }
     
     public void addItems(List<DomsItem> items) {
@@ -681,11 +844,11 @@ public class DomsPlayer {
     public void updateSavedVariables() {this.updateSavedVariables(true);}
     
     private void updateVariables(boolean fireEvent) {
-        if(this.player == null || this.displayName == null) return;
-        this.variables.put("NAME", this.player);
+        this.variables.put("NAME", this.getUsername());
         this.variables.put("DISPLAYNAME", this.getDisplayName());
+        this.variables.put("UUID", this.stringUUID);
         
-        if(this.afk) {
+        if(this.isAFK()) {
             this.variables.put("AWAY", "Away");
         } else {
             this.variables.put("AWAY", "");

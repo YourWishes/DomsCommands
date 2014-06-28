@@ -39,11 +39,11 @@ public class PunishmentListener extends DomsListener {
     
     @EventHandler(priority=EventPriority.LOWEST)
     public void handleMutedChat(AsyncPlayerChatEvent e) {
-        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer());
         if(player == null || player.isConsole()) return;
         if(!player.isMuted()) return;
         
-        log(player.getPlayer() + " tried to say \"" + e.getMessage() + "\" but is muted.");
+        log(player.getUsername() + " tried to say \"" + e.getMessage() + "\" but is muted.");
         
         e.setMessage("");
         e.setFormat("");
@@ -54,14 +54,14 @@ public class PunishmentListener extends DomsListener {
     
     @EventHandler(priority=EventPriority.LOWEST)
     public void handleMutedCommands(PreCommandEvent e) {
-        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromCommandSender(e.getPlayer());
         if(player == null || player.isConsole()) return;
         if(!player.isMuted()) return;
         List<String> cmds = getConfig().getStringList("punishment.mute.blockedcommands");
         for(String s : cmds) {
             if(!e.willResult(s)) continue;
             player.sendMessage(ChatError + "You can't run this command, you're muted.");
-            log(player.getPlayer() + " tried to run \"" + e.toFullCommand() + "\" but is muted.");
+            log(player.getUsername() + " tried to run \"" + e.toFullCommand() + "\" but is muted.");
             e.setCancelled(true);
             return;
         }
@@ -69,7 +69,7 @@ public class PunishmentListener extends DomsListener {
     
     @EventHandler(priority=EventPriority.LOWEST)
     public void handleBanReason(PlayerLoginEvent e) {
-        DomsPlayer player = DomsPlayer.guessPlayer(e.getPlayer().getName(), false);
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer(), false);
         if(player == null) return;
         if(!player.isBanned()) return;
         String reason = Punishment.DEFAULT_REASON;

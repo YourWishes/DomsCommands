@@ -90,11 +90,11 @@ public class SubCommandOption extends Base {
     public List<String> getOptionsFormatted(CommandSender sender) {
         List<String> returnV = new ArrayList<String>();
         if(this.compare(SubCommandOption.PLAYERS_OPTION)) {
-            for(DomsPlayer p : DomsPlayer.getOnlinePlayers(sender)) {
-                returnV.add(p.getPlayer());
+            for(DomsPlayer p : DomsPlayer.getOnlinePlayersVisibleBy(sender)) {
+                returnV.add(p.getUsername());
             }
         } else if(this.compare(SubCommandOption.HOMES_OPTION)) {
-            for(Home home : DomsPlayer.getPlayer(sender).getHomes()) {
+            for(Home home : DomsPlayer.getDomsPlayerFromCommandSender(sender).getHomes()) {
                 returnV.add(home.getName());
             }
         } else if(this.compare(SubCommandOption.ENCHANTMENT_OPTION)) {
@@ -177,7 +177,7 @@ public class SubCommandOption extends Base {
         if(Base.getPlayer(sender, s) != null) return SubCommandOption.PLAYERS_OPTION.option;
         if(Bukkit.getWorld(s) != null) return SubCommandOption.WORLD_OPTION.option;
         if(Enchantment.getByName(s) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
-        if(DomsEntity.craftEntity(s, DomsPlayer.getPlayer(sender)) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
+        if(DomsEntity.craftEntity(s, DomsPlayer.getDomsPlayerFromCommandSender(sender)) != null) return SubCommandOption.ENCHANTMENT_OPTION.option;
         if(PotionEffectType.getByName(s) != null) return SubCommandOption.POTION_OPTION.option;
         if(WeatherCommand.getType(s) != null) return SubCommandOption.WEATHER_OPTION.option;
         if(Warp.getWarp(s) != null) return SubCommandOption.WARPS_OPTION.option;

@@ -40,7 +40,7 @@ public class DomsChatListener extends DomsListener {
         e.setCancelled(true);
         Player p = e.getPlayer();
         
-        DomsPlayer player = DomsPlayer.getPlayer(p);
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromPlayer(p);
         DomsChannel channel = player.getChannel();
         DomsChatFormat format = channel.getFormat(player);
         
@@ -56,7 +56,7 @@ public class DomsChatListener extends DomsListener {
         if(!getConfig().getBoolean("chat.usechat", true)) return;
         
         //Get the ChatChannel this command is responsible for
-        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromCommandSender(e.getPlayer());
         DomsChannel channel = DomsChannel.getChannelByCommand(e.getCommand());
         if(channel == null) return;
         if(!player.hasPermisson(channel.getChatPermission())) {

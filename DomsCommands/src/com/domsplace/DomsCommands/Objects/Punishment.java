@@ -92,4 +92,9 @@ public class Punishment {
     public boolean isPardoned() {return this.pardoned;}
     
     public void isPardoned(boolean t) {this.pardoned = t;}
+
+    public void delete() {
+        this.player.removePunishment(this);
+        PUNISHMENTS.remove(this);
+    }
 }

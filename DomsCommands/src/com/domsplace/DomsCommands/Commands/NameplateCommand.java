@@ -102,8 +102,8 @@ public class NameplateCommand extends BukkitCommand {
         }
         
         if(nameplate.equalsIgnoreCase("off")) {
-            target.setNamePlate(target.getPlayer());
-            sendMessage(sender, ChatDefault + "Turned " + ChatImportant + target.getPlayer() + ChatDefault + "'s nameplate off.");
+            target.setNamePlate(target.getUsername());
+            sendMessage(sender, ChatDefault + "Turned " + ChatImportant + target.getUsername() + ChatDefault + "'s nameplate off.");
             return true;
         }
         

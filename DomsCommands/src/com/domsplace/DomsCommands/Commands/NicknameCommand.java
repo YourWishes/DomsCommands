@@ -96,13 +96,13 @@ public class NicknameCommand extends BukkitCommand {
         }
         
         if(nickname.equalsIgnoreCase("off")) {
-            target.setDisplayName(target.getPlayer());
-            sendMessage(sender, ChatDefault + "Turned " + ChatImportant + target.getPlayer() + ChatDefault + "'s nickname off.");
+            target.setDisplayName(target.getUsername());
+            sendMessage(sender, ChatDefault + "Turned " + ChatImportant + target.getUsername() + ChatDefault + "'s nickname off.");
             return true;
         }
         
         target.setDisplayName(coloriseByPermission(nickname, DomsPlayer.getPlayer(sender), "DomsCommands.nickname.colors."));
-        sendMessage(sender, "The new nickname for " + ChatImportant + target.getPlayer() + ChatDefault + " is " + ChatImportant + target.getDisplayName());
+        sendMessage(sender, "The new nickname for " + ChatImportant + target.getUsername() + ChatDefault + " is " + ChatImportant + target.getDisplayName());
         target.save();
         return true;
     }

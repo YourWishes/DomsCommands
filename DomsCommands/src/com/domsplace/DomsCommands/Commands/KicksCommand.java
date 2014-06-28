@@ -56,7 +56,7 @@ public class KicksCommand extends BukkitCommand {
             
             sendMessage(sender, new String[] {
                 ChatImportant + p.getType().getType() + " #" + p.getId(),
-                p.getPlayer().getPlayer() + ChatDefault + " " + p.getType().getPastText() + " by " + p.getBanner(),
+                p.getPlayer().getUsername() + ChatDefault + " " + p.getType().getPastText() + " by " + p.getBanner(),
                 "For " + colorise(p.getReason()),
                 "When: " + Base.getHumanDate(new Date(p.getDate())),
                 (p.getEndDate() > 1 ? "Until: " + Base.getHumanDate(new Date(p.getEndDate())) : ""),
@@ -65,7 +65,7 @@ public class KicksCommand extends BukkitCommand {
             return true;
         }
         
-        DomsPlayer player = DomsPlayer.guessExactPlayer(sender, args[0], false);
+        DomsPlayer player = DomsPlayer.guessPlayerExactly(sender, args[0], false);
         if(player == null || player.isConsole()) {
             sendMessage(sender, ChatError + "Couldn't find player.");
             return true;

@@ -38,4 +38,9 @@ public class Home {
     public String getName() {return this.name;}
     public DomsLocation getLocation() {return this.location;}
     public DomsPlayer getPlayer() {return this.player;}
+    
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

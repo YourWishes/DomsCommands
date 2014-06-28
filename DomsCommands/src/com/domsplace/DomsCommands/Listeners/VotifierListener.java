@@ -31,11 +31,12 @@ import org.bukkit.event.EventPriority;
  */
 public class VotifierListener extends DomsListener {
     @EventHandler(priority=EventPriority.NORMAL)
+    @Deprecated
     public void onVotifierEvent(VotifierEvent event) {
         Vote vote = event.getVote();
         debug(vote.getUsername() + " VOTED ON " + vote.getAddress());
         
-        DomsPlayer player = DomsPlayer.getPlayer(vote.getUsername());
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromUsername(vote.getUsername());
         
         for(String s : getConfig().getStringList("votifier.commands")) {
             for(String cmd : DataManager.CONFIG_MANAGER.format(player, s)) {

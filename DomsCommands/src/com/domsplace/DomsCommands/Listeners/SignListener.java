@@ -33,7 +33,7 @@ public class SignListener extends DomsListener {
         if(e.getBlock() == null) return;
         String[] lines = e.getLines();
         for(int i = 0; i < lines.length; i++) {
-            lines[i] = Base.coloriseByPermission(lines[i], DomsPlayer.getPlayer(e.getPlayer()), "DomsCommands.sign.colors.");
+            lines[i] = Base.coloriseByPermission(lines[i], DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer()), "DomsCommands.sign.colors.");
             e.setLine(i, lines[i]);
         }
     }

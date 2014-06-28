@@ -32,7 +32,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class PlayerAwayListener extends DomsListener {
     @EventHandler
     public void handleAFKCancelOnMove(PlayerMoveEvent e) {
-        DomsPlayer plyr = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer plyr = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer());
         if(plyr.isAFK() && plyr.isVisible()) {
             broadcast(getConfigManager().format(plyr, getConfig().getString("away.messageback", "")));
         }
@@ -42,7 +42,7 @@ public class PlayerAwayListener extends DomsListener {
     
     @EventHandler(ignoreCancelled=false)
     public void handleAFKCommand(PreCommandEvent e) {
-        DomsPlayer plyr = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer plyr = DomsPlayer.getDomsPlayerFromCommandSender(e.getPlayer());
         List<String> cmds = getConfig().getStringList("away.commands.blocked");
         for(String s : cmds) {
             if(e.willResult(s)) {
@@ -61,7 +61,7 @@ public class PlayerAwayListener extends DomsListener {
     
     @EventHandler(ignoreCancelled=true)
     public void handleAFKChat(AsyncPlayerChatEvent e) {
-        DomsPlayer plyr = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer plyr = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer());
         plyr.setLastMoveTime(getNow());
         
         if(!plyr.isAFK()) return;

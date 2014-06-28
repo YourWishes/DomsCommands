@@ -51,7 +51,7 @@ public class PardonCommand extends BukkitCommand {
                 return true;
             }
         } else {
-            rel = DomsPlayer.guessPlayer(sender, args[0], true);
+            rel = DomsPlayer.guessPlayerExactly(sender, args[0], true);
         }
         
         if(rel.isConsole() || !rel.isBanned()) {

@@ -35,7 +35,7 @@ public class DomsInventoryListener extends DomsListener {
                 DomsInventory.getInventoryGroupFromWorld(e.getTo().getWorld().getName())
         )) return;} catch(Exception ex) {}
         
-        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer());
         player.updateDomsInventory();
         
         DomsInventory inv = player.getInventoryFromWorld(e.getTo().getWorld().getName());
@@ -59,7 +59,7 @@ public class DomsInventoryListener extends DomsListener {
                 DomsInventory.getInventoryGroupFromWorld(e.getRespawnLocation().getWorld().getName())
         )) return;} catch(Exception ex) {}
         
-        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer());
         player.updateDomsInventory();
         
         DomsInventory inv = player.getInventoryFromWorld(e.getRespawnLocation().getWorld().getName());

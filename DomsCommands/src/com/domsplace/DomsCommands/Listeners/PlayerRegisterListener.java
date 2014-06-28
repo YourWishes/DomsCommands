@@ -43,15 +43,16 @@ public class PlayerRegisterListener extends DomsListener {
     public PlayerRegisterListener() {
         super();
         for(Player p : Bukkit.getOnlinePlayers()) {
-            DomsPlayer player = DomsPlayer.getPlayer(p);
+            DomsPlayer player = DomsPlayer.getDomsPlayerFromPlayer(p);
         }
     }
     
     @EventHandler(priority=EventPriority.LOWEST)
     public void registerOnJoin(PlayerJoinEvent e) {
-        if(!DomsPlayer.isPlayerRegistered(e.getPlayer()) || !DomsPlayer.getPlayer(e.getPlayer()).hasPlayedBefore()) {
+        DomsPlayer player = null;
+        if(!DomsPlayer.isPlayerRegistered(e.getPlayer()) || !(player = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer())).hasPlayedBefore()) {
             //Create Player
-            DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+            if(player == null) player = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer());
             
             //Store Changes
             player.setJoinTime(player.getOfflinePlayer().getFirstPlayed() == 0 ? getNow() : player.getOfflinePlayer().getFirstPlayed());
@@ -83,10 +84,8 @@ public class PlayerRegisterListener extends DomsListener {
             PlayerFirstJoinedEvent event = new PlayerFirstJoinedEvent(player);
             event.fireEvent();
         }
-        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        //player = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer());
         if(player.getNickname() != null && !player.getNickname().equalsIgnoreCase("off")) player.setDisplayName(player.getNickname());
-        
-        DomsPlayer.REGISTERED_ONLINE_PLAYERS.put(player.getPlayer(), player);
         
         //Store Changes
         player.setLoginTime(getNow());
@@ -120,7 +119,7 @@ public class PlayerRegisterListener extends DomsListener {
     
     @EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
     public void saveMoveChanges(PlayerMoveEvent e) {
-        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer());
         if(player == null) return;
         player.setLastLocation(new DomsLocation(e.getTo()));
         player.setLastMoveTime(getNow());
@@ -128,7 +127,7 @@ public class PlayerRegisterListener extends DomsListener {
     
     @EventHandler
     public void saveDataBeforeLogout(PlayerLeaveGameEvent e) {
-        DomsPlayer player = DomsPlayer.getPlayer(e.getPlayer());
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromPlayer(e.getPlayer());
         player.setLastIP(e.getPlayer().getAddress().getAddress().getHostAddress());
         player.setLogoutTime(getNow());
         player.setLastLocation(player.getLocation());

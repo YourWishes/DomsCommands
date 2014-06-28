@@ -21,7 +21,6 @@ import com.domsplace.DomsCommands.Threads.DomsCommandThread;
 import static com.domsplace.DomsCommands.Threads.DomsCommandThread.COMMAND_FAILED;
 import static com.domsplace.DomsCommands.Threads.DomsCommandThread.COMMAND_SUCCESS;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -93,8 +92,9 @@ public class BukkitCommand extends Base implements CommandExecutor, TabCompleter
             if(!hasPermission(sender, cmd.getPermission())) return noPermission(sender, cmd, label, args);
             
             //TEST: Fire ASYNC Command Thread
-            DomsCommandThread thread = new DomsCommandThread(this, sender, cmd, label, args);
-            return true;
+            /* Disabled the ASYNC Method due to too many violations */
+            //DomsCommandThread thread = new DomsCommandThread(this, sender, cmd, label, args);
+            return this.cmd(sender, cmd, label, args);
         }
         
         return badCommand(sender, cmd, label, args);

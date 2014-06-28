@@ -428,6 +428,16 @@ commands:
       aliases: [rawtell, msgraw]
       usage: /<command> [player] [message]
       permission: DomsCommands.tellraw
+   playerhome:
+      description: Go to another player's set home.
+      aliases: [phome, ph]
+      usage: /<command> [player] (home)
+      permission: DomsCommands.playerhome
+   deletepunishment:
+      description: Remove a warnining, banning, muting or kicking log from a player.
+      aliases: [deletewarn, deleteban, deletekick, removewarn, removeban, removekick, rmwarn, rmkick, rmban, rmmute, deletemute, removemute]
+      usage: /<command> [id]
+      permission: DomsCommands.deletepunishment
 permissions:
   # TODO: FINISH ALL THE * PERM NODES.
    DomsCommands.*:
@@ -451,6 +461,7 @@ permissions:
        DomsCommands.deletewarp: true
        DomsCommands.warp: true
        DomsCommands.ban.*: true
+       DomsCommands.deletepunishment: true
        DomsCommands.pardon: true
        DomsCommands.kickall: true
        DomsCommands.kick.*: true
@@ -515,6 +526,7 @@ permissions:
        DomsCommands.nameplate.*: true
        DomsCommands.recipe: true
        DomsCommands.tellraw: true
+       DomsCommands.playerhome: true
    DomsCommands.reload:
      description: Allows access to reload the Configuration.
    DomsCommands.domscommands:
@@ -641,6 +653,8 @@ permissions:
    DomsCommands.mute.notify:
      description: Shows a message when a player is muted.
    DomsCommands.mute.lookup:
+     description: Allows a player to lookup people's mutes.
+   DomsCommands.deletepunishment:
      description: Allows a player to lookup people's mutes.
    DomsCommands.away.*:
      description: Allows access to all away permissions.

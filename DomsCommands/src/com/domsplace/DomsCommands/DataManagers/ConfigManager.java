@@ -202,7 +202,7 @@ public class ConfigManager extends DataManager {
             String p = parts[i];
             
             p = format(p);
-            p = p.replaceAll("\\{NAME\\}", player.getPlayer());
+            p = p.replaceAll("\\{NAME\\}", player.getUsername());
             p = p.replaceAll("\\{DISPLAYNAME\\}", player.getDisplayName());
             
             parts[i] = Base.colorise(p);

@@ -21,9 +21,12 @@ import com.domsplace.DomsCommands.Commands.*;
 import com.domsplace.DomsCommands.Exceptions.SaveResult;
 import com.domsplace.DomsCommands.Listeners.*;
 import com.domsplace.DomsCommands.Objects.DomsCommandsAddon;
+import static com.domsplace.DomsCommands.Objects.DomsPlayer.*;
 import com.domsplace.DomsCommands.Threads.*;
 import java.util.ArrayList;
+import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -86,6 +89,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
     private NicknameCommand nicknameCommand;
     private PardonCommand pardonCommand;
     private PingCommand pingCommand;
+    private PlayerHomeCommand playerHomeCommand;
     private PositionCommand positionCommand;
     private PotionEffectCommand potionEffectCommand;
     private RealnameCommand realnameCommand;
@@ -147,6 +151,18 @@ public class DomsCommandsPlugin extends JavaPlugin {
         //Register Plugin
         Base.setPlugin(this);
         
+        //1.7.9: Test for the new 1.7.9 UUID methods
+        boolean v = false;
+        try {
+            OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(DOMIN8TRIX25_UUID));
+            v = p != null;
+        } catch(Throwable t) {
+            this.disable();
+            Base.error("This version of DomsCommands is designed for Minecraft/Bukkit 1.7.9 and higher only.", t);
+            
+        }
+        if(!v) return;
+        
         //Load Data
         if(!DataManager.loadAll()) {
             this.disable();
@@ -206,6 +222,7 @@ public class DomsCommandsPlugin extends JavaPlugin {
         this.nicknameCommand = new NicknameCommand();
         this.pardonCommand = new PardonCommand();
         this.pingCommand = new PingCommand();
+        this.playerHomeCommand = new PlayerHomeCommand();
         this.positionCommand = new PositionCommand();
         this.potionEffectCommand = new PotionEffectCommand();
         this.realnameCommand = new RealnameCommand();

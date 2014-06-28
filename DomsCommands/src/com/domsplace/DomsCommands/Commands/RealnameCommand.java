@@ -46,7 +46,7 @@ public class RealnameCommand extends BukkitCommand {
         }
         
         sendMessage(sender,
-            ChatImportant + player.getPlayer() + "'s " + ChatDefault +
+            ChatImportant + player.getUsername() + "'s " + ChatDefault +
                     "nickname is " + ChatImportant + player.getDisplayName()
         );
         return true;

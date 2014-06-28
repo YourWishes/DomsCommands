@@ -79,7 +79,7 @@ public class DomsCommandsCommand extends BukkitCommand {
                     messages.add(ChatColor.WHITE + plugin.getPluginName() + " hooked: " + (plugin.isHooked() ? "Yes" : "No"));
                 }
                 
-                messages.add(ChatColor.WHITE + "Registered Players: " + DomsPlayer.getRegisteredPlayers().size());
+                messages.add(ChatColor.WHITE + "Registered Players: " + DomsPlayer.getAllRegisteredPlayers().size());
                 messages.add(ChatColor.WHITE + "Threads: " + DomsThread.getThreads().size());
                 messages.add(ChatColor.WHITE + "Listeners: " + DomsListener.getListeners().size());
                 messages.add(ChatColor.WHITE + "Commands: " + BukkitCommand.getCommands().size());

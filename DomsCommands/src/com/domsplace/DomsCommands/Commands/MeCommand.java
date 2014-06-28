@@ -38,8 +38,14 @@ public class MeCommand extends BukkitCommand {
             return false;
         }
         
+        DomsPlayer player = DomsPlayer.getPlayer(sender);
+        if(player.isMuted()) {
+            sendMessage(sender, ChatError + "You can't do this, you're muted.");
+            return true;
+        }
+        
         DomsChannel channel = DomsChannel.getChannel("me");
-        channel.chat(DomsPlayer.getPlayer(sender), args);
+        channel.chat(player, args);
         return true;
     }
 }

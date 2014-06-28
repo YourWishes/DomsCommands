@@ -32,7 +32,7 @@ public class AwayCommand extends BukkitCommand {
     
     @Override
     public boolean cmd(CommandSender sender, Command cmd, String label, String[] args) {        
-        DomsPlayer player = DomsPlayer.getPlayer(sender);
+        DomsPlayer player = DomsPlayer.getDomsPlayerFromCommandSender(sender);
         
         if(!player.isVisible()) {
             sendMessage(sender, ChatError + "You're hidden... not doing that.");
