@@ -241,8 +241,21 @@ public class PlayerManager extends DataManager {
         player.updateDomsInventory();
         
         File f = player.getPlayerFile();
-        if(f.exists() && !f.getName().equals(this.getDefaultPlayerFile(player))) f.delete();
-        if(f == null) player.setPlayerFile(this.getDefaultPlayerFile(player));
+        
+        if(f != null && f.exists()) {
+            f = this.getDeprecatedDefaultPlayerFile(player);
+            if(f != null && f.exists()) {
+                log("Found Pre-1.7.9 Player File " + player.getUsername() + " (UUID: " + player.getUUID().toString() + ")");
+                f.delete();
+                f = null;
+                log("...Done Converting!");
+            }
+        }
+        
+        if(f == null) {
+            player.setPlayerFile(this.getDefaultPlayerFile(player));
+        }
+        
         f = player.getPlayerFile();
 
         try {
@@ -401,4 +414,5 @@ public class PlayerManager extends DataManager {
     
     public File getPlayersDirectory() {return new File(getDataFolder(), "players");}
     public File getDefaultPlayerFile(DomsPlayer player) {return new File(getPlayersDirectory(), player.getUUID()+ ".yml");}
+    @Deprecated public File getDeprecatedDefaultPlayerFile(DomsPlayer player) {return new File(getPlayersDirectory(), player.getUsername() +  ".yml");}
 }

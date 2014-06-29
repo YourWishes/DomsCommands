@@ -62,7 +62,7 @@ commands:
       permission: DomsCommands.teleport
    teleporthere:
       description: Teleport another player to you.
-      aliases: [tph, here]
+      aliases: [tph, here, tphere]
       usage: /<command> [player]
       permission: DomsCommands.teleporthere
    teleportall:

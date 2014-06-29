@@ -417,7 +417,7 @@ public class DomsPlayer {
     
     private void registerPlayer() {REGISTERED_PLAYERS.add(this);}
     
-    @Deprecated public String getUsername() {return getOfflinePlayer().getName();}
+    @Deprecated public String getUsername() {return (this.isConsole() ? "Server" : getOfflinePlayer().getName());}
     public OfflinePlayer getOfflinePlayer() {return Bukkit.getOfflinePlayer(this.getUUID());}
     public Player getOnlinePlayer() {return this.getOfflinePlayer().getPlayer();}
     public long getJoinTime() {return this.join;}

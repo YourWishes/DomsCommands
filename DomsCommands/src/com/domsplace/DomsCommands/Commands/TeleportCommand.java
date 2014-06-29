@@ -102,7 +102,7 @@ public class TeleportCommand extends BukkitCommand {
                 target = guess.getLocation();
                 player.setBackLocation(player.getLocation());
                 player.teleport(target);
-                sendMessage(sender, "Teleporting you to " + ChatImportant + guess.getDisplayName() + ChatDefault + ".");
+                sendMessage(player, "Teleporting you to " + ChatImportant + guess.getDisplayName() + ChatDefault + ".");
                 if(!player.compare(sender)) {
                     sendMessage(sender, "Teleporting " + ChatImportant + player.getDisplayName() + ChatDefault + " to " + ChatImportant + guess.getDisplayName() + ChatDefault + ".");
                 }
@@ -122,7 +122,7 @@ public class TeleportCommand extends BukkitCommand {
             player.teleport(target);
             player.sendMessage("Teleporting you to " + ChatImportant + target.toHumanString() + ChatDefault + ".");
             if(!player.compare(sender)) {
-                sendMessage(sender, "Teleporting " + ChatImportant + player.getDisplayName() + ChatDefault + " to " + ChatImportant + target.toHumanString() + ChatDefault + ".");
+                sendMessage(player, "Teleporting " + ChatImportant + player.getDisplayName() + ChatDefault + " to " + ChatImportant + target.toHumanString() + ChatDefault + ".");
             }
             return true;
         } else {

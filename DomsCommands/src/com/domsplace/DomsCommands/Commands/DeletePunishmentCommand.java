@@ -16,15 +16,9 @@
 
 package com.domsplace.DomsCommands.Commands;
 
-import com.domsplace.DomsCommands.Bases.Base;
 import com.domsplace.DomsCommands.Bases.BukkitCommand;
-import com.domsplace.DomsCommands.Enums.PunishmentType;
-import com.domsplace.DomsCommands.Objects.DomsPlayer;
 import com.domsplace.DomsCommands.Objects.Punishment;
 import com.domsplace.DomsCommands.Objects.SubCommandOption;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -34,7 +28,7 @@ import org.bukkit.command.CommandSender;
  */
 public class DeletePunishmentCommand extends BukkitCommand {    
     public DeletePunishmentCommand() {
-        super("warns");
+        super("deletepunishment");
         this.addSubCommandOption(SubCommandOption.PLAYERS_OPTION);
     }
     
